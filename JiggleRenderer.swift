@@ -1314,6 +1314,2936 @@ class JiggleRenderer {
         return result
     }
 
+    @MainActor func getMarkerColorPack(isDarkModeEnabled: Bool) -> MarkerRenderColorPack {
+        
+        let lineFillPrimaryUnspecifiedRed: Float
+        let lineFillPrimaryUnspecifiedGreen: Float
+        let lineFillPrimaryUnspecifiedBlue: Float
+        if isDarkModeEnabled {
+            lineFillPrimaryUnspecifiedRed = JiggleTheme.guideMarkerLineDark.red
+            lineFillPrimaryUnspecifiedGreen = JiggleTheme.guideMarkerLineDark.green
+            lineFillPrimaryUnspecifiedBlue = JiggleTheme.guideMarkerLineDark.blue
+        } else {
+            lineFillPrimaryUnspecifiedRed = JiggleTheme.guideMarkerLineLight.red
+            lineFillPrimaryUnspecifiedGreen = JiggleTheme.guideMarkerLineLight.green
+            lineFillPrimaryUnspecifiedBlue = JiggleTheme.guideMarkerLineLight.blue
+        }
+        
+        let lineFillPrimarySpecifiedRed: Float
+        let lineFillPrimarySpecifiedGreen: Float
+        let lineFillPrimarySpecifiedBlue: Float
+        if isDarkModeEnabled {
+            lineFillPrimarySpecifiedRed = JiggleTheme.guideMarkerLineSpecifiedDark.red
+            lineFillPrimarySpecifiedGreen = JiggleTheme.guideMarkerLineSpecifiedDark.green
+            lineFillPrimarySpecifiedBlue = JiggleTheme.guideMarkerLineSpecifiedDark.blue
+        } else {
+            lineFillPrimarySpecifiedRed = JiggleTheme.guideMarkerLineSpecifiedLight.red
+            lineFillPrimarySpecifiedGreen = JiggleTheme.guideMarkerLineSpecifiedLight.green
+            lineFillPrimarySpecifiedBlue = JiggleTheme.guideMarkerLineSpecifiedLight.blue
+        }
+        
+        let lineFillSecondaryRed: Float
+        let lineFillSecondaryGreen: Float
+        let lineFillSecondaryBlue: Float
+        if isDarkModeEnabled {
+            lineFillSecondaryRed = JiggleTheme.guideMarkerLineMinorDark.red
+            lineFillSecondaryGreen = JiggleTheme.guideMarkerLineMinorDark.green
+            lineFillSecondaryBlue = JiggleTheme.guideMarkerLineMinorDark.blue
+        } else {
+            lineFillSecondaryRed = JiggleTheme.guideMarkerLineMinorLight.red
+            lineFillSecondaryGreen = JiggleTheme.guideMarkerLineMinorLight.green
+            lineFillSecondaryBlue = JiggleTheme.guideMarkerLineMinorLight.blue
+        }
+        
+        let dotFillPrimaryUnspecifiedEvenRed: Float
+        let dotFillPrimaryUnspecifiedEvenGreen: Float
+        let dotFillPrimaryUnspecifiedEvenBlue: Float
+        if isDarkModeEnabled {
+            dotFillPrimaryUnspecifiedEvenRed = JiggleTheme.guideMarkerPointEvenDark.red
+            dotFillPrimaryUnspecifiedEvenGreen = JiggleTheme.guideMarkerPointEvenDark.green
+            dotFillPrimaryUnspecifiedEvenBlue = JiggleTheme.guideMarkerPointEvenDark.blue
+        } else {
+            dotFillPrimaryUnspecifiedEvenRed = JiggleTheme.guideMarkerPointEvenLight.red
+            dotFillPrimaryUnspecifiedEvenGreen = JiggleTheme.guideMarkerPointEvenLight.green
+            dotFillPrimaryUnspecifiedEvenBlue = JiggleTheme.guideMarkerPointEvenLight.blue
+        }
+        
+        let dotFillPrimaryUnspecifiedOddRed: Float
+        let dotFillPrimaryUnspecifiedOddGreen: Float
+        let dotFillPrimaryUnspecifiedOddBlue: Float
+        if isDarkModeEnabled {
+            dotFillPrimaryUnspecifiedOddRed = JiggleTheme.guideMarkerPointOddDark.red
+            dotFillPrimaryUnspecifiedOddGreen = JiggleTheme.guideMarkerPointOddDark.green
+            dotFillPrimaryUnspecifiedOddBlue = JiggleTheme.guideMarkerPointOddDark.blue
+        } else {
+            dotFillPrimaryUnspecifiedOddRed = JiggleTheme.guideMarkerPointOddLight.red
+            dotFillPrimaryUnspecifiedOddGreen = JiggleTheme.guideMarkerPointOddLight.green
+            dotFillPrimaryUnspecifiedOddBlue = JiggleTheme.guideMarkerPointOddLight.blue
+        }
+        
+        let dotFillPrimarySpecifiedEvenRed: Float
+        let dotFillPrimarySpecifiedEvenGreen: Float
+        let dotFillPrimarySpecifiedEvenBlue: Float
+        if isDarkModeEnabled {
+            dotFillPrimarySpecifiedEvenRed = JiggleTheme.guideMarkerPointSpecifiedEvenDark.red
+            dotFillPrimarySpecifiedEvenGreen = JiggleTheme.guideMarkerPointSpecifiedEvenDark.green
+            dotFillPrimarySpecifiedEvenBlue = JiggleTheme.guideMarkerPointSpecifiedEvenDark.blue
+        } else {
+            dotFillPrimarySpecifiedEvenRed = JiggleTheme.guideMarkerPointSpecifiedEvenLight.red
+            dotFillPrimarySpecifiedEvenGreen = JiggleTheme.guideMarkerPointSpecifiedEvenLight.green
+            dotFillPrimarySpecifiedEvenBlue = JiggleTheme.guideMarkerPointSpecifiedEvenLight.blue
+        }
+        
+        let dotFillPrimarySpecifiedOddRed: Float
+        let dotFillPrimarySpecifiedOddGreen: Float
+        let dotFillPrimarySpecifiedOddBlue: Float
+        if isDarkModeEnabled {
+            dotFillPrimarySpecifiedOddRed = JiggleTheme.guideMarkerPointSpecifiedOddDark.red
+            dotFillPrimarySpecifiedOddGreen = JiggleTheme.guideMarkerPointSpecifiedOddDark.green
+            dotFillPrimarySpecifiedOddBlue = JiggleTheme.guideMarkerPointSpecifiedOddDark.blue
+        } else {
+            dotFillPrimarySpecifiedOddRed = JiggleTheme.guideMarkerPointSpecifiedOddLight.red
+            dotFillPrimarySpecifiedOddGreen = JiggleTheme.guideMarkerPointSpecifiedOddLight.green
+            dotFillPrimarySpecifiedOddBlue = JiggleTheme.guideMarkerPointSpecifiedOddLight.blue
+        }
+        
+        let dotFillSecondaryEvenRed: Float
+        let dotFillSecondaryEvenGreen: Float
+        let dotFillSecondaryEvenBlue: Float
+        if isDarkModeEnabled {
+            dotFillSecondaryEvenRed = JiggleTheme.guideMarkerPointMinorEvenDark.red
+            dotFillSecondaryEvenGreen = JiggleTheme.guideMarkerPointMinorEvenDark.green
+            dotFillSecondaryEvenBlue = JiggleTheme.guideMarkerPointMinorEvenDark.blue
+        } else {
+            dotFillSecondaryEvenRed = JiggleTheme.guideMarkerPointMinorEvenLight.red
+            dotFillSecondaryEvenGreen = JiggleTheme.guideMarkerPointMinorEvenLight.green
+            dotFillSecondaryEvenBlue = JiggleTheme.guideMarkerPointMinorEvenLight.blue
+        }
+        
+        let dotFillSecondaryOddRed: Float
+        let dotFillSecondaryOddGreen: Float
+        let dotFillSecondaryOddBlue: Float
+        if isDarkModeEnabled {
+            dotFillSecondaryOddRed = JiggleTheme.guideMarkerPointMinorOddDark.red
+            dotFillSecondaryOddGreen = JiggleTheme.guideMarkerPointMinorOddDark.green
+            dotFillSecondaryOddBlue = JiggleTheme.guideMarkerPointMinorOddDark.blue
+        } else {
+            dotFillSecondaryOddRed = JiggleTheme.guideMarkerPointMinorOddLight.red
+            dotFillSecondaryOddGreen = JiggleTheme.guideMarkerPointMinorOddLight.green
+            dotFillSecondaryOddBlue = JiggleTheme.guideMarkerPointMinorOddLight.blue
+        }
+        
+        return MarkerRenderColorPack(lineFillPrimaryUnspecifiedRed: lineFillPrimaryUnspecifiedRed,
+                                     lineFillPrimaryUnspecifiedGreen: lineFillPrimaryUnspecifiedGreen,
+                                     lineFillPrimaryUnspecifiedBlue: lineFillPrimaryUnspecifiedBlue,
+                                     lineFillPrimarySpecifiedRed: lineFillPrimarySpecifiedRed,
+                                     lineFillPrimarySpecifiedGreen: lineFillPrimarySpecifiedGreen,
+                                     lineFillPrimarySpecifiedBlue: lineFillPrimarySpecifiedBlue,
+                                     lineFillSecondaryRed: lineFillSecondaryRed,
+                                     lineFillSecondaryGreen: lineFillSecondaryGreen,
+                                     lineFillSecondaryBlue: lineFillSecondaryBlue,
+                                     dotFillPrimaryUnspecifiedOddRed: dotFillPrimaryUnspecifiedOddRed,
+                                     dotFillPrimaryUnspecifiedOddGreen: dotFillPrimaryUnspecifiedOddGreen,
+                                     dotFillPrimaryUnspecifiedOddBlue: dotFillPrimaryUnspecifiedOddBlue,
+                                     
+                                     dotFillPrimaryUnspecifiedEvenRed: dotFillPrimaryUnspecifiedEvenRed,
+                                     dotFillPrimaryUnspecifiedEvenGreen: dotFillPrimaryUnspecifiedEvenGreen,
+                                     dotFillPrimaryUnspecifiedEvenBlue: dotFillPrimaryUnspecifiedEvenBlue,
+                                     
+                                     
+                                     dotFillPrimarySpecifiedOddRed: dotFillPrimarySpecifiedOddRed,
+                                     dotFillPrimarySpecifiedOddGreen: dotFillPrimarySpecifiedOddGreen,
+                                     dotFillPrimarySpecifiedOddBlue: dotFillPrimarySpecifiedOddBlue,
+                                     
+                                     dotFillPrimarySpecifiedEvenRed: dotFillPrimarySpecifiedEvenRed,
+                                     dotFillPrimarySpecifiedEvenGreen: dotFillPrimarySpecifiedEvenGreen,
+                                     dotFillPrimarySpecifiedEvenBlue: dotFillPrimarySpecifiedEvenBlue,
+                                     
+                                     dotFillSecondaryOddRed: dotFillSecondaryOddRed,
+                                     dotFillSecondaryOddGreen: dotFillSecondaryOddGreen,
+                                     dotFillSecondaryOddBlue: dotFillSecondaryOddBlue,
+                                     dotFillSecondaryEvenRed: dotFillSecondaryEvenRed,
+                                     dotFillSecondaryEvenGreen: dotFillSecondaryEvenGreen,
+                                     dotFillSecondaryEvenBlue: dotFillSecondaryEvenBlue)
+    }
     
+    @MainActor func getJiggleColorPack(jiggle: Jiggle,
+                                       isJiggleSelected: Bool,
+                                       isDarkModeEnabled: Bool,
+                                       isCreatorModeJiggleCenters: Bool,
+                                       isCreatorModeAddJigglePoints: Bool,
+                                       isCreatorModeGuideCenters: Bool,
+                                       isCreatorModeAddGuidePoints: Bool,
+                                       isCreatorModeDeleteGuidePoints: Bool,
+                                       jigglePointSelectionModality: PointSelectionModality) -> JiggleRenderColorPack {
+        
+        var isDisplayingAsFrozen = false
+        var isDisplayingAsSelected = false
+        
+        if jiggle.isFrozen {
+            isDisplayingAsFrozen = true
+        } else {
+            if isJiggleSelected {
+                if isCreatorModeJiggleCenters {
+                    isDisplayingAsFrozen = true
+                } else {
+                    isDisplayingAsSelected = true
+                }
+            } else {
+                if isCreatorModeDeleteGuidePoints || isCreatorModeJiggleCenters || isCreatorModeAddJigglePoints || isCreatorModeGuideCenters {
+                    isDisplayingAsFrozen = true
+                }
+            }
+        }
+        
+        // Just the regular stroke...
+        let regularStrokeRed: Float
+        let regularStrokeGreen: Float
+        let regularStrokeBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                regularStrokeRed = JiggleTheme.outlineFrozenStrokeDark.red
+                regularStrokeGreen = JiggleTheme.outlineFrozenStrokeDark.green
+                regularStrokeBlue = JiggleTheme.outlineFrozenStrokeDark.blue
+            } else {
+                regularStrokeRed = JiggleTheme.outlineFrozenStrokeLight.red
+                regularStrokeGreen = JiggleTheme.outlineFrozenStrokeLight.green
+                regularStrokeBlue = JiggleTheme.outlineFrozenStrokeLight.blue
+            }
+        } else if isDisplayingAsSelected {
+            if isDarkModeEnabled {
+                regularStrokeRed = JiggleTheme.outlineSelectedStrokeDark.red
+                regularStrokeGreen = JiggleTheme.outlineSelectedStrokeDark.green
+                regularStrokeBlue = JiggleTheme.outlineSelectedStrokeDark.blue
+            } else {
+                regularStrokeRed = JiggleTheme.outlineSelectedStrokeLight.red
+                regularStrokeGreen = JiggleTheme.outlineSelectedStrokeLight.green
+                regularStrokeBlue = JiggleTheme.outlineSelectedStrokeLight.blue
+            }
+        } else {
+            if isDarkModeEnabled {
+                regularStrokeRed = JiggleTheme.outlineUnselectedStrokeDark.red
+                regularStrokeGreen = JiggleTheme.outlineUnselectedStrokeDark.green
+                regularStrokeBlue = JiggleTheme.outlineUnselectedStrokeDark.blue
+            } else {
+                regularStrokeRed = JiggleTheme.outlineUnselectedStrokeLight.red
+                regularStrokeGreen = JiggleTheme.outlineUnselectedStrokeLight.green
+                regularStrokeBlue = JiggleTheme.outlineUnselectedStrokeLight.blue
+            }
+        }
+        
+        // Just the regular fill...
+        let regularFillRed: Float
+        let regularFillGreen: Float
+        let regularFillBlue: Float
+        if isDisplayingAsFrozen || (jigglePointSelectionModality == .tans) {
+            if isDarkModeEnabled {
+                regularFillRed = JiggleTheme.outlineFrozenFillDark.red
+                regularFillGreen = JiggleTheme.outlineFrozenFillDark.green
+                regularFillBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                regularFillRed = JiggleTheme.outlineFrozenFillLight.red
+                regularFillGreen = JiggleTheme.outlineFrozenFillLight.green
+                regularFillBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else if isDisplayingAsSelected {
+            if isDarkModeEnabled {
+                regularFillRed = JiggleTheme.outlineSelectedFillDark.red
+                regularFillGreen = JiggleTheme.outlineSelectedFillDark.green
+                regularFillBlue = JiggleTheme.outlineSelectedFillDark.blue
+            } else {
+                regularFillRed = JiggleTheme.outlineSelectedFillLight.red
+                regularFillGreen = JiggleTheme.outlineSelectedFillLight.green
+                regularFillBlue = JiggleTheme.outlineSelectedFillLight.blue
+            }
+        } else {
+            if isDarkModeEnabled {
+                regularFillRed = JiggleTheme.outlineUnselectedFillDark.red
+                regularFillGreen = JiggleTheme.outlineUnselectedFillDark.green
+                regularFillBlue = JiggleTheme.outlineUnselectedFillDark.blue
+            } else {
+                regularFillRed = JiggleTheme.outlineUnselectedFillLight.red
+                regularFillGreen = JiggleTheme.outlineUnselectedFillLight.green
+                regularFillBlue = JiggleTheme.outlineUnselectedFillLight.blue
+            }
+        }
+        
+        // Just the selected fill...
+        let selectedFillRed: Float
+        let selectedFillGreen: Float
+        let selectedFillBlue: Float
+        if isDisplayingAsFrozen || (jigglePointSelectionModality == .tans) {
+            if isDarkModeEnabled {
+                selectedFillRed = JiggleTheme.outlineFrozenFillDark.red
+                selectedFillGreen = JiggleTheme.outlineFrozenFillDark.green
+                selectedFillBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                selectedFillRed = JiggleTheme.outlineFrozenFillLight.red
+                selectedFillGreen = JiggleTheme.outlineFrozenFillLight.green
+                selectedFillBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDarkModeEnabled {
+                selectedFillRed = JiggleTheme.pointSelectedOutlineDark.red
+                selectedFillGreen = JiggleTheme.pointSelectedOutlineDark.green
+                selectedFillBlue = JiggleTheme.pointSelectedOutlineDark.blue
+            } else {
+                selectedFillRed = JiggleTheme.pointSelectedOutlineLight.red
+                selectedFillGreen = JiggleTheme.pointSelectedOutlineLight.green
+                selectedFillBlue = JiggleTheme.pointSelectedOutlineLight.blue
+            }
+        }
+        
+        
+        // Just the modified fill...
+        let fillModifiedRed: Float
+        let fillModifiedGreen: Float
+        let fillModifiedBlue: Float
+        if isDisplayingAsFrozen || (jigglePointSelectionModality == .tans) {
+            if isDarkModeEnabled {
+                fillModifiedRed = JiggleTheme.outlineFrozenFillDark.red
+                fillModifiedGreen = JiggleTheme.outlineFrozenFillDark.green
+                fillModifiedBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                fillModifiedRed = JiggleTheme.outlineFrozenFillLight.red
+                fillModifiedGreen = JiggleTheme.outlineFrozenFillLight.green
+                fillModifiedBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDisplayingAsSelected {
+                if isDarkModeEnabled {
+                    fillModifiedRed = JiggleTheme.outlineSelectedModifiedFillDark.red
+                    fillModifiedGreen = JiggleTheme.outlineSelectedModifiedFillDark.green
+                    fillModifiedBlue = JiggleTheme.outlineSelectedModifiedFillDark.blue
+                } else {
+                    fillModifiedRed = JiggleTheme.outlineSelectedModifiedFillLight.red
+                    fillModifiedGreen = JiggleTheme.outlineSelectedModifiedFillLight.green
+                    fillModifiedBlue = JiggleTheme.outlineSelectedModifiedFillLight.blue
+                }
+            } else {
+                if isDarkModeEnabled {
+                    fillModifiedRed = JiggleTheme.outlineUnselectedModifiedFillDark.red
+                    fillModifiedGreen = JiggleTheme.outlineUnselectedModifiedFillDark.green
+                    fillModifiedBlue = JiggleTheme.outlineUnselectedModifiedFillDark.blue
+                } else {
+                    fillModifiedRed = JiggleTheme.outlineUnselectedModifiedFillLight.red
+                    fillModifiedGreen = JiggleTheme.outlineUnselectedModifiedFillLight.green
+                    fillModifiedBlue = JiggleTheme.outlineUnselectedModifiedFillLight.blue
+                }
+            }
+            
+        }
+        
+        
+        // Just the bloom...
+        let bloomRed: Float
+        let bloomGreen: Float
+        let bloomBlue: Float
+        if isDarkModeEnabled {
+            bloomRed = JiggleTheme.bloomGlowDark.red
+            bloomGreen = JiggleTheme.bloomGlowDark.green
+            bloomBlue = JiggleTheme.bloomGlowDark.blue
+        } else {
+            bloomRed = JiggleTheme.bloomGlowLight.red
+            bloomGreen = JiggleTheme.bloomGlowLight.green
+            bloomBlue = JiggleTheme.bloomGlowLight.blue
+        }
+        
+        
+        let fillWeightCenterRed: Float
+        let fillWeightCenterGreen: Float
+        let fillWeightCenterBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                fillWeightCenterRed = JiggleTheme.outlineFrozenFillDark.red
+                fillWeightCenterGreen = JiggleTheme.outlineFrozenFillDark.green
+                fillWeightCenterBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                fillWeightCenterRed = JiggleTheme.outlineFrozenFillLight.red
+                fillWeightCenterGreen = JiggleTheme.outlineFrozenFillLight.green
+                fillWeightCenterBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else if isDisplayingAsSelected {
+            if isDarkModeEnabled {
+                fillWeightCenterRed = JiggleTheme.guideSelectedCenterMarkerDark.red
+                fillWeightCenterGreen = JiggleTheme.guideSelectedCenterMarkerDark.green
+                fillWeightCenterBlue = JiggleTheme.guideSelectedCenterMarkerDark.blue
+            } else {
+                fillWeightCenterRed = JiggleTheme.guideSelectedCenterMarkerLight.red
+                fillWeightCenterGreen = JiggleTheme.guideSelectedCenterMarkerLight.green
+                fillWeightCenterBlue = JiggleTheme.guideSelectedCenterMarkerLight.blue
+            }
+        } else {
+            if isDarkModeEnabled {
+                fillWeightCenterRed = JiggleTheme.guideUnselectedCenterMarkerDark.red
+                fillWeightCenterGreen = JiggleTheme.guideUnselectedCenterMarkerDark.green
+                fillWeightCenterBlue = JiggleTheme.guideUnselectedCenterMarkerDark.blue
+            } else {
+                fillWeightCenterRed = JiggleTheme.guideUnselectedCenterMarkerLight.red
+                fillWeightCenterGreen = JiggleTheme.guideUnselectedCenterMarkerLight.green
+                fillWeightCenterBlue = JiggleTheme.guideUnselectedCenterMarkerLight.blue
+            }
+        }
+        
+        
+        
+        let tanLineFillUnmodifiedRed: Float
+        let tanLineFillUnmodifiedGreen: Float
+        let tanLineFillUnmodifiedBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                tanLineFillUnmodifiedRed = JiggleTheme.outlineFrozenFillDark.red
+                tanLineFillUnmodifiedGreen = JiggleTheme.outlineFrozenFillDark.green
+                tanLineFillUnmodifiedBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                tanLineFillUnmodifiedRed = JiggleTheme.outlineFrozenFillLight.red
+                tanLineFillUnmodifiedGreen = JiggleTheme.outlineFrozenFillLight.green
+                tanLineFillUnmodifiedBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDisplayingAsSelected {
+                if isDarkModeEnabled {
+                    tanLineFillUnmodifiedRed = JiggleTheme.jiggleTanHandleLineFillSelectedUnmodifiedDark.red
+                    tanLineFillUnmodifiedGreen = JiggleTheme.jiggleTanHandleLineFillSelectedUnmodifiedDark.green
+                    tanLineFillUnmodifiedBlue = JiggleTheme.jiggleTanHandleLineFillSelectedUnmodifiedDark.blue
+                } else {
+                    tanLineFillUnmodifiedRed = JiggleTheme.jiggleTanHandleLineFillSelectedUnmodifiedLight.red
+                    tanLineFillUnmodifiedGreen = JiggleTheme.jiggleTanHandleLineFillSelectedUnmodifiedLight.green
+                    tanLineFillUnmodifiedBlue = JiggleTheme.jiggleTanHandleLineFillSelectedUnmodifiedLight.blue
+                }
+            } else {
+                if isDarkModeEnabled {
+                    tanLineFillUnmodifiedRed = JiggleTheme.jiggleTanHandleLineFillUnselectedUnmodifiedDark.red
+                    tanLineFillUnmodifiedGreen = JiggleTheme.jiggleTanHandleLineFillUnselectedUnmodifiedDark.green
+                    tanLineFillUnmodifiedBlue = JiggleTheme.jiggleTanHandleLineFillUnselectedUnmodifiedDark.blue
+                } else {
+                    tanLineFillUnmodifiedRed = JiggleTheme.jiggleTanHandleLineFillUnselectedUnmodifiedLight.red
+                    tanLineFillUnmodifiedGreen = JiggleTheme.jiggleTanHandleLineFillUnselectedUnmodifiedLight.green
+                    tanLineFillUnmodifiedBlue = JiggleTheme.jiggleTanHandleLineFillUnselectedUnmodifiedLight.blue
+                }
+            }
+        }
+        
+        let tanLineFillModifiedRed: Float
+        let tanLineFillModifiedGreen: Float
+        let tanLineFillModifiedBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                tanLineFillModifiedRed = JiggleTheme.outlineFrozenFillDark.red
+                tanLineFillModifiedGreen = JiggleTheme.outlineFrozenFillDark.green
+                tanLineFillModifiedBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                tanLineFillModifiedRed = JiggleTheme.outlineFrozenFillLight.red
+                tanLineFillModifiedGreen = JiggleTheme.outlineFrozenFillLight.green
+                tanLineFillModifiedBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDisplayingAsSelected {
+                if isDarkModeEnabled {
+                    tanLineFillModifiedRed = JiggleTheme.jiggleTanHandleLineFillSelectedModifiedDark.red
+                    tanLineFillModifiedGreen = JiggleTheme.jiggleTanHandleLineFillSelectedModifiedDark.green
+                    tanLineFillModifiedBlue = JiggleTheme.jiggleTanHandleLineFillSelectedModifiedDark.blue
+                } else {
+                    tanLineFillModifiedRed = JiggleTheme.jiggleTanHandleLineFillSelectedModifiedLight.red
+                    tanLineFillModifiedGreen = JiggleTheme.jiggleTanHandleLineFillSelectedModifiedLight.green
+                    tanLineFillModifiedBlue = JiggleTheme.jiggleTanHandleLineFillSelectedModifiedLight.blue
+                }
+            } else {
+                if isDarkModeEnabled {
+                    tanLineFillModifiedRed = JiggleTheme.jiggleTanHandleLineFillUnselectedModifiedDark.red
+                    tanLineFillModifiedGreen = JiggleTheme.jiggleTanHandleLineFillUnselectedModifiedDark.green
+                    tanLineFillModifiedBlue = JiggleTheme.jiggleTanHandleLineFillUnselectedModifiedDark.blue
+                } else {
+                    tanLineFillModifiedRed = JiggleTheme.jiggleTanHandleLineFillUnselectedModifiedLight.red
+                    tanLineFillModifiedGreen = JiggleTheme.jiggleTanHandleLineFillUnselectedModifiedLight.green
+                    tanLineFillModifiedBlue = JiggleTheme.jiggleTanHandleLineFillUnselectedModifiedLight.blue
+                }
+            }
+        }
+        
+        let tanLineFillActiveRed: Float
+        let tanLineFillActiveGreen: Float
+        let tanLineFillActiveBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                tanLineFillActiveRed = JiggleTheme.outlineFrozenFillDark.red
+                tanLineFillActiveGreen = JiggleTheme.outlineFrozenFillDark.green
+                tanLineFillActiveBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                tanLineFillActiveRed = JiggleTheme.outlineFrozenFillLight.red
+                tanLineFillActiveGreen = JiggleTheme.outlineFrozenFillLight.green
+                tanLineFillActiveBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDarkModeEnabled {
+                tanLineFillActiveRed = JiggleTheme.jiggleTanHandleLineFillSelectedActiveDark.red
+                tanLineFillActiveGreen = JiggleTheme.jiggleTanHandleLineFillSelectedActiveDark.green
+                tanLineFillActiveBlue = JiggleTheme.jiggleTanHandleLineFillSelectedActiveDark.blue
+            } else {
+                tanLineFillActiveRed = JiggleTheme.jiggleTanHandleLineFillSelectedActiveLight.red
+                tanLineFillActiveGreen = JiggleTheme.jiggleTanHandleLineFillSelectedActiveLight.green
+                tanLineFillActiveBlue = JiggleTheme.jiggleTanHandleLineFillSelectedActiveLight.blue
+            }
+        }
+        
+        let tanPointFillUnmodifiedRed: Float
+        let tanPointFillUnmodifiedGreen: Float
+        let tanPointFillUnmodifiedBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                tanPointFillUnmodifiedRed = JiggleTheme.outlineFrozenFillDark.red
+                tanPointFillUnmodifiedGreen = JiggleTheme.outlineFrozenFillDark.green
+                tanPointFillUnmodifiedBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                tanPointFillUnmodifiedRed = JiggleTheme.outlineFrozenFillLight.red
+                tanPointFillUnmodifiedGreen = JiggleTheme.outlineFrozenFillLight.green
+                tanPointFillUnmodifiedBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDisplayingAsSelected {
+                if isDarkModeEnabled {
+                    tanPointFillUnmodifiedRed = JiggleTheme.jiggleTanHandlePointFillSelectedUnmodifiedDark.red
+                    tanPointFillUnmodifiedGreen = JiggleTheme.jiggleTanHandlePointFillSelectedUnmodifiedDark.green
+                    tanPointFillUnmodifiedBlue = JiggleTheme.jiggleTanHandlePointFillSelectedUnmodifiedDark.blue
+                } else {
+                    tanPointFillUnmodifiedRed = JiggleTheme.jiggleTanHandlePointFillSelectedUnmodifiedLight.red
+                    tanPointFillUnmodifiedGreen = JiggleTheme.jiggleTanHandlePointFillSelectedUnmodifiedLight.green
+                    tanPointFillUnmodifiedBlue = JiggleTheme.jiggleTanHandlePointFillSelectedUnmodifiedLight.blue
+                }
+            } else {
+                if isDarkModeEnabled {
+                    tanPointFillUnmodifiedRed = JiggleTheme.jiggleTanHandlePointFillUnselectedUnmodifiedDark.red
+                    tanPointFillUnmodifiedGreen = JiggleTheme.jiggleTanHandlePointFillUnselectedUnmodifiedDark.green
+                    tanPointFillUnmodifiedBlue = JiggleTheme.jiggleTanHandlePointFillUnselectedUnmodifiedDark.blue
+                } else {
+                    tanPointFillUnmodifiedRed = JiggleTheme.jiggleTanHandlePointFillUnselectedUnmodifiedLight.red
+                    tanPointFillUnmodifiedGreen = JiggleTheme.jiggleTanHandlePointFillUnselectedUnmodifiedLight.green
+                    tanPointFillUnmodifiedBlue = JiggleTheme.jiggleTanHandlePointFillUnselectedUnmodifiedLight.blue
+                }
+            }
+        }
+        
+        let tanPointFillModifiedRed: Float
+        let tanPointFillModifiedGreen: Float
+        let tanPointFillModifiedBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                tanPointFillModifiedRed = JiggleTheme.outlineFrozenFillDark.red
+                tanPointFillModifiedGreen = JiggleTheme.outlineFrozenFillDark.green
+                tanPointFillModifiedBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                tanPointFillModifiedRed = JiggleTheme.outlineFrozenFillLight.red
+                tanPointFillModifiedGreen = JiggleTheme.outlineFrozenFillLight.green
+                tanPointFillModifiedBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDisplayingAsSelected {
+                if isDarkModeEnabled {
+                    tanPointFillModifiedRed = JiggleTheme.jiggleTanHandlePointFillSelectedModifiedDark.red
+                    tanPointFillModifiedGreen = JiggleTheme.jiggleTanHandlePointFillSelectedModifiedDark.green
+                    tanPointFillModifiedBlue = JiggleTheme.jiggleTanHandlePointFillSelectedModifiedDark.blue
+                } else {
+                    tanPointFillModifiedRed = JiggleTheme.jiggleTanHandlePointFillSelectedModifiedLight.red
+                    tanPointFillModifiedGreen = JiggleTheme.jiggleTanHandlePointFillSelectedModifiedLight.green
+                    tanPointFillModifiedBlue = JiggleTheme.jiggleTanHandlePointFillSelectedModifiedLight.blue
+                }
+            } else {
+                if isDarkModeEnabled {
+                    tanPointFillModifiedRed = JiggleTheme.jiggleTanHandlePointFillUnselectedModifiedDark.red
+                    tanPointFillModifiedGreen = JiggleTheme.jiggleTanHandlePointFillUnselectedModifiedDark.green
+                    tanPointFillModifiedBlue = JiggleTheme.jiggleTanHandlePointFillUnselectedModifiedDark.blue
+                } else {
+                    tanPointFillModifiedRed = JiggleTheme.jiggleTanHandlePointFillUnselectedModifiedLight.red
+                    tanPointFillModifiedGreen = JiggleTheme.jiggleTanHandlePointFillUnselectedModifiedLight.green
+                    tanPointFillModifiedBlue = JiggleTheme.jiggleTanHandlePointFillUnselectedModifiedLight.blue
+                }
+            }
+        }
+        
+        let tanPointFillActiveRed: Float
+        let tanPointFillActiveGreen: Float
+        let tanPointFillActiveBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                tanPointFillActiveRed = JiggleTheme.outlineFrozenFillDark.red
+                tanPointFillActiveGreen = JiggleTheme.outlineFrozenFillDark.green
+                tanPointFillActiveBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                tanPointFillActiveRed = JiggleTheme.outlineFrozenFillLight.red
+                tanPointFillActiveGreen = JiggleTheme.outlineFrozenFillLight.green
+                tanPointFillActiveBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDarkModeEnabled {
+                tanPointFillActiveRed = JiggleTheme.jiggleTanHandlePointFillSelectedActiveDark.red
+                tanPointFillActiveGreen = JiggleTheme.jiggleTanHandlePointFillSelectedActiveDark.green
+                tanPointFillActiveBlue = JiggleTheme.jiggleTanHandlePointFillSelectedActiveDark.blue
+            } else {
+                tanPointFillActiveRed = JiggleTheme.jiggleTanHandlePointFillSelectedActiveLight.red
+                tanPointFillActiveGreen = JiggleTheme.jiggleTanHandlePointFillSelectedActiveLight.green
+                tanPointFillActiveBlue = JiggleTheme.jiggleTanHandlePointFillSelectedActiveLight.blue
+            }
+        }
+        
+        
+        return JiggleRenderColorPack(strokeRed: regularStrokeRed,
+                                     strokeGreen: regularStrokeGreen,
+                                     strokeBlue: regularStrokeBlue,
+                                     
+                                     fillUnselectedRed: regularFillRed,
+                                     fillUnselectedGreen: regularFillGreen,
+                                     fillUnselectedBlue: regularFillBlue,
+                                     
+                                     fillSelectedRed: selectedFillRed,
+                                     fillSelectedGreen: selectedFillGreen,
+                                     fillSelectedBlue: selectedFillBlue,
+                                     
+                                     fillModifiedRed: fillModifiedRed,
+                                     fillModifiedGreen: fillModifiedGreen,
+                                     fillModifiedBlue: fillModifiedBlue,
+                                     
+                                     fillWeightCenterRed: fillWeightCenterRed,
+                                     fillWeightCenterGreen: fillWeightCenterGreen,
+                                     fillWeightCenterBlue: fillWeightCenterBlue,
+                                     
+                                     tanLineFillUnmodifiedRed: tanLineFillUnmodifiedRed,
+                                     tanLineFillUnmodifiedGreen: tanLineFillUnmodifiedGreen,
+                                     tanLineFillUnmodifiedBlue: tanLineFillUnmodifiedBlue,
+                                     
+                                     tanLineFillModifiedRed: tanLineFillModifiedRed,
+                                     tanLineFillModifiedGreen: tanLineFillModifiedGreen,
+                                     tanLineFillModifiedBlue: tanLineFillModifiedBlue,
+                                     
+                                     tanLineFillActiveRed: tanLineFillActiveRed,
+                                     tanLineFillActiveGreen: tanLineFillActiveGreen,
+                                     tanLineFillActiveBlue: tanLineFillActiveBlue,
+                                     
+                                     tanPointFillUnmodifiedRed: tanPointFillUnmodifiedRed,
+                                     tanPointFillUnmodifiedGreen: tanPointFillUnmodifiedGreen,
+                                     tanPointFillUnmodifiedBlue: tanPointFillUnmodifiedBlue,
+                                     
+                                     tanPointFillModifiedRed: tanPointFillModifiedRed,
+                                     tanPointFillModifiedGreen: tanPointFillModifiedGreen,
+                                     tanPointFillModifiedBlue: tanPointFillModifiedBlue,
+                                     
+                                     tanPointFillActiveRed: tanPointFillActiveRed,
+                                     tanPointFillActiveGreen: tanPointFillActiveGreen,
+                                     tanPointFillActiveBlue: tanPointFillActiveBlue,
+                                     
+                                     bloomRed: bloomRed,
+                                     bloomGreen: bloomGreen,
+                                     bloomBlue: bloomBlue)
+    }
+    
+    @MainActor func getGuideColorPack(jiggle: Jiggle,
+                                      isJiggleSelected: Bool,
+                                      isDarkModeEnabled: Bool,
+                                      guide: Guide,
+                                      guideIndex: Int,
+                                      isCreatorModeGuideCenters: Bool,
+                                      isCreatorModeAddGuidePoints: Bool,
+                                      isCreatorModeDeleteGuidePoints: Bool,
+                                      guidePointSelectionModality: PointSelectionModality) -> GuideRenderColorPack {
+        
+        let weightDepthIndex = jiggle.getWeightDepthIndex(guide: guide)
+        
+        var isGuideSelected = false
+        if isJiggleSelected {
+            if jiggle.selectedWeightCurveControlIndex == (guideIndex + 1) {
+                isGuideSelected = true
+            }
+        }
+        
+        
+        let regularFillRed: Float
+        let regularFillGreen: Float
+        let regularFillBlue: Float
+        let regularStrokeRed: Float
+        let regularStrokeGreen: Float
+        let regularStrokeBlue: Float
+        let selectedFillRed: Float
+        let selectedFillGreen: Float
+        let selectedFillBlue: Float
+        
+        var isDisplayingAsFrozen = false
+        var isDisplayingAsSelected = false
+        
+        if (jiggle.isFrozen == true) ||
+            (guide.isFrozen == true) ||
+            (isCreatorModeGuideCenters == true) ||
+            ((isCreatorModeAddGuidePoints == true) && (isGuideSelected == false)) {
+            
+            isDisplayingAsFrozen = true
+        } else {
+            if isGuideSelected {
+                isDisplayingAsSelected = true
+            }
+        }
+        
+        if isDisplayingAsFrozen {
+            
+            // The frozen case...
+            
+            if isDarkModeEnabled {
+                regularStrokeRed = JiggleTheme.outlineFrozenStrokeDark.red
+                regularStrokeGreen = JiggleTheme.outlineFrozenStrokeDark.green
+                regularStrokeBlue = JiggleTheme.outlineFrozenStrokeDark.blue
+                regularFillRed = JiggleTheme.outlineFrozenFillDark.red
+                regularFillGreen = JiggleTheme.outlineFrozenFillDark.green
+                regularFillBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                regularStrokeRed = JiggleTheme.outlineFrozenStrokeLight.red
+                regularStrokeGreen = JiggleTheme.outlineFrozenStrokeLight.green
+                regularStrokeBlue = JiggleTheme.outlineFrozenStrokeLight.blue
+                regularFillRed = JiggleTheme.outlineFrozenFillLight.red
+                regularFillGreen = JiggleTheme.outlineFrozenFillLight.green
+                regularFillBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+            
+            
+        } else {
+            
+            // The not frozen case...
+            
+            if isDarkModeEnabled {
+                regularStrokeRed = JiggleTheme.outlineUnselectedStrokeDark.red
+                regularStrokeGreen = JiggleTheme.outlineUnselectedStrokeDark.green
+                regularStrokeBlue = JiggleTheme.outlineUnselectedStrokeDark.blue
+            } else {
+                regularStrokeRed = JiggleTheme.outlineUnselectedStrokeLight.red
+                regularStrokeGreen = JiggleTheme.outlineUnselectedStrokeLight.green
+                regularStrokeBlue = JiggleTheme.outlineUnselectedStrokeLight.blue
+            }
+            
+            if guidePointSelectionModality == .tans {
+                if isDarkModeEnabled {
+                    regularFillRed = JiggleTheme.outlineFrozenFillDark.red
+                    regularFillGreen = JiggleTheme.outlineFrozenFillDark.green
+                    regularFillBlue = JiggleTheme.outlineFrozenFillDark.blue
+                } else {
+                    regularFillRed = JiggleTheme.outlineFrozenFillLight.red
+                    regularFillGreen = JiggleTheme.outlineFrozenFillLight.green
+                    regularFillBlue = JiggleTheme.outlineFrozenFillLight.blue
+                }
+            } else {
+                
+                
+                if isDisplayingAsSelected {
+                    if jiggle.guideCount == 5 {
+                        if weightDepthIndex == 4 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected5Dark5.red
+                                regularFillGreen = JiggleTheme.guideSelected5Dark5.green
+                                regularFillBlue = JiggleTheme.guideSelected5Dark5.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected5Light5.red
+                                regularFillGreen = JiggleTheme.guideSelected5Light5.green
+                                regularFillBlue = JiggleTheme.guideSelected5Light5.blue
+                            }
+                        } else if weightDepthIndex == 3 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected5Dark4.red
+                                regularFillGreen = JiggleTheme.guideSelected5Dark4.green
+                                regularFillBlue = JiggleTheme.guideSelected5Dark4.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected5Light4.red
+                                regularFillGreen = JiggleTheme.guideSelected5Light4.green
+                                regularFillBlue = JiggleTheme.guideSelected5Light4.blue
+                            }
+                        } else if weightDepthIndex == 2 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected5Dark3.red
+                                regularFillGreen = JiggleTheme.guideSelected5Dark3.green
+                                regularFillBlue = JiggleTheme.guideSelected5Dark3.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected5Light3.red
+                                regularFillGreen = JiggleTheme.guideSelected5Light3.green
+                                regularFillBlue = JiggleTheme.guideSelected5Light3.blue
+                            }
+                        } else if weightDepthIndex == 1 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected5Dark2.red
+                                regularFillGreen = JiggleTheme.guideSelected5Dark2.green
+                                regularFillBlue = JiggleTheme.guideSelected5Dark2.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected5Light2.red
+                                regularFillGreen = JiggleTheme.guideSelected5Light2.green
+                                regularFillBlue = JiggleTheme.guideSelected5Light2.blue
+                            }
+                        } else {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected5Dark1.red
+                                regularFillGreen = JiggleTheme.guideSelected5Dark1.green
+                                regularFillBlue = JiggleTheme.guideSelected5Dark1.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected5Light1.red
+                                regularFillGreen = JiggleTheme.guideSelected5Light1.green
+                                regularFillBlue = JiggleTheme.guideSelected5Light1.blue
+                            }
+                        }
+                    } else if jiggle.guideCount == 4 {
+                        if weightDepthIndex == 3 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected4Dark4.red
+                                regularFillGreen = JiggleTheme.guideSelected4Dark4.green
+                                regularFillBlue = JiggleTheme.guideSelected4Dark4.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected4Light4.red
+                                regularFillGreen = JiggleTheme.guideSelected4Light4.green
+                                regularFillBlue = JiggleTheme.guideSelected4Light4.blue
+                            }
+                        } else if weightDepthIndex == 2 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected4Dark3.red
+                                regularFillGreen = JiggleTheme.guideSelected4Dark3.green
+                                regularFillBlue = JiggleTheme.guideSelected4Dark3.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected4Light3.red
+                                regularFillGreen = JiggleTheme.guideSelected4Light3.green
+                                regularFillBlue = JiggleTheme.guideSelected4Light3.blue
+                            }
+                        } else if weightDepthIndex == 1 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected4Dark2.red
+                                regularFillGreen = JiggleTheme.guideSelected4Dark2.green
+                                regularFillBlue = JiggleTheme.guideSelected4Dark2.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected4Light2.red
+                                regularFillGreen = JiggleTheme.guideSelected4Light2.green
+                                regularFillBlue = JiggleTheme.guideSelected4Light2.blue
+                            }
+                        } else {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected4Dark1.red
+                                regularFillGreen = JiggleTheme.guideSelected4Dark1.green
+                                regularFillBlue = JiggleTheme.guideSelected4Dark1.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected4Light1.red
+                                regularFillGreen = JiggleTheme.guideSelected4Light1.green
+                                regularFillBlue = JiggleTheme.guideSelected4Light1.blue
+                            }
+                        }
+                    } else if jiggle.guideCount == 3 {
+                        if weightDepthIndex == 2 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected3Dark3.red
+                                regularFillGreen = JiggleTheme.guideSelected3Dark3.green
+                                regularFillBlue = JiggleTheme.guideSelected3Dark3.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected3Light3.red
+                                regularFillGreen = JiggleTheme.guideSelected3Light3.green
+                                regularFillBlue = JiggleTheme.guideSelected3Light3.blue
+                            }
+                        } else if weightDepthIndex == 1 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected3Dark2.red
+                                regularFillGreen = JiggleTheme.guideSelected3Dark2.green
+                                regularFillBlue = JiggleTheme.guideSelected3Dark2.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected3Light2.red
+                                regularFillGreen = JiggleTheme.guideSelected3Light2.green
+                                regularFillBlue = JiggleTheme.guideSelected3Light2.blue
+                            }
+                        } else {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected3Dark1.red
+                                regularFillGreen = JiggleTheme.guideSelected3Dark1.green
+                                regularFillBlue = JiggleTheme.guideSelected3Dark1.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected3Light1.red
+                                regularFillGreen = JiggleTheme.guideSelected3Light1.green
+                                regularFillBlue = JiggleTheme.guideSelected3Light1.blue
+                            }
+                        }
+                    } else if jiggle.guideCount == 2 {
+                        if weightDepthIndex == 1 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected2Dark2.red
+                                regularFillGreen = JiggleTheme.guideSelected2Dark2.green
+                                regularFillBlue = JiggleTheme.guideSelected2Dark2.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected2Light2.red
+                                regularFillGreen = JiggleTheme.guideSelected2Light2.green
+                                regularFillBlue = JiggleTheme.guideSelected2Light2.blue
+                            }
+                        } else {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideSelected2Dark1.red
+                                regularFillGreen = JiggleTheme.guideSelected2Dark1.green
+                                regularFillBlue = JiggleTheme.guideSelected2Dark1.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideSelected2Light1.red
+                                regularFillGreen = JiggleTheme.guideSelected2Light1.green
+                                regularFillBlue = JiggleTheme.guideSelected2Light1.blue
+                            }
+                        }
+                    } else {
+                        if isDarkModeEnabled {
+                            regularFillRed = JiggleTheme.guideSelected1Dark1.red
+                            regularFillGreen = JiggleTheme.guideSelected1Dark1.green
+                            regularFillBlue = JiggleTheme.guideSelected1Dark1.blue
+                        } else {
+                            regularFillRed = JiggleTheme.guideSelected1Light1.red
+                            regularFillGreen = JiggleTheme.guideSelected1Light1.green
+                            regularFillBlue = JiggleTheme.guideSelected1Light1.blue
+                        }
+                    }
+                } else {
+                    if jiggle.guideCount == 5 {
+                        if weightDepthIndex == 4 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected5Dark5.red
+                                regularFillGreen = JiggleTheme.guideUnselected5Dark5.green
+                                regularFillBlue = JiggleTheme.guideUnselected5Dark5.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected5Light5.red
+                                regularFillGreen = JiggleTheme.guideUnselected5Light5.green
+                                regularFillBlue = JiggleTheme.guideUnselected5Light5.blue
+                            }
+                        } else if weightDepthIndex == 3 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected5Dark4.red
+                                regularFillGreen = JiggleTheme.guideUnselected5Dark4.green
+                                regularFillBlue = JiggleTheme.guideUnselected5Dark4.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected5Light4.red
+                                regularFillGreen = JiggleTheme.guideUnselected5Light4.green
+                                regularFillBlue = JiggleTheme.guideUnselected5Light4.blue
+                            }
+                        } else if weightDepthIndex == 2 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected5Dark3.red
+                                regularFillGreen = JiggleTheme.guideUnselected5Dark3.green
+                                regularFillBlue = JiggleTheme.guideUnselected5Dark3.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected5Light3.red
+                                regularFillGreen = JiggleTheme.guideUnselected5Light3.green
+                                regularFillBlue = JiggleTheme.guideUnselected5Light3.blue
+                            }
+                        } else if weightDepthIndex == 1 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected5Dark2.red
+                                regularFillGreen = JiggleTheme.guideUnselected5Dark2.green
+                                regularFillBlue = JiggleTheme.guideUnselected5Dark2.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected5Light2.red
+                                regularFillGreen = JiggleTheme.guideUnselected5Light2.green
+                                regularFillBlue = JiggleTheme.guideUnselected5Light2.blue
+                            }
+                        } else {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected5Dark1.red
+                                regularFillGreen = JiggleTheme.guideUnselected5Dark1.green
+                                regularFillBlue = JiggleTheme.guideUnselected5Dark1.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected5Light1.red
+                                regularFillGreen = JiggleTheme.guideUnselected5Light1.green
+                                regularFillBlue = JiggleTheme.guideUnselected5Light1.blue
+                            }
+                        }
+                    } else if jiggle.guideCount == 4 {
+                        if weightDepthIndex == 3 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected4Dark4.red
+                                regularFillGreen = JiggleTheme.guideUnselected4Dark4.green
+                                regularFillBlue = JiggleTheme.guideUnselected4Dark4.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected4Light4.red
+                                regularFillGreen = JiggleTheme.guideUnselected4Light4.green
+                                regularFillBlue = JiggleTheme.guideUnselected4Light4.blue
+                            }
+                        } else if weightDepthIndex == 2 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected4Dark3.red
+                                regularFillGreen = JiggleTheme.guideUnselected4Dark3.green
+                                regularFillBlue = JiggleTheme.guideUnselected4Dark3.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected4Light3.red
+                                regularFillGreen = JiggleTheme.guideUnselected4Light3.green
+                                regularFillBlue = JiggleTheme.guideUnselected4Light3.blue
+                            }
+                        } else if weightDepthIndex == 1 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected4Dark2.red
+                                regularFillGreen = JiggleTheme.guideUnselected4Dark2.green
+                                regularFillBlue = JiggleTheme.guideUnselected4Dark2.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected4Light2.red
+                                regularFillGreen = JiggleTheme.guideUnselected4Light2.green
+                                regularFillBlue = JiggleTheme.guideUnselected4Light2.blue
+                            }
+                        } else {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected4Dark1.red
+                                regularFillGreen = JiggleTheme.guideUnselected4Dark1.green
+                                regularFillBlue = JiggleTheme.guideUnselected4Dark1.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected4Light1.red
+                                regularFillGreen = JiggleTheme.guideUnselected4Light1.green
+                                regularFillBlue = JiggleTheme.guideUnselected4Light1.blue
+                            }
+                        }
+                    } else if jiggle.guideCount == 3 {
+                        if weightDepthIndex == 2 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected3Dark3.red
+                                regularFillGreen = JiggleTheme.guideUnselected3Dark3.green
+                                regularFillBlue = JiggleTheme.guideUnselected3Dark3.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected3Light3.red
+                                regularFillGreen = JiggleTheme.guideUnselected3Light3.green
+                                regularFillBlue = JiggleTheme.guideUnselected3Light3.blue
+                            }
+                        } else if weightDepthIndex == 1 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected3Dark2.red
+                                regularFillGreen = JiggleTheme.guideUnselected3Dark2.green
+                                regularFillBlue = JiggleTheme.guideUnselected3Dark2.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected3Light2.red
+                                regularFillGreen = JiggleTheme.guideUnselected3Light2.green
+                                regularFillBlue = JiggleTheme.guideUnselected3Light2.blue
+                            }
+                        } else {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected3Dark1.red
+                                regularFillGreen = JiggleTheme.guideUnselected3Dark1.green
+                                regularFillBlue = JiggleTheme.guideUnselected3Dark1.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected3Light1.red
+                                regularFillGreen = JiggleTheme.guideUnselected3Light1.green
+                                regularFillBlue = JiggleTheme.guideUnselected3Light1.blue
+                            }
+                        }
+                    } else if jiggle.guideCount == 2 {
+                        if weightDepthIndex == 1 {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected2Dark2.red
+                                regularFillGreen = JiggleTheme.guideUnselected2Dark2.green
+                                regularFillBlue = JiggleTheme.guideUnselected2Dark2.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected2Light2.red
+                                regularFillGreen = JiggleTheme.guideUnselected2Light2.green
+                                regularFillBlue = JiggleTheme.guideUnselected2Light2.blue
+                            }
+                        } else {
+                            if isDarkModeEnabled {
+                                regularFillRed = JiggleTheme.guideUnselected2Dark1.red
+                                regularFillGreen = JiggleTheme.guideUnselected2Dark1.green
+                                regularFillBlue = JiggleTheme.guideUnselected2Dark1.blue
+                            } else {
+                                regularFillRed = JiggleTheme.guideUnselected2Light1.red
+                                regularFillGreen = JiggleTheme.guideUnselected2Light1.green
+                                regularFillBlue = JiggleTheme.guideUnselected2Light1.blue
+                            }
+                        }
+                    } else {
+                        if isDarkModeEnabled {
+                            regularFillRed = JiggleTheme.guideUnselected1Dark1.red
+                            regularFillGreen = JiggleTheme.guideUnselected1Dark1.green
+                            regularFillBlue = JiggleTheme.guideUnselected1Dark1.blue
+                        } else {
+                            regularFillRed = JiggleTheme.guideUnselected1Light1.red
+                            regularFillGreen = JiggleTheme.guideUnselected1Light1.green
+                            regularFillBlue = JiggleTheme.guideUnselected1Light1.blue
+                        }
+                    }
+                }
+            }
+        }
+        
+        if guidePointSelectionModality == .tans {
+            if isDarkModeEnabled {
+                selectedFillRed = JiggleTheme.outlineFrozenFillDark.red
+                selectedFillGreen = JiggleTheme.outlineFrozenFillDark.green
+                selectedFillBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                selectedFillRed = JiggleTheme.outlineFrozenFillLight.red
+                selectedFillGreen = JiggleTheme.outlineFrozenFillLight.green
+                selectedFillBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDarkModeEnabled {
+                selectedFillRed = JiggleTheme.pointWeightSelectedDark.red
+                selectedFillGreen = JiggleTheme.pointWeightSelectedDark.green
+                selectedFillBlue = JiggleTheme.pointWeightSelectedDark.blue
+            } else {
+                selectedFillRed = JiggleTheme.pointWeightSelectedLight.red
+                selectedFillGreen = JiggleTheme.pointWeightSelectedLight.green
+                selectedFillBlue = JiggleTheme.pointWeightSelectedLight.blue
+            }
+        }
+        
+        // Just the modified fill...
+        let fillModifiedRed: Float
+        let fillModifiedGreen: Float
+        let fillModifiedBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                fillModifiedRed = JiggleTheme.outlineFrozenFillDark.red
+                fillModifiedGreen = JiggleTheme.outlineFrozenFillDark.green
+                fillModifiedBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                fillModifiedRed = JiggleTheme.outlineFrozenFillLight.red
+                fillModifiedGreen = JiggleTheme.outlineFrozenFillLight.green
+                fillModifiedBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDisplayingAsSelected {
+                if isDarkModeEnabled {
+                    fillModifiedRed = JiggleTheme.outlineSelectedModifiedFillDark.red
+                    fillModifiedGreen = JiggleTheme.outlineSelectedModifiedFillDark.green
+                    fillModifiedBlue = JiggleTheme.outlineSelectedModifiedFillDark.blue
+                } else {
+                    fillModifiedRed = JiggleTheme.outlineSelectedModifiedFillLight.red
+                    fillModifiedGreen = JiggleTheme.outlineSelectedModifiedFillLight.green
+                    fillModifiedBlue = JiggleTheme.outlineSelectedModifiedFillLight.blue
+                }
+            } else {
+                if isDarkModeEnabled {
+                    fillModifiedRed = JiggleTheme.outlineUnselectedModifiedFillDark.red
+                    fillModifiedGreen = JiggleTheme.outlineUnselectedModifiedFillDark.green
+                    fillModifiedBlue = JiggleTheme.outlineUnselectedModifiedFillDark.blue
+                } else {
+                    fillModifiedRed = JiggleTheme.outlineUnselectedModifiedFillLight.red
+                    fillModifiedGreen = JiggleTheme.outlineUnselectedModifiedFillLight.green
+                    fillModifiedBlue = JiggleTheme.outlineUnselectedModifiedFillLight.blue
+                }
+            }
+        }
+        
+        let tanLineFillUnmodifiedRed: Float
+        let tanLineFillUnmodifiedGreen: Float
+        let tanLineFillUnmodifiedBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                tanLineFillUnmodifiedRed = JiggleTheme.outlineFrozenFillDark.red
+                tanLineFillUnmodifiedGreen = JiggleTheme.outlineFrozenFillDark.green
+                tanLineFillUnmodifiedBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                tanLineFillUnmodifiedRed = JiggleTheme.outlineFrozenFillLight.red
+                tanLineFillUnmodifiedGreen = JiggleTheme.outlineFrozenFillLight.green
+                tanLineFillUnmodifiedBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDisplayingAsSelected {
+                if isDarkModeEnabled {
+                    tanLineFillUnmodifiedRed = JiggleTheme.jiggleTanHandleLineFillSelectedUnmodifiedDark.red
+                    tanLineFillUnmodifiedGreen = JiggleTheme.jiggleTanHandleLineFillSelectedUnmodifiedDark.green
+                    tanLineFillUnmodifiedBlue = JiggleTheme.jiggleTanHandleLineFillSelectedUnmodifiedDark.blue
+                } else {
+                    tanLineFillUnmodifiedRed = JiggleTheme.jiggleTanHandleLineFillSelectedUnmodifiedLight.red
+                    tanLineFillUnmodifiedGreen = JiggleTheme.jiggleTanHandleLineFillSelectedUnmodifiedLight.green
+                    tanLineFillUnmodifiedBlue = JiggleTheme.jiggleTanHandleLineFillSelectedUnmodifiedLight.blue
+                }
+            } else {
+                if isDarkModeEnabled {
+                    tanLineFillUnmodifiedRed = JiggleTheme.jiggleTanHandleLineFillUnselectedUnmodifiedDark.red
+                    tanLineFillUnmodifiedGreen = JiggleTheme.jiggleTanHandleLineFillUnselectedUnmodifiedDark.green
+                    tanLineFillUnmodifiedBlue = JiggleTheme.jiggleTanHandleLineFillUnselectedUnmodifiedDark.blue
+                } else {
+                    tanLineFillUnmodifiedRed = JiggleTheme.jiggleTanHandleLineFillUnselectedUnmodifiedLight.red
+                    tanLineFillUnmodifiedGreen = JiggleTheme.jiggleTanHandleLineFillUnselectedUnmodifiedLight.green
+                    tanLineFillUnmodifiedBlue = JiggleTheme.jiggleTanHandleLineFillUnselectedUnmodifiedLight.blue
+                }
+            }
+        }
+        
+        let tanLineFillModifiedRed: Float
+        let tanLineFillModifiedGreen: Float
+        let tanLineFillModifiedBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                tanLineFillModifiedRed = JiggleTheme.outlineFrozenFillDark.red
+                tanLineFillModifiedGreen = JiggleTheme.outlineFrozenFillDark.green
+                tanLineFillModifiedBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                tanLineFillModifiedRed = JiggleTheme.outlineFrozenFillLight.red
+                tanLineFillModifiedGreen = JiggleTheme.outlineFrozenFillLight.green
+                tanLineFillModifiedBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDisplayingAsSelected {
+                if isDarkModeEnabled {
+                    tanLineFillModifiedRed = JiggleTheme.jiggleTanHandleLineFillSelectedModifiedDark.red
+                    tanLineFillModifiedGreen = JiggleTheme.jiggleTanHandleLineFillSelectedModifiedDark.green
+                    tanLineFillModifiedBlue = JiggleTheme.jiggleTanHandleLineFillSelectedModifiedDark.blue
+                } else {
+                    tanLineFillModifiedRed = JiggleTheme.jiggleTanHandleLineFillSelectedModifiedLight.red
+                    tanLineFillModifiedGreen = JiggleTheme.jiggleTanHandleLineFillSelectedModifiedLight.green
+                    tanLineFillModifiedBlue = JiggleTheme.jiggleTanHandleLineFillSelectedModifiedLight.blue
+                }
+            } else {
+                if isDarkModeEnabled {
+                    tanLineFillModifiedRed = JiggleTheme.jiggleTanHandleLineFillUnselectedModifiedDark.red
+                    tanLineFillModifiedGreen = JiggleTheme.jiggleTanHandleLineFillUnselectedModifiedDark.green
+                    tanLineFillModifiedBlue = JiggleTheme.jiggleTanHandleLineFillUnselectedModifiedDark.blue
+                } else {
+                    tanLineFillModifiedRed = JiggleTheme.jiggleTanHandleLineFillUnselectedModifiedLight.red
+                    tanLineFillModifiedGreen = JiggleTheme.jiggleTanHandleLineFillUnselectedModifiedLight.green
+                    tanLineFillModifiedBlue = JiggleTheme.jiggleTanHandleLineFillUnselectedModifiedLight.blue
+                }
+            }
+        }
+        
+        let tanLineFillActiveRed: Float
+        let tanLineFillActiveGreen: Float
+        let tanLineFillActiveBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                tanLineFillActiveRed = JiggleTheme.outlineFrozenFillDark.red
+                tanLineFillActiveGreen = JiggleTheme.outlineFrozenFillDark.green
+                tanLineFillActiveBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                tanLineFillActiveRed = JiggleTheme.outlineFrozenFillLight.red
+                tanLineFillActiveGreen = JiggleTheme.outlineFrozenFillLight.green
+                tanLineFillActiveBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDarkModeEnabled {
+                tanLineFillActiveRed = JiggleTheme.jiggleTanHandleLineFillSelectedActiveDark.red
+                tanLineFillActiveGreen = JiggleTheme.jiggleTanHandleLineFillSelectedActiveDark.green
+                tanLineFillActiveBlue = JiggleTheme.jiggleTanHandleLineFillSelectedActiveDark.blue
+            } else {
+                tanLineFillActiveRed = JiggleTheme.jiggleTanHandleLineFillSelectedActiveLight.red
+                tanLineFillActiveGreen = JiggleTheme.jiggleTanHandleLineFillSelectedActiveLight.green
+                tanLineFillActiveBlue = JiggleTheme.jiggleTanHandleLineFillSelectedActiveLight.blue
+            }
+        }
+        
+        let tanPointFillUnmodifiedRed: Float
+        let tanPointFillUnmodifiedGreen: Float
+        let tanPointFillUnmodifiedBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                tanPointFillUnmodifiedRed = JiggleTheme.outlineFrozenFillDark.red
+                tanPointFillUnmodifiedGreen = JiggleTheme.outlineFrozenFillDark.green
+                tanPointFillUnmodifiedBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                tanPointFillUnmodifiedRed = JiggleTheme.outlineFrozenFillLight.red
+                tanPointFillUnmodifiedGreen = JiggleTheme.outlineFrozenFillLight.green
+                tanPointFillUnmodifiedBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDisplayingAsSelected {
+                if isDarkModeEnabled {
+                    tanPointFillUnmodifiedRed = JiggleTheme.jiggleTanHandlePointFillSelectedUnmodifiedDark.red
+                    tanPointFillUnmodifiedGreen = JiggleTheme.jiggleTanHandlePointFillSelectedUnmodifiedDark.green
+                    tanPointFillUnmodifiedBlue = JiggleTheme.jiggleTanHandlePointFillSelectedUnmodifiedDark.blue
+                } else {
+                    tanPointFillUnmodifiedRed = JiggleTheme.jiggleTanHandlePointFillSelectedUnmodifiedLight.red
+                    tanPointFillUnmodifiedGreen = JiggleTheme.jiggleTanHandlePointFillSelectedUnmodifiedLight.green
+                    tanPointFillUnmodifiedBlue = JiggleTheme.jiggleTanHandlePointFillSelectedUnmodifiedLight.blue
+                }
+            } else {
+                if isDarkModeEnabled {
+                    tanPointFillUnmodifiedRed = JiggleTheme.jiggleTanHandlePointFillUnselectedUnmodifiedDark.red
+                    tanPointFillUnmodifiedGreen = JiggleTheme.jiggleTanHandlePointFillUnselectedUnmodifiedDark.green
+                    tanPointFillUnmodifiedBlue = JiggleTheme.jiggleTanHandlePointFillUnselectedUnmodifiedDark.blue
+                } else {
+                    tanPointFillUnmodifiedRed = JiggleTheme.jiggleTanHandlePointFillUnselectedUnmodifiedLight.red
+                    tanPointFillUnmodifiedGreen = JiggleTheme.jiggleTanHandlePointFillUnselectedUnmodifiedLight.green
+                    tanPointFillUnmodifiedBlue = JiggleTheme.jiggleTanHandlePointFillUnselectedUnmodifiedLight.blue
+                }
+            }
+        }
+        
+        let tanPointFillModifiedRed: Float
+        let tanPointFillModifiedGreen: Float
+        let tanPointFillModifiedBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                tanPointFillModifiedRed = JiggleTheme.outlineFrozenFillDark.red
+                tanPointFillModifiedGreen = JiggleTheme.outlineFrozenFillDark.green
+                tanPointFillModifiedBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                tanPointFillModifiedRed = JiggleTheme.outlineFrozenFillLight.red
+                tanPointFillModifiedGreen = JiggleTheme.outlineFrozenFillLight.green
+                tanPointFillModifiedBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDisplayingAsSelected {
+                if isDarkModeEnabled {
+                    tanPointFillModifiedRed = JiggleTheme.jiggleTanHandlePointFillSelectedModifiedDark.red
+                    tanPointFillModifiedGreen = JiggleTheme.jiggleTanHandlePointFillSelectedModifiedDark.green
+                    tanPointFillModifiedBlue = JiggleTheme.jiggleTanHandlePointFillSelectedModifiedDark.blue
+                } else {
+                    tanPointFillModifiedRed = JiggleTheme.jiggleTanHandlePointFillSelectedModifiedLight.red
+                    tanPointFillModifiedGreen = JiggleTheme.jiggleTanHandlePointFillSelectedModifiedLight.green
+                    tanPointFillModifiedBlue = JiggleTheme.jiggleTanHandlePointFillSelectedModifiedLight.blue
+                }
+            } else {
+                if isDarkModeEnabled {
+                    tanPointFillModifiedRed = JiggleTheme.jiggleTanHandlePointFillUnselectedModifiedDark.red
+                    tanPointFillModifiedGreen = JiggleTheme.jiggleTanHandlePointFillUnselectedModifiedDark.green
+                    tanPointFillModifiedBlue = JiggleTheme.jiggleTanHandlePointFillUnselectedModifiedDark.blue
+                } else {
+                    tanPointFillModifiedRed = JiggleTheme.jiggleTanHandlePointFillUnselectedModifiedLight.red
+                    tanPointFillModifiedGreen = JiggleTheme.jiggleTanHandlePointFillUnselectedModifiedLight.green
+                    tanPointFillModifiedBlue = JiggleTheme.jiggleTanHandlePointFillUnselectedModifiedLight.blue
+                }
+            }
+        }
+        
+        let tanPointFillActiveRed: Float
+        let tanPointFillActiveGreen: Float
+        let tanPointFillActiveBlue: Float
+        if isDisplayingAsFrozen {
+            if isDarkModeEnabled {
+                tanPointFillActiveRed = JiggleTheme.outlineFrozenFillDark.red
+                tanPointFillActiveGreen = JiggleTheme.outlineFrozenFillDark.green
+                tanPointFillActiveBlue = JiggleTheme.outlineFrozenFillDark.blue
+            } else {
+                tanPointFillActiveRed = JiggleTheme.outlineFrozenFillLight.red
+                tanPointFillActiveGreen = JiggleTheme.outlineFrozenFillLight.green
+                tanPointFillActiveBlue = JiggleTheme.outlineFrozenFillLight.blue
+            }
+        } else {
+            if isDarkModeEnabled {
+                tanPointFillActiveRed = JiggleTheme.jiggleTanHandlePointFillSelectedActiveDark.red
+                tanPointFillActiveGreen = JiggleTheme.jiggleTanHandlePointFillSelectedActiveDark.green
+                tanPointFillActiveBlue = JiggleTheme.jiggleTanHandlePointFillSelectedActiveDark.blue
+            } else {
+                tanPointFillActiveRed = JiggleTheme.jiggleTanHandlePointFillSelectedActiveLight.red
+                tanPointFillActiveGreen = JiggleTheme.jiggleTanHandlePointFillSelectedActiveLight.green
+                tanPointFillActiveBlue = JiggleTheme.jiggleTanHandlePointFillSelectedActiveLight.blue
+            }
+        }
+        
+        
+        // Just the bloom...
+        let bloomRed: Float
+        let bloomGreen: Float
+        let bloomBlue: Float
+        if isDarkModeEnabled {
+            bloomRed = JiggleTheme.bloomGlowDark.red
+            bloomGreen = JiggleTheme.bloomGlowDark.green
+            bloomBlue = JiggleTheme.bloomGlowDark.blue
+        } else {
+            bloomRed = JiggleTheme.bloomGlowLight.red
+            bloomGreen = JiggleTheme.bloomGlowLight.green
+            bloomBlue = JiggleTheme.bloomGlowLight.blue
+        }
+        
+        return GuideRenderColorPack(strokeRed: regularStrokeRed,
+                                    strokeGreen: regularStrokeGreen,
+                                    strokeBlue: regularStrokeBlue,
+                                    
+                                    fillUnselectedRed: regularFillRed,
+                                    fillUnselectedGreen: regularFillGreen,
+                                    fillUnselectedBlue: regularFillBlue,
+                                    
+                                    fillSelectedRed: selectedFillRed,
+                                    fillSelectedGreen: selectedFillGreen,
+                                    fillSelectedBlue: selectedFillBlue,
+                                    
+                                    fillModifiedRed: fillModifiedRed,
+                                    fillModifiedGreen: fillModifiedGreen,
+                                    fillModifiedBlue: fillModifiedBlue,
+                                
+                                    tanLineFillUnmodifiedRed: tanLineFillUnmodifiedRed,
+                                    tanLineFillUnmodifiedGreen: tanLineFillUnmodifiedGreen,
+                                    tanLineFillUnmodifiedBlue: tanLineFillUnmodifiedBlue,
+                                    
+                                    tanLineFillModifiedRed: tanLineFillModifiedRed,
+                                    tanLineFillModifiedGreen: tanLineFillModifiedGreen,
+                                    tanLineFillModifiedBlue: tanLineFillModifiedBlue,
+                                    
+                                    tanLineFillActiveRed: tanLineFillActiveRed,
+                                    tanLineFillActiveGreen: tanLineFillActiveGreen,
+                                    tanLineFillActiveBlue: tanLineFillActiveBlue,
+                                    
+                                    tanPointFillUnmodifiedRed: tanPointFillUnmodifiedRed,
+                                    tanPointFillUnmodifiedGreen: tanPointFillUnmodifiedGreen,
+                                    tanPointFillUnmodifiedBlue: tanPointFillUnmodifiedBlue,
+                                    
+                                    tanPointFillModifiedRed: tanPointFillModifiedRed,
+                                    tanPointFillModifiedGreen: tanPointFillModifiedGreen,
+                                    tanPointFillModifiedBlue: tanPointFillModifiedBlue,
+                                    
+                                    tanPointFillActiveRed: tanPointFillActiveRed,
+                                    tanPointFillActiveGreen: tanPointFillActiveGreen,
+                                    tanPointFillActiveBlue: tanPointFillActiveBlue,
+                                    
+                                    bloomRed: bloomRed,
+                                    bloomGreen: bloomGreen,
+                                    bloomBlue: bloomBlue)
+    }
+    
+    func renderGuideBorderRingsBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingGuideBorderRingBloom {
+                    if !jiggle.isFrozen {
+                        if let selectedGuide = jiggle.getSelectedGuide() {
+                            if selectedGuide.isFrozen == false {
+                                let scale = getAdjustScale()
+                                selectedGuide.solidLineBloomBuffer.render(renderEncoder: renderEncoder,
+                                                                          pipelineState: .shapeNodeIndexed3DNoBlending,
+                                                                          scale: scale)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func renderGuideBorderRingsStroke(renderEncoder: MTLRenderCommandEncoder,
+                                      isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuideBorderRings {
+                let scale = getAdjustScale()
+                if isPrecisePass {
+                    for guideIndex in 0..<jiggle.guideCount {
+                        let guide = jiggle.guides[guideIndex]
+                        guide.solidLineBufferStroke_Precise.render(renderEncoder: renderEncoder,
+                                                                   pipelineState: .shapeNodeIndexed2DNoBlending,
+                                                                   scale: scale)
+                    }
+                } else {
+                    for guideIndex in 0..<jiggle.guideCount {
+                        let guide = jiggle.guides[guideIndex]
+                        guide.solidLineBufferStroke.render(renderEncoder: renderEncoder,
+                                                           pipelineState: .shapeNodeIndexed2DNoBlending,
+                                                           scale: scale)
+                    }
+                }
+                
+            }
+        }
+    }
+    
+    func renderGuideBorderRingFill(renderEncoder: MTLRenderCommandEncoder,
+                                   isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuideBorderRings {
+                let scale = getAdjustScale()
+                if isPrecisePass {
+                    for guideIndex in 0..<jiggle.guideCount {
+                        let guide = jiggle.guides[guideIndex]
+                        guide.solidLineBuffer_Precise.render(renderEncoder: renderEncoder,
+                                                             pipelineState: .shapeNodeIndexed2DNoBlending,
+                                                             scale: scale)
+                    }
+                } else {
+                    for guideIndex in 0..<jiggle.guideCount {
+                        let guide = jiggle.guides[guideIndex]
+                        guide.solidLineBuffer.render(renderEncoder: renderEncoder,
+                                                     pipelineState: .shapeNodeIndexed2DNoBlending,
+                                                     scale: scale)
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    @MainActor
+    @inline(__always)
+    func prepareGuidePoints(jiggle: Jiggle,
+                            pointScale: Float,
+                            projectionMatrix: matrix_float4x4,
+                            modelViewMatrix: matrix_float4x4,
+                            baseAdjustRotation: Float,
+                            isPrecisePass: Bool,
+                            isBloomEnabled: Bool,
+                            isCreatorModeGuideCenters: Bool,
+                            isCreatorModeAddGuidePoints: Bool,
+                            isCreatorModeDeleteGuidePoints: Bool,
+                            guidePointSelectionModality: PointSelectionModality,
+                            jiggleColorPack: JiggleRenderColorPack,
+                            guidePointUnselectedStrokeBuffer: IndexedSpriteBuffer2D,
+                            guidePointUnselectedFillBuffer: IndexedSpriteBuffer2DColored,
+                            guidePointSelectedStrokeBuffer: IndexedSpriteBuffer2D,
+                            guidePointSelectedFillBuffer: IndexedSpriteBuffer2DColored) {
+        
+        guidePointUnselectedStrokeBuffer.projectionMatrix = projectionMatrix
+        guidePointUnselectedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        guidePointUnselectedStrokeBuffer.red = jiggleColorPack.strokeRed
+        guidePointUnselectedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        guidePointUnselectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        guidePointUnselectedFillBuffer.projectionMatrix = projectionMatrix
+        guidePointUnselectedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        guidePointSelectedStrokeBuffer.projectionMatrix = projectionMatrix
+        guidePointSelectedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        guidePointSelectedStrokeBuffer.red = jiggleColorPack.strokeRed
+        guidePointSelectedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        guidePointSelectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        guidePointSelectedFillBuffer.projectionMatrix = projectionMatrix
+        guidePointSelectedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        if isBloomEnabled && jiggle.isShowingGuidePointsBloom && !isPrecisePass {
+            
+            guidePointUnselectedStrokeBufferBloom.projectionMatrix = projectionMatrix
+            guidePointUnselectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
+            guidePointUnselectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
+            guidePointUnselectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
+            guidePointUnselectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
+            
+            guidePointSelectedStrokeBufferBloom.projectionMatrix = projectionMatrix
+            guidePointSelectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
+            guidePointSelectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
+            guidePointSelectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
+            guidePointSelectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
+        }
+        
+        for guideIndex in 0..<jiggle.guideCount {
+            let guide = jiggle.guides[guideIndex]
+            
+            let guideColorPack = getGuideColorPack(jiggle: jiggle,
+                                                   isJiggleSelected: isSelected,
+                                                   isDarkModeEnabled: isDarkModeEnabled,
+                                                   guide: guide,
+                                                   guideIndex: guideIndex,
+                                                   isCreatorModeGuideCenters: isCreatorModeGuideCenters,
+                                                   isCreatorModeAddGuidePoints: isCreatorModeAddGuidePoints,
+                                                   isCreatorModeDeleteGuidePoints: isCreatorModeDeleteGuidePoints,
+                                                   guidePointSelectionModality: guidePointSelectionModality)
+            
+            for guideControlPointIndex in 0..<guide.guideControlPointCount {
+                let guideControlPoint = guide.guideControlPoints[guideControlPointIndex]
+                
+                let renderCenterPoint = Math.Point(x: guideControlPoint.renderX,
+                                                   y: guideControlPoint.renderY)
+                
+                // If frozen, no bloom, no selection.
+                if guide.renderFrozen {
+                    guidePointUnselectedStrokeBuffer.add(translation: renderCenterPoint,
+                                                         scale: pointScale,
+                                                         rotation: 0.0)
+                    guidePointUnselectedFillBuffer.add(translation: renderCenterPoint,
+                                                       scale: pointScale,
+                                                       rotation: 0.0,
+                                                       red: guideColorPack.fillUnselectedRed,
+                                                       green: guideColorPack.fillUnselectedGreen,
+                                                       blue: guideColorPack.fillUnselectedBlue,
+                                                       alpha: 1.0)
+                } else if guide.renderSelected && guideControlPoint.renderSelected && isSelected {
+                    guidePointSelectedStrokeBuffer.add(translation: renderCenterPoint,
+                                                       scale: pointScale,
+                                                       rotation: 0.0)
+                    guidePointSelectedFillBuffer.add(translation: renderCenterPoint,
+                                                     scale: pointScale,
+                                                     rotation: baseAdjustRotation,
+                                                     red: guideColorPack.fillSelectedRed,
+                                                     green: guideColorPack.fillSelectedGreen,
+                                                     blue: guideColorPack.fillSelectedBlue,
+                                                     alpha: 1.0)
+                    if isBloomEnabled && jiggle.isShowingGuidePointsBloom && !isPrecisePass {
+                        guidePointSelectedStrokeBufferBloom.add(translation: renderCenterPoint,
+                                                                scale: pointScale,
+                                                                rotation: 0.0)
+                    }
+                } else {
+                    guidePointUnselectedStrokeBuffer.add(translation: renderCenterPoint,
+                                                         scale: pointScale,
+                                                         rotation: 0.0)
+                    guidePointUnselectedFillBuffer.add(translation: renderCenterPoint,
+                                                       scale: pointScale,
+                                                       rotation: 0.0,
+                                                       red: guideColorPack.fillUnselectedRed,
+                                                       green: guideColorPack.fillUnselectedGreen,
+                                                       blue: guideColorPack.fillUnselectedBlue,
+                                                       alpha: 1.0)
+                    
+                    if guide.renderSelected && isSelected && isBloomEnabled && !isPrecisePass {
+                        if jiggle.isShowingGuidePointsBloom {
+                            guidePointUnselectedStrokeBufferBloom.add(translation: renderCenterPoint,
+                                                                      scale: pointScale,
+                                                                      rotation: 0.0)
+                        }
+                    }
+                }
+            } // End of guide points loop A
+        }
+    }
+    
+    func renderGuidePointUnselectedStroke(renderEncoder: MTLRenderCommandEncoder,
+                                          isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuidePoints {
+                if isPrecisePass {
+                    guidePointUnselectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                   pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    guidePointUnselectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
+                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderGuidePointUnselectedFill(renderEncoder: MTLRenderCommandEncoder,
+                                        isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuidePoints {
+                if isPrecisePass {
+                    guidePointUnselectedFillBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                 pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    guidePointUnselectedFillBufferStandard.render(renderEncoder: renderEncoder,
+                                                                  pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderGuidePointSelectedStroke(renderEncoder: MTLRenderCommandEncoder,
+                                        isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuidePoints {
+                if isPrecisePass {
+                    guidePointSelectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    guidePointSelectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
+                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderGuidePointSelectedFill(renderEncoder: MTLRenderCommandEncoder,
+                                      isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuidePoints {
+                if isPrecisePass {
+                    guidePointSelectedFillBufferPrecise.render(renderEncoder: renderEncoder,
+                                                               pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    guidePointSelectedFillBufferStandard.render(renderEncoder: renderEncoder,
+                                                                pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderGuidePointUnselectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingGuidePointsBloom {
+                    guidePointUnselectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
+                                                                 pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                }
+            }
+        }
+    }
+    
+    func renderGuidePointSelectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingGuidePointsBloom {
+                    if !jiggle.isFrozen {
+                        guidePointSelectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
+                                                                   pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    @inline(__always)
+    func prepareGuidePointTanLines(jiggle: Jiggle,
+                                   projectionMatrix: matrix_float4x4,
+                                   modelViewMatrix: matrix_float4x4,
+                                   worldScaleStandard: Float,
+                                   worldScalePrecise: Float,
+                                   isPrecisePass: Bool,
+                                   isBloomEnabled: Bool,
+                                   isCreatorModeGuideCenters: Bool,
+                                   isCreatorModeAddGuidePoints: Bool,
+                                   isCreatorModeDeleteGuidePoints: Bool,
+                                   guidePointSelectionModality: PointSelectionModality,
+                                   jiggleColorPack: JiggleRenderColorPack,
+                                   guidePointTanHandleLineUnmodifiedFillBuffer: IndexedShapeBuffer2DColored,
+                                   guidePointTanHandleLineUnmodifiedStrokeBuffer: IndexedShapeBuffer2D,
+                                   guidePointTanHandleLineModifiedFillBuffer: IndexedShapeBuffer2DColored,
+                                   guidePointTanHandleLineModifiedStrokeBuffer: IndexedShapeBuffer2D,
+                                   guidePointTanHandleLineActiveFillBuffer: IndexedShapeBuffer2D,
+                                   guidePointTanHandleLineActiveStrokeBuffer: IndexedShapeBuffer2D) {
+        
+        guidePointTanHandleLineUnmodifiedFillBuffer.projectionMatrix = projectionMatrix
+        guidePointTanHandleLineUnmodifiedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        guidePointTanHandleLineUnmodifiedStrokeBuffer.projectionMatrix = projectionMatrix
+        guidePointTanHandleLineUnmodifiedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        guidePointTanHandleLineUnmodifiedStrokeBuffer.red = jiggleColorPack.strokeRed
+        guidePointTanHandleLineUnmodifiedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        guidePointTanHandleLineUnmodifiedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        guidePointTanHandleLineModifiedFillBuffer.projectionMatrix = projectionMatrix
+        guidePointTanHandleLineModifiedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        guidePointTanHandleLineModifiedStrokeBuffer.projectionMatrix = projectionMatrix
+        guidePointTanHandleLineModifiedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        guidePointTanHandleLineModifiedStrokeBuffer.red = jiggleColorPack.strokeRed
+        guidePointTanHandleLineModifiedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        guidePointTanHandleLineModifiedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        guidePointTanHandleLineActiveFillBuffer.projectionMatrix = projectionMatrix
+        guidePointTanHandleLineActiveFillBuffer.modelViewMatrix = modelViewMatrix
+        guidePointTanHandleLineActiveFillBuffer.red = jiggleColorPack.tanLineFillActiveRed
+        guidePointTanHandleLineActiveFillBuffer.green = jiggleColorPack.tanLineFillActiveGreen
+        guidePointTanHandleLineActiveFillBuffer.blue = jiggleColorPack.tanLineFillActiveBlue
+        
+        guidePointTanHandleLineActiveStrokeBuffer.projectionMatrix = projectionMatrix
+        guidePointTanHandleLineActiveStrokeBuffer.modelViewMatrix = modelViewMatrix
+        guidePointTanHandleLineActiveStrokeBuffer.red = jiggleColorPack.strokeRed
+        guidePointTanHandleLineActiveStrokeBuffer.green = jiggleColorPack.strokeGreen
+        guidePointTanHandleLineActiveStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        if isBloomEnabled && jiggle.isShowingGuideControlPointTanHandlesBloom && !isPrecisePass {
+            
+            guidePointTanHandleLineRegularBloomBuffer.projectionMatrix = projectionMatrix
+            guidePointTanHandleLineRegularBloomBuffer.modelViewMatrix = modelViewMatrix
+            guidePointTanHandleLineRegularBloomBuffer.red = jiggleColorPack.bloomRed
+            guidePointTanHandleLineRegularBloomBuffer.green = jiggleColorPack.bloomGreen
+            guidePointTanHandleLineRegularBloomBuffer.blue = jiggleColorPack.bloomBlue
+        }
+        
+        let thicknessStroke: Float
+        let thicknessFill: Float
+        
+        if isPrecisePass {
+            thicknessStroke = jiggle.solidLineBufferStroke.thickness * worldScalePrecise * JiggleViewModel.lineScalePrecise
+            thicknessFill = jiggle.solidLineBuffer.thickness * worldScalePrecise * JiggleViewModel.lineScalePrecise
+        } else {
+            thicknessStroke = jiggle.solidLineBufferStroke.thickness * worldScaleStandard * JiggleViewModel.lineScaleStandard
+            thicknessFill = jiggle.solidLineBuffer.thickness * worldScaleStandard * JiggleViewModel.lineScaleStandard
+        }
+        
+        for guideIndex in 0..<jiggle.guideCount {
+            let guide = jiggle.guides[guideIndex]
+            
+            let guideColorPack = getGuideColorPack(jiggle: jiggle,
+                                                   isJiggleSelected: isSelected,
+                                                   isDarkModeEnabled: isDarkModeEnabled,
+                                                   guide: guide,
+                                                   guideIndex: guideIndex,
+                                                   isCreatorModeGuideCenters: isCreatorModeGuideCenters,
+                                                   isCreatorModeAddGuidePoints: isCreatorModeAddGuidePoints,
+                                                   isCreatorModeDeleteGuidePoints: isCreatorModeDeleteGuidePoints,
+                                                   guidePointSelectionModality: guidePointSelectionModality)
+            
+            for guideControlPointIndex in 0..<guide.guideControlPointCount {
+                let guideControlPoint = guide.guideControlPoints[guideControlPointIndex]
+                
+                let tanHandleInX = guideControlPoint.renderTanInX
+                let tanHandleInY = guideControlPoint.renderTanInY
+                let tanHandleOutX = guideControlPoint.renderTanOutX
+                let tanHandleOutY = guideControlPoint.renderTanOutY
+                let tanNormalX = guideControlPoint.renderTanNormalX
+                let tanNormalY = guideControlPoint.renderTanNormalY
+                
+                let strokeBox = getLineBox(x1: tanHandleInX, y1: tanHandleInY,
+                                           x2: tanHandleOutX, y2: tanHandleOutY,
+                                           normalX: tanNormalX, normalY: tanNormalY,
+                                           thickness: thicknessStroke)
+                let fillBox = getLineBox(x1: tanHandleInX, y1: tanHandleInY,
+                                         x2: tanHandleOutX, y2: tanHandleOutY,
+                                         normalX: tanNormalX, normalY: tanNormalY,
+                                         thickness: thicknessFill)
+                
+                if guideControlPoint.renderSelected {
+                    guidePointTanHandleLineActiveStrokeBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
+                                                                  cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
+                                                                  cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
+                                                                  cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
+                    guidePointTanHandleLineActiveFillBuffer.add(cornerX1: fillBox.x1, cornerY1: fillBox.y1,
+                                                                cornerX2: fillBox.x2, cornerY2: fillBox.y2,
+                                                                cornerX3: fillBox.x3, cornerY3: fillBox.y3,
+                                                                cornerX4: fillBox.x4, cornerY4: fillBox.y4)
+                } else if guideControlPoint.isManualTanHandleEnabled {
+                    guidePointTanHandleLineModifiedStrokeBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
+                                                                    cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
+                                                                    cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
+                                                                    cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
+                    guidePointTanHandleLineModifiedFillBuffer.add(cornerX1: fillBox.x1, cornerY1: fillBox.y1,
+                                                                  cornerX2: fillBox.x2, cornerY2: fillBox.y2,
+                                                                  cornerX3: fillBox.x3, cornerY3: fillBox.y3,
+                                                                  cornerX4: fillBox.x4, cornerY4: fillBox.y4,
+                                                                  red: guideColorPack.tanLineFillModifiedRed,
+                                                                  green: guideColorPack.tanLineFillModifiedGreen,
+                                                                  blue: guideColorPack.tanLineFillModifiedBlue,
+                                                                  alpha: 1.0)
+                } else {
+                    guidePointTanHandleLineUnmodifiedStrokeBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
+                                                                      cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
+                                                                      cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
+                                                                      cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
+                    guidePointTanHandleLineUnmodifiedFillBuffer.add(cornerX1: fillBox.x1, cornerY1: fillBox.y1,
+                                                                    cornerX2: fillBox.x2, cornerY2: fillBox.y2,
+                                                                    cornerX3: fillBox.x3, cornerY3: fillBox.y3,
+                                                                    cornerX4: fillBox.x4, cornerY4: fillBox.y4,
+                                                                    red: guideColorPack.tanLineFillUnmodifiedRed,
+                                                                    green: guideColorPack.tanLineFillUnmodifiedGreen,
+                                                                    blue: guideColorPack.tanLineFillUnmodifiedBlue,
+                                                                    alpha: 1.0)
+                }
+                
+                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                    
+                    guidePointTanHandleLineRegularBloomBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
+                                                                  cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
+                                                                  cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
+                                                                  cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
+                }
+            }
+        }
+    }
+    
+    func renderGuidePointTanHandleLinesFill(renderEncoder: MTLRenderCommandEncoder,
+                                             isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuideControlPointTanHandles {
+                if isPrecisePass {
+                    guidePointTanHandleLineUnmodifiedPreciseFillBuffer.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .shapeNodeColoredIndexed2DNoBlending)
+                    guidePointTanHandleLineModifiedPreciseFillBuffer.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .shapeNodeColoredIndexed2DNoBlending)
+                    guidePointTanHandleLineActivePreciseFillBuffer.render(renderEncoder: renderEncoder,
+                                                                           pipelineState: .shapeNodeIndexed2DNoBlending)
+                } else {
+                    guidePointTanHandleLineUnmodifiedRegularFillBuffer.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .shapeNodeColoredIndexed2DNoBlending)
+                    guidePointTanHandleLineModifiedRegularFillBuffer.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .shapeNodeColoredIndexed2DNoBlending)
+                    guidePointTanHandleLineActiveRegularFillBuffer.render(renderEncoder: renderEncoder,
+                                                                           pipelineState: .shapeNodeIndexed2DNoBlending)
+                }
+            }
+        }
+    }
+
+    func renderGuidePointTanHandleLinesStroke(renderEncoder: MTLRenderCommandEncoder,
+                                               isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuideControlPointTanHandles {
+                if isPrecisePass {
+                    guidePointTanHandleLineUnmodifiedPreciseStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .shapeNodeIndexed2DNoBlending)
+                    guidePointTanHandleLineModifiedPreciseStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
+                    guidePointTanHandleLineActivePreciseStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
+                } else {
+                    guidePointTanHandleLineUnmodifiedRegularStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .shapeNodeIndexed2DNoBlending)
+                    guidePointTanHandleLineModifiedRegularStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
+                    guidePointTanHandleLineActiveRegularStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
+                }
+            }
+        }
+    }
+
+    func renderGuidePointTanHandleLinesBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingGuideControlPointTanHandlesBloom {
+                    guidePointTanHandleLineRegularBloomBuffer.render(renderEncoder: renderEncoder,
+                                                               pipelineState: .shapeNodeIndexed3DNoBlending)
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    @inline(__always)
+    func prepareGuidePointTanPoints(jiggle: Jiggle,
+                                     projectionMatrix: matrix_float4x4,
+                                     modelViewMatrix: matrix_float4x4,
+                                     pointScale: Float,
+                                     isPrecisePass: Bool,
+                                     isBloomEnabled: Bool,
+                                     jiggleColorPack: JiggleRenderColorPack,
+                                     selectedGuidePointTanType: TanType,
+                                     guidePointTanHandlePointUnselectedStrokeBuffer: IndexedSpriteBuffer2D,
+                                     guidePointTanHandlePointUnselectedFillBuffer: IndexedSpriteBuffer2DColored,
+                                     guidePointTanHandlePointSelectedStrokeBuffer: IndexedSpriteBuffer2D,
+                                    guidePointTanHandlePointSelectedFillBuffer: IndexedSpriteBuffer2DColored) {
+        
+        
+        
+    }
+    
+    
+    func renderGuidePointTanHandlePointUnselectedStroke(renderEncoder: MTLRenderCommandEncoder,
+                                                        isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuideControlPointTanHandles {
+                if isPrecisePass {
+                    guidePointTanHandlePointUnselectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    guidePointTanHandlePointUnselectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderGuidePointTanHandlePointUnselectedFill(renderEncoder: MTLRenderCommandEncoder,
+                                                      isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuideControlPointTanHandles {
+                if isPrecisePass {
+                    guidePointTanHandlePointUnselectedFillBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    guidePointTanHandlePointUnselectedFillBufferStandard.render(renderEncoder: renderEncoder,
+                                                                                pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderGuidePointTanHandlePointSelectedStroke(renderEncoder: MTLRenderCommandEncoder,
+                                                      isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuideControlPointTanHandles {
+                if isPrecisePass {
+                    guidePointTanHandlePointSelectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    guidePointTanHandlePointSelectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
+                                                                                pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderGuidePointTanHandlePointSelectedFill(renderEncoder: MTLRenderCommandEncoder,
+                                                    isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuideControlPointTanHandles {
+                if isPrecisePass {
+                    guidePointTanHandlePointSelectedFillBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    guidePointTanHandlePointSelectedFillBufferStandard.render(renderEncoder: renderEncoder,
+                                                                              pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderGuidePointTanHandlePointUnselectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingGuideControlPointTanHandlesBloom {
+                    guidePointTanHandlePointUnselectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                }
+            }
+        }
+    }
+    
+    func renderGuidePointTanHandlePointSelectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingGuideControlPointTanHandlesBloom {
+                    if !jiggle.isFrozen {
+                        guidePointTanHandlePointSelectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    func renderJiggleBorderRingBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingJiggleBorderRingsBloom {
+                    if !jiggle.isFrozen {
+                        let scale = getAdjustScale()
+                        jiggle.solidLineBloomBuffer.render(renderEncoder: renderEncoder,
+                                                           pipelineState: .shapeNodeIndexed3DNoBlending,
+                                                           scale: scale)
+                    }
+                }
+            }
+        }
+    }
+    
+    func renderJiggleBorderRingStroke(renderEncoder: MTLRenderCommandEncoder,
+                                      isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleBorderRings {
+                let scale = getAdjustScale()
+                if isPrecisePass {
+                    jiggle.solidLineBufferStroke_Precise.render(renderEncoder: renderEncoder,
+                                                                pipelineState: .shapeNodeIndexed2DNoBlending,
+                                                                scale: scale)
+                } else {
+                    jiggle.solidLineBufferStroke.render(renderEncoder: renderEncoder,
+                                                        pipelineState: .shapeNodeIndexed2DNoBlending,
+                                                        scale: scale)
+                }
+            }
+        }
+    }
+    
+    func renderJiggleBorderRingFill(renderEncoder: MTLRenderCommandEncoder,
+                                isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleBorderRings {
+                let scale = getAdjustScale()
+                if isPrecisePass {
+                    jiggle.solidLineBuffer_Precise.render(renderEncoder: renderEncoder,
+                                                          pipelineState: .shapeNodeIndexed2DNoBlending,
+                                                          scale: scale)
+                } else {
+                    jiggle.solidLineBuffer.render(renderEncoder: renderEncoder,
+                                                  pipelineState: .shapeNodeIndexed2DNoBlending,
+                                                  scale: scale)
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    @inline(__always)
+    func prepareJiggleCenter(jiggle: Jiggle,
+                            worldScalePrecise: Float,
+                            worldScaleStandard: Float,
+                            projectionMatrix: matrix_float4x4,
+                            modelViewMatrix: matrix_float4x4,
+                            baseAdjustRotation: Float,
+                            isPrecisePass: Bool,
+                            isBloomEnabled: Bool,
+                            jiggleColorPack: JiggleRenderColorPack,
+                            jiggleCenterMarkerUnselectedFillInstance: IndexedSpriteInstance2D,
+                            jiggleCenterMarkerUnselectedStrokeInstance: IndexedSpriteInstance2D,
+                            jiggleCenterMarkerSelectedFillInstance: IndexedSpriteInstance2D,
+                            jiggleCenterMarkerSelectedStrokeInstance: IndexedSpriteInstance2D) {
+        let jiggleCenterScale: Float
+        if isPrecisePass {
+            jiggleCenterScale = worldScalePrecise * JiggleViewModel.jiggleCenterScalePrecise
+        } else {
+            jiggleCenterScale = worldScaleStandard * JiggleViewModel.jiggleCenterScaleStandard
+        }
+        var offsetCenter = jiggle.offsetCenter
+        offsetCenter = jiggle.transformPoint(point: offsetCenter)
+        var centerModelView = modelViewMatrix
+        centerModelView.translation(x: offsetCenter.x,
+                                    y: offsetCenter.y,
+                                    z: 0.0)
+        centerModelView.scale(jiggleCenterScale)
+        centerModelView.rotateZ(radians: baseAdjustRotation)
+        if isSelected {
+            jiggleCenterMarkerSelectedFillInstance.projectionMatrix = projectionMatrix
+            jiggleCenterMarkerSelectedFillInstance.modelViewMatrix = centerModelView
+            jiggleCenterMarkerSelectedFillInstance.red = jiggleColorPack.fillUnselectedRed
+            jiggleCenterMarkerSelectedFillInstance.green = jiggleColorPack.fillUnselectedBlue
+            jiggleCenterMarkerSelectedFillInstance.blue = jiggleColorPack.fillUnselectedBlue
+            jiggleCenterMarkerSelectedStrokeInstance.projectionMatrix = projectionMatrix
+            jiggleCenterMarkerSelectedStrokeInstance.modelViewMatrix = centerModelView
+            jiggleCenterMarkerSelectedStrokeInstance.red = jiggleColorPack.strokeRed
+            jiggleCenterMarkerSelectedStrokeInstance.green = jiggleColorPack.strokeGreen
+            jiggleCenterMarkerSelectedStrokeInstance.blue = jiggleColorPack.strokeBlue
+            if jiggle.isShowingCenterMarkerBloom && isBloomEnabled && !isPrecisePass {
+                jiggleCenterMarkerSelectedRegularBloomInstance.projectionMatrix = projectionMatrix
+                jiggleCenterMarkerSelectedRegularBloomInstance.modelViewMatrix = centerModelView
+                jiggleCenterMarkerSelectedRegularBloomInstance.red = jiggleColorPack.bloomRed
+                jiggleCenterMarkerSelectedRegularBloomInstance.green = jiggleColorPack.bloomGreen
+                jiggleCenterMarkerSelectedRegularBloomInstance.blue = jiggleColorPack.bloomBlue
+            }
+        } else {
+            jiggleCenterMarkerUnselectedFillInstance.projectionMatrix = projectionMatrix
+            jiggleCenterMarkerUnselectedFillInstance.modelViewMatrix = centerModelView
+            jiggleCenterMarkerUnselectedFillInstance.red = jiggleColorPack.fillUnselectedRed
+            jiggleCenterMarkerUnselectedFillInstance.green = jiggleColorPack.fillUnselectedBlue
+            jiggleCenterMarkerUnselectedFillInstance.blue = jiggleColorPack.fillUnselectedBlue
+            jiggleCenterMarkerUnselectedStrokeInstance.projectionMatrix = projectionMatrix
+            jiggleCenterMarkerUnselectedStrokeInstance.modelViewMatrix = centerModelView
+            jiggleCenterMarkerUnselectedStrokeInstance.red = jiggleColorPack.strokeRed
+            jiggleCenterMarkerUnselectedStrokeInstance.green = jiggleColorPack.strokeGreen
+            jiggleCenterMarkerUnselectedStrokeInstance.blue = jiggleColorPack.strokeBlue
+        }
+    }
+    
+    func renderJiggleCenterMarkerStroke(renderEncoder: MTLRenderCommandEncoder,
+                                        isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingCenterMarker {
+                if isSelected {
+                    if isPrecisePass {
+                        jiggleCenterMarkerSelectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        jiggleCenterMarkerSelectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                } else {
+                    if isPrecisePass {
+                        jiggleCenterMarkerUnselectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        jiggleCenterMarkerUnselectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    func renderJiggleCenterMarkerFill(renderEncoder: MTLRenderCommandEncoder,
+                                      isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingCenterMarker {
+                if isSelected {
+                    if isPrecisePass {
+                        jiggleCenterMarkerSelectedPreciseFillInstance.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        jiggleCenterMarkerSelectedRegularFillInstance.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                } else {
+                    if isPrecisePass {
+                        jiggleCenterMarkerUnselectedPreciseFillInstance.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        jiggleCenterMarkerUnselectedRegularFillInstance.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    func renderJiggleCenterMarkerStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if isSelected {
+                    if jiggle.isShowingCenterMarkerBloom {
+                        jiggleCenterMarkerSelectedRegularBloomInstance.render(renderEncoder: renderEncoder,
+                                                                              pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    @inline(__always)
+    func prepareJigglePoints(jiggle: Jiggle,
+                             pointScale: Float,
+                             projectionMatrix: matrix_float4x4,
+                             modelViewMatrix: matrix_float4x4,
+                             baseAdjustRotation: Float,
+                             isPrecisePass: Bool,
+                             isBloomEnabled: Bool,
+                             jiggleColorPack: JiggleRenderColorPack,
+                             jigglePointUnselectedStrokeBuffer: IndexedSpriteBuffer2D,
+                             jigglePointUnselectedFillBuffer: IndexedSpriteBuffer2DColored,
+                             jigglePointSelectedStrokeBuffer: IndexedSpriteBuffer2D,
+                             jigglePointSelectedFillBuffer: IndexedSpriteBuffer2DColored) {
+        
+        jigglePointUnselectedStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointUnselectedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointUnselectedStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointUnselectedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointUnselectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        jigglePointUnselectedFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointUnselectedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        jigglePointSelectedStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointSelectedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointSelectedStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointSelectedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointSelectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        jigglePointSelectedFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointSelectedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        if isBloomEnabled && jiggle.isShowingJigglePointsBloom && !isPrecisePass {
+            
+            jigglePointUnselectedStrokeBufferBloom.projectionMatrix = projectionMatrix
+            jigglePointUnselectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
+            jigglePointUnselectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
+            jigglePointUnselectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
+            jigglePointUnselectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
+            
+            jigglePointSelectedStrokeBufferBloom.projectionMatrix = projectionMatrix
+            jigglePointSelectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
+            jigglePointSelectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
+            jigglePointSelectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
+            jigglePointSelectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
+            jigglePointSelectedStrokeBufferBloom.alpha = 1.0
+        }
+        
+        for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
+            let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
+            
+            let renderCenterPoint = Math.Point(x: jiggleControlPoint.renderX,
+                                               y: jiggleControlPoint.renderY)
+            
+            if jiggleControlPoint.renderSelected {
+                jigglePointSelectedStrokeBuffer.add(translation: renderCenterPoint,
+                                                    scale: pointScale,
+                                                    rotation: baseAdjustRotation)
+                jigglePointSelectedFillBuffer.add(translation: renderCenterPoint,
+                                                  scale: pointScale,
+                                                  rotation: baseAdjustRotation,
+                                                  red: jiggleColorPack.fillSelectedRed,
+                                                  green: jiggleColorPack.fillSelectedGreen,
+                                                  blue: jiggleColorPack.fillSelectedBlue,
+                                                  alpha: 1.0)
+                
+                if isBloomEnabled && jiggle.isShowingJigglePointsBloom && !isPrecisePass {
+                    jigglePointSelectedStrokeBufferBloom.add(translation: renderCenterPoint,
+                                                             scale: pointScale,
+                                                             rotation: 0.0)
+                }
+            } else {
+                
+                jigglePointUnselectedStrokeBuffer.add(translation: renderCenterPoint,
+                                                      scale: pointScale,
+                                                      rotation: 0.0)
+                
+                if jiggleControlPoint.isManualTanHandleEnabled {
+                    jigglePointUnselectedFillBuffer.add(translation: renderCenterPoint,
+                                                        scale: pointScale,
+                                                        rotation: 0.0,
+                                                        red: jiggleColorPack.fillModifiedRed,
+                                                        green: jiggleColorPack.fillModifiedGreen,
+                                                        blue: jiggleColorPack.fillModifiedBlue,
+                                                        alpha: 1.0)
+                } else {
+                    jigglePointUnselectedFillBuffer.add(translation: renderCenterPoint,
+                                                        scale: pointScale,
+                                                        rotation: 0.0,
+                                                        red: jiggleColorPack.fillUnselectedRed,
+                                                        green: jiggleColorPack.fillUnselectedGreen,
+                                                        blue: jiggleColorPack.fillUnselectedBlue,
+                                                        alpha: 1.0)
+                }
+                
+                if isBloomEnabled && jiggle.isShowingJigglePointsBloom && !isPrecisePass {
+                    jigglePointUnselectedStrokeBufferBloom.add(translation: renderCenterPoint,
+                                                               scale: pointScale,
+                                                               rotation: 0.0)
+                }
+            }
+        }
+    }
+    
+    func renderJigglePointUnselectedStroke(renderEncoder: MTLRenderCommandEncoder,
+                                           isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJigglePoints {
+                if isPrecisePass {
+                    jigglePointUnselectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointUnselectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
+                                                                     pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderJigglePointUnselectedFill(renderEncoder: MTLRenderCommandEncoder,
+                                         isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJigglePoints {
+                if isPrecisePass {
+                    jigglePointUnselectedFillBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                  pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointUnselectedFillBufferStandard.render(renderEncoder: renderEncoder,
+                                                                   pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderJigglePointSelectedStroke(renderEncoder: MTLRenderCommandEncoder,
+                                         isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJigglePoints {
+                if isPrecisePass {
+                    jigglePointSelectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointSelectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
+                                                                   pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderJigglePointSelectedFill(renderEncoder: MTLRenderCommandEncoder,
+                                       isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJigglePoints {
+                if isPrecisePass {
+                    jigglePointSelectedFillBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointSelectedFillBufferStandard.render(renderEncoder: renderEncoder,
+                                                                 pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderJigglePointUnselectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingJigglePointsBloom {
+                    jigglePointUnselectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
+                                                                  pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                }
+            }
+        }
+    }
+    
+    func renderJigglePointSelectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingJigglePointsBloom {
+                    if !jiggle.isFrozen {
+                        jigglePointSelectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
+                                                                    pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    @inline(__always)
+    func prepareJigglePointTanLines(jiggle: Jiggle,
+                                    projectionMatrix: matrix_float4x4,
+                                    modelViewMatrix: matrix_float4x4,
+                                    worldScaleStandard: Float,
+                                    worldScalePrecise: Float,
+                                    isPrecisePass: Bool,
+                                    isBloomEnabled: Bool,
+                                    jiggleColorPack: JiggleRenderColorPack,
+                                    jigglePointTanHandleLineUnmodifiedFillBuffer: IndexedShapeBuffer2D,
+                                    jigglePointTanHandleLineUnmodifiedStrokeBuffer: IndexedShapeBuffer2D,
+                                    jigglePointTanHandleLineModifiedFillBuffer: IndexedShapeBuffer2D,
+                                    jigglePointTanHandleLineModifiedStrokeBuffer: IndexedShapeBuffer2D,
+                                    jigglePointTanHandleLineActiveFillBuffer: IndexedShapeBuffer2D,
+                                    jigglePointTanHandleLineActiveStrokeBuffer: IndexedShapeBuffer2D) {
+        
+        jigglePointTanHandleLineUnmodifiedFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandleLineUnmodifiedFillBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandleLineUnmodifiedFillBuffer.red = jiggleColorPack.tanLineFillUnmodifiedRed
+        jigglePointTanHandleLineUnmodifiedFillBuffer.green = jiggleColorPack.tanLineFillUnmodifiedGreen
+        jigglePointTanHandleLineUnmodifiedFillBuffer.blue = jiggleColorPack.tanLineFillUnmodifiedBlue
+        
+        jigglePointTanHandleLineUnmodifiedStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandleLineUnmodifiedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandleLineUnmodifiedStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointTanHandleLineUnmodifiedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointTanHandleLineUnmodifiedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        jigglePointTanHandleLineModifiedFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandleLineModifiedFillBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandleLineModifiedFillBuffer.red = jiggleColorPack.tanLineFillModifiedRed
+        jigglePointTanHandleLineModifiedFillBuffer.green = jiggleColorPack.tanLineFillModifiedGreen
+        jigglePointTanHandleLineModifiedFillBuffer.blue = jiggleColorPack.tanLineFillModifiedBlue
+        
+        jigglePointTanHandleLineModifiedStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandleLineModifiedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandleLineModifiedStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointTanHandleLineModifiedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointTanHandleLineModifiedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        jigglePointTanHandleLineActiveFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandleLineActiveFillBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandleLineActiveFillBuffer.red = jiggleColorPack.tanLineFillActiveRed
+        jigglePointTanHandleLineActiveFillBuffer.green = jiggleColorPack.tanLineFillActiveGreen
+        jigglePointTanHandleLineActiveFillBuffer.blue = jiggleColorPack.tanLineFillActiveBlue
+        
+        jigglePointTanHandleLineActiveStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandleLineActiveStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandleLineActiveStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointTanHandleLineActiveStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointTanHandleLineActiveStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        if jiggle.isShowingJiggleControlPointTanHandlesBloom && isBloomEnabled && !isPrecisePass {
+            jigglePointTanHandleLineRegularBloomBuffer.projectionMatrix = projectionMatrix
+            jigglePointTanHandleLineRegularBloomBuffer.modelViewMatrix = modelViewMatrix
+            jigglePointTanHandleLineRegularBloomBuffer.red = jiggleColorPack.bloomRed
+            jigglePointTanHandleLineRegularBloomBuffer.green = jiggleColorPack.bloomGreen
+            jigglePointTanHandleLineRegularBloomBuffer.blue = jiggleColorPack.bloomBlue
+        }
+        
+        let thicknessStroke: Float
+        let thicknessFill: Float
+        
+        if isPrecisePass {
+            thicknessStroke = jiggle.solidLineBufferStroke.thickness * worldScalePrecise * JiggleViewModel.lineScalePrecise
+            thicknessFill = jiggle.solidLineBuffer.thickness * worldScalePrecise * JiggleViewModel.lineScalePrecise
+        } else {
+            thicknessStroke = jiggle.solidLineBufferStroke.thickness * worldScaleStandard * JiggleViewModel.lineScaleStandard
+            thicknessFill = jiggle.solidLineBuffer.thickness * worldScaleStandard * JiggleViewModel.lineScaleStandard
+        }
+        
+        
+        for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
+            let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
+            
+            
+            let tanHandleInX = jiggleControlPoint.renderTanInX
+            let tanHandleInY = jiggleControlPoint.renderTanInY
+            let tanHandleOutX = jiggleControlPoint.renderTanOutX
+            let tanHandleOutY = jiggleControlPoint.renderTanOutY
+            let tanNormalX = jiggleControlPoint.renderTanNormalX
+            let tanNormalY = jiggleControlPoint.renderTanNormalY
+            
+            let strokeBox = getLineBox(x1: tanHandleInX, y1: tanHandleInY,
+                                       x2: tanHandleOutX, y2: tanHandleOutY,
+                                       normalX: tanNormalX, normalY: tanNormalY,
+                                       thickness: thicknessStroke)
+            let fillBox = getLineBox(x1: tanHandleInX, y1: tanHandleInY,
+                                     x2: tanHandleOutX, y2: tanHandleOutY,
+                                     normalX: tanNormalX, normalY: tanNormalY,
+                                     thickness: thicknessFill)
+            
+            
+            
+            if jiggleControlPoint.renderSelected {
+                jigglePointTanHandleLineActiveStrokeBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
+                                                               cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
+                                                               cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
+                                                               cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
+                jigglePointTanHandleLineActiveFillBuffer.add(cornerX1: fillBox.x1, cornerY1: fillBox.y1,
+                                                             cornerX2: fillBox.x2, cornerY2: fillBox.y2,
+                                                             cornerX3: fillBox.x3, cornerY3: fillBox.y3,
+                                                             cornerX4: fillBox.x4, cornerY4: fillBox.y4)
+            } else if jiggleControlPoint.isManualTanHandleEnabled {
+                jigglePointTanHandleLineModifiedStrokeBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
+                                                                 cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
+                                                                 cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
+                                                                 cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
+                jigglePointTanHandleLineModifiedFillBuffer.add(cornerX1: fillBox.x1, cornerY1: fillBox.y1,
+                                                               cornerX2: fillBox.x2, cornerY2: fillBox.y2,
+                                                               cornerX3: fillBox.x3, cornerY3: fillBox.y3,
+                                                               cornerX4: fillBox.x4, cornerY4: fillBox.y4)
+            } else {
+                jigglePointTanHandleLineUnmodifiedStrokeBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
+                                                                   cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
+                                                                   cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
+                                                                   cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
+                jigglePointTanHandleLineUnmodifiedFillBuffer.add(cornerX1: fillBox.x1, cornerY1: fillBox.y1,
+                                                                 cornerX2: fillBox.x2, cornerY2: fillBox.y2,
+                                                                 cornerX3: fillBox.x3, cornerY3: fillBox.y3,
+                                                                 cornerX4: fillBox.x4, cornerY4: fillBox.y4)
+            }
+            
+            if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                
+                jigglePointTanHandleLineRegularBloomBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
+                                                            cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
+                                                            cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
+                                                            cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
+            }
+        }
+    }
+
+
+    func renderJigglePointTanHandleLinesFill(renderEncoder: MTLRenderCommandEncoder,
+                                             isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleControlPointTanHandles {
+                if isPrecisePass {
+                    jigglePointTanHandleLineUnmodifiedPreciseFillBuffer.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineModifiedPreciseFillBuffer.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineActivePreciseFillBuffer.render(renderEncoder: renderEncoder,
+                                                                           pipelineState: .shapeNodeIndexed2DNoBlending)
+                } else {
+                    jigglePointTanHandleLineUnmodifiedRegularFillBuffer.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineModifiedRegularFillBuffer.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineActiveRegularFillBuffer.render(renderEncoder: renderEncoder,
+                                                                           pipelineState: .shapeNodeIndexed2DNoBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandleLinesStroke(renderEncoder: MTLRenderCommandEncoder,
+                                               isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleControlPointTanHandles {
+                if isPrecisePass {
+                    jigglePointTanHandleLineUnmodifiedPreciseStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineModifiedPreciseStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineActivePreciseStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
+                } else {
+                    jigglePointTanHandleLineUnmodifiedRegularStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineModifiedRegularStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineActiveRegularStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandleLinesBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
+                    jigglePointTanHandleLineRegularBloomBuffer.render(renderEncoder: renderEncoder,
+                                                               pipelineState: .shapeNodeIndexed3DNoBlending)
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    @inline(__always)
+    func prepareJigglePointTanPoints(jiggle: Jiggle,
+                                     projectionMatrix: matrix_float4x4,
+                                     modelViewMatrix: matrix_float4x4,
+                                     pointScale: Float,
+                                     isPrecisePass: Bool,
+                                     isBloomEnabled: Bool,
+                                     jiggleColorPack: JiggleRenderColorPack,
+                                     selectedJigglePointTanType: TanType,
+                                     jigglePointTanHandlePointUnselectedStrokeBuffer: IndexedSpriteBuffer2D,
+                                     jigglePointTanHandlePointUnselectedFillBuffer: IndexedSpriteBuffer2DColored,
+                                     jigglePointTanHandlePointSelectedStrokeBuffer: IndexedSpriteBuffer2D,
+                                     jigglePointTanHandlePointSelectedFillBuffer: IndexedSpriteBuffer2DColored) {
+        
+        jigglePointTanHandlePointUnselectedStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandlePointUnselectedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandlePointUnselectedStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointTanHandlePointUnselectedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointTanHandlePointUnselectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        jigglePointTanHandlePointUnselectedFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandlePointUnselectedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        jigglePointTanHandlePointSelectedStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandlePointSelectedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandlePointSelectedStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointTanHandlePointSelectedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointTanHandlePointSelectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        jigglePointTanHandlePointSelectedFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandlePointSelectedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+            
+            jigglePointTanHandlePointUnselectedStrokeBufferBloom.projectionMatrix = projectionMatrix
+            jigglePointTanHandlePointUnselectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
+            jigglePointTanHandlePointUnselectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
+            jigglePointTanHandlePointUnselectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
+            jigglePointTanHandlePointUnselectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
+            
+            jigglePointTanHandlePointSelectedStrokeBufferBloom.projectionMatrix = projectionMatrix
+            jigglePointTanHandlePointSelectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
+            jigglePointTanHandlePointSelectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
+            jigglePointTanHandlePointSelectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
+            jigglePointTanHandlePointSelectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
+        }
+        
+        for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
+            
+            let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
+            
+            
+            let renderCenterPointIn = Math.Point(x: jiggleControlPoint.renderTanInX,
+                                                 y: jiggleControlPoint.renderTanInY)
+            let renderCenterPointOut = Math.Point(x: jiggleControlPoint.renderTanOutX,
+                                                  y: jiggleControlPoint.renderTanOutY)
+            
+            if (jiggleControlPoint.renderSelected == true) && (selectedJigglePointTanType == .in) {
+                
+                jigglePointTanHandlePointSelectedStrokeBuffer.add(translation: renderCenterPointIn,
+                                                                  scale: pointScale,
+                                                                  rotation: 0.0)
+                jigglePointTanHandlePointSelectedFillBuffer.add(translation: renderCenterPointIn,
+                                                                scale: pointScale,
+                                                                rotation: 0.0,
+                                                                red: jiggleColorPack.tanPointFillActiveRed,
+                                                                green: jiggleColorPack.tanPointFillActiveGreen,
+                                                                blue: jiggleColorPack.tanPointFillActiveBlue,
+                                                                alpha: 1.0)
+                
+                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                    jigglePointTanHandlePointSelectedStrokeBufferBloom.add(translation: renderCenterPointIn,
+                                                                           scale: pointScale,
+                                                                           rotation: 0.0)
+                }
+                
+            } else {
+                
+                jigglePointTanHandlePointUnselectedStrokeBuffer.add(translation: renderCenterPointIn,
+                                                                    scale: pointScale,
+                                                                    rotation: 0.0)
+                if (jiggleControlPoint.isManualTanHandleEnabled == true) || (jiggleControlPoint.renderSelected == true) {
+                    jigglePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointIn,
+                                                                      scale: pointScale,
+                                                                      rotation: 0.0,
+                                                                      red: jiggleColorPack.tanPointFillModifiedRed,
+                                                                      green: jiggleColorPack.tanPointFillModifiedGreen,
+                                                                      blue: jiggleColorPack.tanPointFillModifiedBlue,
+                                                                      alpha: 1.0)
+                } else {
+                    jigglePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointIn,
+                                                                      scale: pointScale,
+                                                                      rotation: 0.0,
+                                                                      red: jiggleColorPack.tanPointFillUnmodifiedRed,
+                                                                      green: jiggleColorPack.tanPointFillUnmodifiedGreen,
+                                                                      blue: jiggleColorPack.tanPointFillUnmodifiedBlue,
+                                                                      alpha: 1.0)
+                }
+                
+                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                    jigglePointTanHandlePointUnselectedStrokeBufferBloom.add(translation: renderCenterPointIn,
+                                                                             scale: pointScale,
+                                                                             rotation: 0.0)
+                }
+            }
+            
+            if (jiggleControlPoint.renderSelected == true) && (selectedJigglePointTanType == .out) {
+                
+                jigglePointTanHandlePointSelectedStrokeBuffer.add(translation: renderCenterPointOut,
+                                                                  scale: pointScale,
+                                                                  rotation: 0.0)
+                jigglePointTanHandlePointSelectedFillBuffer.add(translation: renderCenterPointOut,
+                                                                scale: pointScale,
+                                                                rotation: 0.0,
+                                                                red: jiggleColorPack.tanPointFillActiveRed,
+                                                                green: jiggleColorPack.tanPointFillActiveGreen,
+                                                                blue: jiggleColorPack.tanPointFillActiveBlue,
+                                                                alpha: 1.0)
+                
+                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                    jigglePointTanHandlePointSelectedStrokeBufferBloom.add(translation: renderCenterPointOut,
+                                                                           scale: pointScale,
+                                                                           rotation: 0.0)
+                }
+                
+            } else {
+                
+                jigglePointTanHandlePointUnselectedStrokeBuffer.add(translation: renderCenterPointOut,
+                                                                    scale: pointScale,
+                                                                    rotation: 0.0)
+                if (jiggleControlPoint.isManualTanHandleEnabled == true) || (jiggleControlPoint.renderSelected == true) {
+                    jigglePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointOut,
+                                                                      scale: pointScale,
+                                                                      rotation: 0.0,
+                                                                      red: jiggleColorPack.tanPointFillModifiedRed,
+                                                                      green: jiggleColorPack.tanPointFillModifiedGreen,
+                                                                      blue: jiggleColorPack.tanPointFillModifiedBlue,
+                                                                      alpha: 1.0)
+                } else {
+                    jigglePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointOut,
+                                                                      scale: pointScale,
+                                                                      rotation: 0.0,
+                                                                      red: jiggleColorPack.tanPointFillUnmodifiedRed,
+                                                                      green: jiggleColorPack.tanPointFillUnmodifiedGreen,
+                                                                      blue: jiggleColorPack.tanPointFillUnmodifiedBlue,
+                                                                      alpha: 1.0)
+                }
+                
+                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                    jigglePointTanHandlePointUnselectedStrokeBufferBloom.add(translation: renderCenterPointOut,
+                                                                             scale: pointScale,
+                                                                             rotation: 0.0)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandlePointUnselectedStroke(renderEncoder: MTLRenderCommandEncoder,
+                                                         isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleControlPointTanHandles {
+                if isPrecisePass {
+                    jigglePointTanHandlePointUnselectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointTanHandlePointUnselectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
+                                                                                   pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandlePointUnselectedFill(renderEncoder: MTLRenderCommandEncoder,
+                                                       isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleControlPointTanHandles {
+                if isPrecisePass {
+                    jigglePointTanHandlePointUnselectedFillBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                                pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointTanHandlePointUnselectedFillBufferStandard.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandlePointSelectedStroke(renderEncoder: MTLRenderCommandEncoder,
+                                                       isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleControlPointTanHandles {
+                if isPrecisePass {
+                    jigglePointTanHandlePointSelectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                                pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointTanHandlePointSelectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandlePointSelectedFill(renderEncoder: MTLRenderCommandEncoder,
+                                                     isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleControlPointTanHandles {
+                if isPrecisePass {
+                    jigglePointTanHandlePointSelectedFillBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                              pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointTanHandlePointSelectedFillBufferStandard.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandlePointUnselectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
+                    jigglePointTanHandlePointUnselectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
+                                                                                pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandlePointSelectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
+                    if !jiggle.isFrozen {
+                        jigglePointTanHandlePointSelectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    @inline(__always)
+    func prepareWeightCenter(jiggle: Jiggle,
+                            worldScalePrecise: Float,
+                            worldScaleStandard: Float,
+                            projectionMatrix: matrix_float4x4,
+                            modelViewMatrix: matrix_float4x4,
+                            baseAdjustRotation: Float,
+                            isPrecisePass: Bool,
+                            isBloomEnabled: Bool,
+                            jiggleColorPack: JiggleRenderColorPack,
+                            weightCenterMarkerDotUnselectedFillInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerDotUnselectedStrokeInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerDotSelectedFillInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerDotSelectedStrokeInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerSpinnerUnselectedFillInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerSpinnerUnselectedStrokeInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerSpinnerSelectedFillInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerSpinnerSelectedStrokeInstance: IndexedSpriteInstance2D) {
+        
+        let weghtCenterScale: Float
+        if isPrecisePass {
+            weghtCenterScale = worldScalePrecise * JiggleViewModel.weightCenterScalePrecise
+        } else {
+            weghtCenterScale = worldScaleStandard * JiggleViewModel.weightCenterScaleStandard
+        }
+        
+        var guideCenter = jiggle.guideCenter
+        guideCenter = jiggle.transformPoint(point: guideCenter)
+        var centerModelView = modelViewMatrix
+        centerModelView.translation(x: guideCenter.x,
+                                    y: guideCenter.y,
+                                    z: 0.0)
+        centerModelView.scale(weghtCenterScale)
+        centerModelView.rotateZ(radians: baseAdjustRotation)
+        
+        var spinnerModelView = centerModelView
+        spinnerModelView.rotateZ(radians: jiggle.guideCenterSpinnerRotation)
+        
+        if isSelected {
+            
+            weightCenterMarkerDotSelectedFillInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerDotSelectedFillInstance.modelViewMatrix = centerModelView
+            weightCenterMarkerDotSelectedFillInstance.red = jiggleColorPack.fillWeightCenterRed
+            weightCenterMarkerDotSelectedFillInstance.green = jiggleColorPack.fillWeightCenterGreen
+            weightCenterMarkerDotSelectedFillInstance.blue = jiggleColorPack.fillWeightCenterBlue
+            
+            weightCenterMarkerDotSelectedStrokeInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerDotSelectedStrokeInstance.modelViewMatrix = centerModelView
+            weightCenterMarkerDotSelectedStrokeInstance.red = jiggleColorPack.strokeRed
+            weightCenterMarkerDotSelectedStrokeInstance.green = jiggleColorPack.strokeGreen
+            weightCenterMarkerDotSelectedStrokeInstance.blue = jiggleColorPack.strokeBlue
+            
+            weightCenterMarkerSpinnerSelectedFillInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerSpinnerSelectedFillInstance.modelViewMatrix = spinnerModelView
+            weightCenterMarkerSpinnerSelectedFillInstance.red = jiggleColorPack.fillWeightCenterRed
+            weightCenterMarkerSpinnerSelectedFillInstance.green = jiggleColorPack.fillWeightCenterGreen
+            weightCenterMarkerSpinnerSelectedFillInstance.blue = jiggleColorPack.fillWeightCenterBlue
+            
+            weightCenterMarkerSpinnerSelectedStrokeInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerSpinnerSelectedStrokeInstance.modelViewMatrix = spinnerModelView
+            weightCenterMarkerSpinnerSelectedStrokeInstance.red = jiggleColorPack.strokeRed
+            weightCenterMarkerSpinnerSelectedStrokeInstance.green = jiggleColorPack.strokeGreen
+            weightCenterMarkerSpinnerSelectedStrokeInstance.blue = jiggleColorPack.strokeBlue
+            
+            if isBloomEnabled && jiggle.isShowingWeightCenterMarkerBloom && !isPrecisePass {
+                
+                weightCenterMarkerDotSelectedRegularBloomInstance.projectionMatrix = projectionMatrix
+                weightCenterMarkerDotSelectedRegularBloomInstance.modelViewMatrix = centerModelView
+                weightCenterMarkerDotSelectedRegularBloomInstance.red = jiggleColorPack.bloomRed
+                weightCenterMarkerDotSelectedRegularBloomInstance.green = jiggleColorPack.bloomGreen
+                weightCenterMarkerDotSelectedRegularBloomInstance.blue = jiggleColorPack.bloomBlue
+                
+                weightCenterMarkerSpinnerSelectedRegularBloomInstance.projectionMatrix = projectionMatrix
+                weightCenterMarkerSpinnerSelectedRegularBloomInstance.modelViewMatrix = spinnerModelView
+                weightCenterMarkerSpinnerSelectedRegularBloomInstance.red = jiggleColorPack.bloomRed
+                weightCenterMarkerSpinnerSelectedRegularBloomInstance.green = jiggleColorPack.bloomGreen
+                weightCenterMarkerSpinnerSelectedRegularBloomInstance.blue = jiggleColorPack.bloomBlue
+            }
+            
+        } else {
+            weightCenterMarkerDotUnselectedFillInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerDotUnselectedFillInstance.modelViewMatrix = centerModelView
+            weightCenterMarkerDotUnselectedFillInstance.red = jiggleColorPack.fillWeightCenterRed
+            weightCenterMarkerDotUnselectedFillInstance.green = jiggleColorPack.fillWeightCenterGreen
+            weightCenterMarkerDotUnselectedFillInstance.blue = jiggleColorPack.fillWeightCenterBlue
+            
+            weightCenterMarkerDotUnselectedStrokeInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerDotUnselectedStrokeInstance.modelViewMatrix = centerModelView
+            weightCenterMarkerDotUnselectedStrokeInstance.red = jiggleColorPack.strokeRed
+            weightCenterMarkerDotUnselectedStrokeInstance.green = jiggleColorPack.strokeGreen
+            weightCenterMarkerDotUnselectedStrokeInstance.blue = jiggleColorPack.strokeBlue
+            
+            weightCenterMarkerSpinnerUnselectedFillInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerSpinnerUnselectedFillInstance.modelViewMatrix = spinnerModelView
+            weightCenterMarkerSpinnerUnselectedFillInstance.red = jiggleColorPack.fillWeightCenterRed
+            weightCenterMarkerSpinnerUnselectedFillInstance.green = jiggleColorPack.fillWeightCenterGreen
+            weightCenterMarkerSpinnerUnselectedFillInstance.blue = jiggleColorPack.fillWeightCenterBlue
+            
+            weightCenterMarkerSpinnerUnselectedStrokeInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerSpinnerUnselectedStrokeInstance.modelViewMatrix = spinnerModelView
+            weightCenterMarkerSpinnerUnselectedStrokeInstance.red = jiggleColorPack.strokeRed
+            weightCenterMarkerSpinnerUnselectedStrokeInstance.green = jiggleColorPack.strokeGreen
+            weightCenterMarkerSpinnerUnselectedStrokeInstance.blue = jiggleColorPack.strokeBlue
+        }
+    }
+    
+    func renderWeightCenterMarkerStroke(renderEncoder: MTLRenderCommandEncoder,
+                                        isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingWeightCenterMarker {
+                if isSelected {
+                    if isPrecisePass {
+                        weightCenterMarkerDotSelectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerSelectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                      pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        weightCenterMarkerDotSelectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerSelectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                      pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                } else {
+                    if isPrecisePass {
+                        weightCenterMarkerDotUnselectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerUnselectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                        pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        weightCenterMarkerDotUnselectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerUnselectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                        pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    func renderWeightCenterMarkerFill(renderEncoder: MTLRenderCommandEncoder,
+                                      isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingWeightCenterMarker {
+                if isSelected {
+                    if isPrecisePass {
+                        weightCenterMarkerDotSelectedPreciseFillInstance.render(renderEncoder: renderEncoder,
+                                                                                pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerSelectedPreciseFillInstance.render(renderEncoder: renderEncoder,
+                                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        weightCenterMarkerDotSelectedRegularFillInstance.render(renderEncoder: renderEncoder,
+                                                                                pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerSelectedRegularFillInstance.render(renderEncoder: renderEncoder,
+                                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                } else {
+                    if isPrecisePass {
+                        weightCenterMarkerDotUnselectedPreciseFillInstance.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerUnselectedPreciseFillInstance.render(renderEncoder: renderEncoder,
+                                                                                      pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        weightCenterMarkerDotUnselectedRegularFillInstance.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerUnselectedRegularFillInstance.render(renderEncoder: renderEncoder,
+                                                                                      pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    func renderWeightCenterMarkerStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if isSelected {
+                    if jiggle.isShowingWeightCenterMarkerBloom {
+                        weightCenterMarkerDotSelectedRegularBloomInstance.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                        weightCenterMarkerSpinnerSelectedRegularBloomInstance.render(renderEncoder: renderEncoder,
+                                                                                     pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                        
+                    }
+                }
+            }
+        }
+    }
     
 }

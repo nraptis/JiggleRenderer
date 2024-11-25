@@ -5,6 +5,7 @@
 //  Created by Nicky Taylor on 11/13/23.
 //
 //  Not Verified (Mostly Verified) on 11/9/2024 by Nick Raptis
+//  Major refactor on 11/24 and 11/25, 2025
 //
 
 import Foundation
@@ -12,6 +13,8 @@ import Metal
 import simd
 
 class JiggleRenderer {
+    
+    static let DIRTY_TRIANGLES_SHOW_DIRTY = true
     
     weak var graphics: Graphics?
     weak var jiggle: Jiggle?
@@ -313,8 +316,6 @@ class JiggleRenderer {
         jigglePointTanHandleLineActivePreciseStrokeBuffer.primitiveType = .triangle
         jigglePointTanHandleLineActivePreciseStrokeBuffer.cullMode = .none
         
-        
-        
         // Jiggle Point Tan Handle Points Stroke (Unselected):
         jigglePointTanHandlePointUnselectedStrokeBufferStandard.load(graphics: graphics, sprite: jiggleEngine.guideUnselectedPointRegularStrokeSprite)
         jigglePointTanHandlePointUnselectedStrokeBufferStandard.primitiveType = .triangle
@@ -551,6 +552,7 @@ class JiggleRenderer {
         self.isSelected = isSelected
         self.isDarkModeEnabled = jiggle.isShowingDarkMode
         
+        // Anything we can compute once, we will do outside of the 2 renderings...
         if jiggle.isShowingJiggleControlPointTanHandles || jiggle.isShowingJigglePoints {
             for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
                 let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
@@ -570,6 +572,7 @@ class JiggleRenderer {
             }
         }
         
+        // Anything we can compute once, we will do outside of the 2 renderings...
         if jiggle.isShowingGuidePoints {
             for guideIndex in 0..<jiggle.guideCount {
                 let guide = jiggle.guides[guideIndex]
@@ -612,6 +615,7 @@ class JiggleRenderer {
             }
         }
         
+        // Anything we can compute once, we will do outside of the 2 renderings...
         if jiggle.isShowingJiggleControlPointTanHandles {
             for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
                 let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
@@ -633,6 +637,7 @@ class JiggleRenderer {
             }
         }
         
+        // Anything we can compute once, we will do outside of the 2 renderings...
         if jiggle.isShowingGuideControlPointTanHandles {
             for guideIndex in 0..<jiggle.guideCount {
                 let guide = jiggle.guides[guideIndex]
@@ -665,6 +670,7 @@ class JiggleRenderer {
         }
     }
     
+    // We load up all the buffers for the render, this does not render anything...
     @MainActor func prepare(jiggle: Jiggle,
                             isSelected: Bool,
                             isStereoscopicEnabled: Bool,
@@ -875,251 +881,7 @@ class JiggleRenderer {
                                                  isCreatorModeDeleteGuidePoints: isCreatorModeDeleteGuidePoints,
                                                  jigglePointSelectionModality: jigglePointSelectionModality)
         
-        if jiggle.isShowingJiggleControlPointTanHandles {
-            prepareJigglePointTanPoints(jiggle: jiggle,
-                                        projectionMatrix: projectionMatrixBase,
-                                        modelViewMatrix: modelViewMatrixBase,
-                                        pointScale: pointScale,
-                                        isPrecisePass: isPrecisePass,
-                                        isBloomEnabled: isBloomEnabled,
-                                        jiggleColorPack: jiggleColorPack,
-                                        selectedJigglePointTanType: selectedJigglePointTanType,
-                                        jigglePointTanHandlePointUnselectedStrokeBuffer: jigglePointTanHandlePointUnselectedStrokeBuffer,
-                                        jigglePointTanHandlePointUnselectedFillBuffer: jigglePointTanHandlePointUnselectedFillBuffer,
-                                        jigglePointTanHandlePointSelectedStrokeBuffer: jigglePointTanHandlePointSelectedStrokeBuffer,
-                                        jigglePointTanHandlePointSelectedFillBuffer: jigglePointTanHandlePointSelectedFillBuffer)
-        }
-        
-        
-        if jiggle.isShowingJiggleControlPointTanHandles {
-            prepareJigglePointTanLines(jiggle: jiggle,
-                                       projectionMatrix: projectionMatrixBase,
-                                       modelViewMatrix: modelViewMatrixBase,
-                                       worldScaleStandard: worldScaleStandard,
-                                       worldScalePrecise: worldScalePrecise,
-                                       isPrecisePass: isPrecisePass,
-                                       isBloomEnabled: isBloomEnabled,
-                                       jiggleColorPack: jiggleColorPack,
-                                       jigglePointTanHandleLineUnmodifiedFillBuffer: jigglePointTanHandleLineUnmodifiedFillBuffer,
-                                       jigglePointTanHandleLineUnmodifiedStrokeBuffer: jigglePointTanHandleLineUnmodifiedStrokeBuffer,
-                                       jigglePointTanHandleLineModifiedFillBuffer: jigglePointTanHandleLineModifiedFillBuffer,
-                                       jigglePointTanHandleLineModifiedStrokeBuffer: jigglePointTanHandleLineModifiedStrokeBuffer,
-                                       jigglePointTanHandleLineActiveFillBuffer: jigglePointTanHandleLineActiveFillBuffer,
-                                       jigglePointTanHandleLineActiveStrokeBuffer: jigglePointTanHandleLineActiveStrokeBuffer)
-        }
-        
-        if jiggle.isShowingGuideControlPointTanHandles {
-            prepareGuidePointTanLines(jiggle: jiggle,
-                                      projectionMatrix: projectionMatrixBase,
-                                      modelViewMatrix: modelViewMatrixBase,
-                                      worldScaleStandard: worldScaleStandard,
-                                      worldScalePrecise: worldScalePrecise,
-                                      isPrecisePass: isPrecisePass,
-                                      isBloomEnabled: isBloomEnabled,
-                                      isCreatorModeGuideCenters: isCreatorModeGuideCenters,
-                                      isCreatorModeAddGuidePoints: isCreatorModeAddGuidePoints,
-                                      isCreatorModeDeleteGuidePoints: isCreatorModeDeleteGuidePoints,
-                                      guidePointSelectionModality: guidePointSelectionModality,
-                                      jiggleColorPack: jiggleColorPack,
-                                      guidePointTanHandleLineUnmodifiedFillBuffer: guidePointTanHandleLineUnmodifiedFillBuffer,
-                                      guidePointTanHandleLineUnmodifiedStrokeBuffer: guidePointTanHandleLineUnmodifiedStrokeBuffer,
-                                      guidePointTanHandleLineModifiedFillBuffer: guidePointTanHandleLineModifiedFillBuffer,
-                                      guidePointTanHandleLineModifiedStrokeBuffer: guidePointTanHandleLineModifiedStrokeBuffer,
-                                      guidePointTanHandleLineActiveFillBuffer: guidePointTanHandleLineActiveFillBuffer,
-                                      guidePointTanHandleLineActiveStrokeBuffer: guidePointTanHandleLineActiveStrokeBuffer)
-        }
-        
-        if jiggle.isShowingGuideControlPointTanHandles {
-            
-            guidePointTanHandlePointUnselectedStrokeBuffer.projectionMatrix = projectionMatrixBase
-            guidePointTanHandlePointUnselectedStrokeBuffer.modelViewMatrix = modelViewMatrixBase
-            guidePointTanHandlePointUnselectedStrokeBuffer.red = jiggleColorPack.strokeRed
-            guidePointTanHandlePointUnselectedStrokeBuffer.green = jiggleColorPack.strokeGreen
-            guidePointTanHandlePointUnselectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
-            
-            guidePointTanHandlePointUnselectedFillBuffer.projectionMatrix = projectionMatrixBase
-            guidePointTanHandlePointUnselectedFillBuffer.modelViewMatrix = modelViewMatrixBase
-            
-            guidePointTanHandlePointSelectedStrokeBuffer.projectionMatrix = projectionMatrixBase
-            guidePointTanHandlePointSelectedStrokeBuffer.modelViewMatrix = modelViewMatrixBase
-            guidePointTanHandlePointSelectedStrokeBuffer.red = jiggleColorPack.strokeRed
-            guidePointTanHandlePointSelectedStrokeBuffer.green = jiggleColorPack.strokeGreen
-            guidePointTanHandlePointSelectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
-            
-            guidePointTanHandlePointSelectedFillBuffer.projectionMatrix = projectionMatrixBase
-            guidePointTanHandlePointSelectedFillBuffer.modelViewMatrix = modelViewMatrixBase
-            
-            if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
-                guidePointTanHandlePointUnselectedStrokeBufferBloom.projectionMatrix = projectionMatrixBase
-                guidePointTanHandlePointUnselectedStrokeBufferBloom.modelViewMatrix = modelViewMatrixBase
-                guidePointTanHandlePointUnselectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
-                guidePointTanHandlePointUnselectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
-                guidePointTanHandlePointUnselectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
-                
-                guidePointTanHandlePointSelectedStrokeBufferBloom.projectionMatrix = projectionMatrixBase
-                guidePointTanHandlePointSelectedStrokeBufferBloom.modelViewMatrix = modelViewMatrixBase
-                guidePointTanHandlePointSelectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
-                guidePointTanHandlePointSelectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
-                guidePointTanHandlePointSelectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
-            }
-            
-            for guideIndex in 0..<jiggle.guideCount {
-                let guide = jiggle.guides[guideIndex]
-                let guideColorPack = getGuideColorPack(jiggle: jiggle,
-                                                       isJiggleSelected: isSelected,
-                                                       isDarkModeEnabled: isDarkModeEnabled,
-                                                       guide: guide,
-                                                       guideIndex: guideIndex,
-                                                       isCreatorModeGuideCenters: isCreatorModeGuideCenters,
-                                                       isCreatorModeAddGuidePoints: isCreatorModeAddGuidePoints,
-                                                       isCreatorModeDeleteGuidePoints: isCreatorModeDeleteGuidePoints,
-                                                       guidePointSelectionModality: guidePointSelectionModality)
-                
-                for guideControlPointIndex in 0..<guide.guideControlPointCount {
-                    let guideControlPoint = guide.guideControlPoints[guideControlPointIndex]
-                    let renderCenterPointIn = Math.Point(x: guideControlPoint.renderTanInX,
-                                                         y: guideControlPoint.renderTanInY)
-                    let renderCenterPointOut = Math.Point(x: guideControlPoint.renderTanOutX,
-                                                          y: guideControlPoint.renderTanOutY)
-                    
-                    if (guideControlPoint.renderSelected == true) && (selectedGuidePointTanType == .in) {
-                        
-                        guidePointTanHandlePointSelectedStrokeBuffer.add(translation: renderCenterPointIn,
-                                                                         scale: pointScale,
-                                                                         rotation: 0.0)
-                        guidePointTanHandlePointSelectedFillBuffer.add(translation: renderCenterPointIn,
-                                                                       scale: pointScale,
-                                                                       rotation: 0.0,
-                                                                       red: guideColorPack.tanPointFillActiveRed,
-                                                                       green: guideColorPack.tanPointFillActiveGreen,
-                                                                       blue: guideColorPack.tanPointFillActiveBlue,
-                                                                       alpha: 1.0)
-                        
-                        if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
-                            guidePointTanHandlePointSelectedStrokeBufferBloom.add(translation: renderCenterPointIn,
-                                                                                  scale: pointScale,
-                                                                                  rotation: 0.0)
-                        }
-                        
-                    } else {
-                        
-                        guidePointTanHandlePointUnselectedStrokeBuffer.add(translation: renderCenterPointIn,
-                                                                           scale: pointScale,
-                                                                           rotation: 0.0)
-                        if (guideControlPoint.isManualTanHandleEnabled == true) || (guideControlPoint.renderSelected == true) {
-                            guidePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointIn,
-                                                                             scale: pointScale,
-                                                                             rotation: 0.0,
-                                                                             red: guideColorPack.tanPointFillModifiedRed,
-                                                                             green: guideColorPack.tanPointFillModifiedGreen,
-                                                                             blue: guideColorPack.tanPointFillModifiedBlue,
-                                                                             alpha: 1.0)
-                        } else {
-                            guidePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointIn,
-                                                                             scale: pointScale,
-                                                                             rotation: 0.0,
-                                                                             red: guideColorPack.tanPointFillUnmodifiedRed,
-                                                                             green: guideColorPack.tanPointFillUnmodifiedGreen,
-                                                                             blue: guideColorPack.tanPointFillUnmodifiedBlue,
-                                                                             alpha: 1.0)
-                        }
-                        
-                        if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
-                            guidePointTanHandlePointUnselectedStrokeBufferBloom.add(translation: renderCenterPointIn,
-                                                                                    scale: pointScale,
-                                                                                    rotation: 0.0)
-                        }
-                    }
-                    
-                    if (guideControlPoint.renderSelected == true) && (selectedGuidePointTanType == .out) {
-                        
-                        guidePointTanHandlePointSelectedStrokeBuffer.add(translation: renderCenterPointOut,
-                                                                         scale: pointScale,
-                                                                         rotation: 0.0)
-                        guidePointTanHandlePointSelectedFillBuffer.add(translation: renderCenterPointOut,
-                                                                       scale: pointScale,
-                                                                       rotation: 0.0,
-                                                                       red: guideColorPack.tanPointFillActiveRed,
-                                                                       green: guideColorPack.tanPointFillActiveGreen,
-                                                                       blue: guideColorPack.tanPointFillActiveBlue,
-                                                                       alpha: 1.0)
-                        
-                        if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
-                            guidePointTanHandlePointSelectedStrokeBufferBloom.add(translation: renderCenterPointOut,
-                                                                                  scale: pointScale,
-                                                                                  rotation: 0.0)
-                        }
-                        
-                    } else {
-                        
-                        guidePointTanHandlePointUnselectedStrokeBuffer.add(translation: renderCenterPointOut,
-                                                                           scale: pointScale,
-                                                                           rotation: 0.0)
-                        
-                        if (guideControlPoint.isManualTanHandleEnabled == true) || (guideControlPoint.renderSelected == true) {
-                            guidePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointOut,
-                                                                             scale: pointScale,
-                                                                             rotation: 0.0,
-                                                                             red: guideColorPack.tanPointFillModifiedRed,
-                                                                             green: guideColorPack.tanPointFillModifiedGreen,
-                                                                             blue: guideColorPack.tanPointFillModifiedBlue,
-                                                                             alpha: 1.0)
-                        } else {
-                            guidePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointOut,
-                                                                             scale: pointScale,
-                                                                             rotation: 0.0,
-                                                                             red: guideColorPack.tanPointFillUnmodifiedRed,
-                                                                             green: guideColorPack.tanPointFillUnmodifiedGreen,
-                                                                             blue: guideColorPack.tanPointFillUnmodifiedBlue,
-                                                                             alpha: 1.0)
-                        }
-                        
-                        if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
-                            guidePointTanHandlePointUnselectedStrokeBufferBloom.add(translation: renderCenterPointOut,
-                                                                                    scale: pointScale,
-                                                                                    rotation: 0.0)
-                        }
-                    }
-                }
-            }
-        }
-        
-        if jiggle.isShowingCenterMarker {
-            prepareJiggleCenter(jiggle: jiggle,
-                               worldScalePrecise: worldScalePrecise,
-                               worldScaleStandard: worldScaleStandard,
-                               projectionMatrix: projectionMatrixBase,
-                               modelViewMatrix: modelViewMatrixBase,
-                               baseAdjustRotation: baseAdjustRotation,
-                               isPrecisePass: isPrecisePass,
-                               isBloomEnabled: isBloomEnabled,
-                               jiggleColorPack: jiggleColorPack,
-                               jiggleCenterMarkerUnselectedFillInstance: jiggleCenterMarkerUnselectedFillInstance,
-                               jiggleCenterMarkerUnselectedStrokeInstance: jiggleCenterMarkerUnselectedStrokeInstance,
-                               jiggleCenterMarkerSelectedFillInstance: jiggleCenterMarkerSelectedFillInstance,
-                               jiggleCenterMarkerSelectedStrokeInstance: jiggleCenterMarkerSelectedStrokeInstance)
-        }
-        
-        if jiggle.isShowingWeightCenterMarker {
-            prepareWeightCenter(jiggle: jiggle,
-                               worldScalePrecise: worldScalePrecise,
-                               worldScaleStandard: worldScaleStandard,
-                               projectionMatrix: projectionMatrixBase,
-                               modelViewMatrix: modelViewMatrixBase,
-                               baseAdjustRotation: baseAdjustRotation,
-                               isPrecisePass: isPrecisePass,
-                               isBloomEnabled: isBloomEnabled,
-                               jiggleColorPack: jiggleColorPack,
-                               weightCenterMarkerDotUnselectedFillInstance: weightCenterMarkerDotUnselectedFillInstance,
-                               weightCenterMarkerDotUnselectedStrokeInstance: weightCenterMarkerDotUnselectedStrokeInstance,
-                               weightCenterMarkerDotSelectedFillInstance: weightCenterMarkerDotSelectedFillInstance,
-                               weightCenterMarkerDotSelectedStrokeInstance: weightCenterMarkerDotSelectedStrokeInstance,
-                               weightCenterMarkerSpinnerUnselectedFillInstance: weightCenterMarkerSpinnerUnselectedFillInstance,
-                               weightCenterMarkerSpinnerUnselectedStrokeInstance: weightCenterMarkerSpinnerUnselectedStrokeInstance,
-                               weightCenterMarkerSpinnerSelectedFillInstance: weightCenterMarkerSpinnerSelectedFillInstance,
-                               weightCenterMarkerSpinnerSelectedStrokeInstance: weightCenterMarkerSpinnerSelectedStrokeInstance)
-        }
-        
+        // 1.) Main Jiggle Fill... (Note: This order has no effect, it's just a mental organization)
         if isPrecisePass {
             jiggle.jiggleMesh.editBufferStandard_Precise.projectionMatrix = projectionMatrixBase
             jiggle.jiggleMesh.editBufferStandard_Precise.modelViewMatrix = modelViewMatrixBase
@@ -1136,6 +898,7 @@ class JiggleRenderer {
             jiggle.jiggleMesh.viewBufferStereoscopic.modelViewMatrix = modelViewMatrixBase
         }
         
+        // 2.) The Jiggle Outline
         if jiggle.isShowingJiggleBorderRings {
             if isPrecisePass {
                 jiggle.solidLineBufferStroke_Precise.shapeBuffer.projectionMatrix = projectionMatrixBase
@@ -1147,7 +910,6 @@ class JiggleRenderer {
                 jiggle.solidLineBufferStroke.shapeBuffer.modelViewMatrix = modelViewMatrixBase
                 jiggle.solidLineBuffer.shapeBuffer.projectionMatrix = projectionMatrixBase
                 jiggle.solidLineBuffer.shapeBuffer.modelViewMatrix = modelViewMatrixBase
-                
                 if isBloomEnabled {
                     if jiggle.isShowingJiggleBorderRingsBloom {
                         jiggle.solidLineBloomBuffer.shapeBuffer.projectionMatrix = projectionMatrixBase
@@ -1157,6 +919,23 @@ class JiggleRenderer {
             }
         }
         
+        // 3.) The Jiggle Points
+        if jiggle.isShowingJigglePoints {
+            prepareJigglePoints(jiggle: jiggle,
+                                pointScale: pointScale,
+                                projectionMatrix: projectionMatrixBase,
+                                modelViewMatrix: modelViewMatrixBase,
+                                baseAdjustRotation: baseAdjustRotation,
+                                isPrecisePass: isPrecisePass,
+                                isBloomEnabled: isBloomEnabled,
+                                jiggleColorPack: jiggleColorPack,
+                                jigglePointUnselectedStrokeBuffer: jigglePointUnselectedStrokeBuffer,
+                                jigglePointUnselectedFillBuffer: jigglePointUnselectedFillBuffer,
+                                jigglePointSelectedStrokeBuffer: jigglePointSelectedStrokeBuffer,
+                                jigglePointSelectedFillBuffer: jigglePointSelectedFillBuffer)
+        }
+        
+        // 4.) The Guide Outlines
         if jiggle.isShowingGuideBorderRings {
             if isPrecisePass {
                 for guideIndex in 0..<jiggle.guideCount {
@@ -1185,21 +964,7 @@ class JiggleRenderer {
             }
         }
         
-        if jiggle.isShowingJigglePoints {
-            prepareJigglePoints(jiggle: jiggle,
-                                pointScale: pointScale,
-                                projectionMatrix: projectionMatrixBase,
-                                modelViewMatrix: modelViewMatrixBase,
-                                baseAdjustRotation: baseAdjustRotation,
-                                isPrecisePass: isPrecisePass,
-                                isBloomEnabled: isBloomEnabled,
-                                jiggleColorPack: jiggleColorPack,
-                                jigglePointUnselectedStrokeBuffer: jigglePointUnselectedStrokeBuffer,
-                                jigglePointUnselectedFillBuffer: jigglePointUnselectedFillBuffer,
-                                jigglePointSelectedStrokeBuffer: jigglePointSelectedStrokeBuffer,
-                                jigglePointSelectedFillBuffer: jigglePointSelectedFillBuffer)
-        }
-        
+        // 5.) The Guide Points
         if jiggle.isShowingGuidePoints {
             prepareGuidePoints(jiggle: jiggle,
                                pointScale: pointScale,
@@ -1217,7 +982,121 @@ class JiggleRenderer {
                                guidePointUnselectedFillBuffer: guidePointUnselectedFillBuffer,
                                guidePointSelectedStrokeBuffer: guidePointSelectedStrokeBuffer,
                                guidePointSelectedFillBuffer: guidePointSelectedFillBuffer)
-
+        }
+        
+        // 6.) The Jiggle Tan Lines
+        if jiggle.isShowingJiggleControlPointTanHandles {
+            prepareJigglePointTanLines(jiggle: jiggle,
+                                       projectionMatrix: projectionMatrixBase,
+                                       modelViewMatrix: modelViewMatrixBase,
+                                       worldScaleStandard: worldScaleStandard,
+                                       worldScalePrecise: worldScalePrecise,
+                                       isPrecisePass: isPrecisePass,
+                                       isBloomEnabled: isBloomEnabled,
+                                       jiggleColorPack: jiggleColorPack,
+                                       jigglePointTanHandleLineUnmodifiedFillBuffer: jigglePointTanHandleLineUnmodifiedFillBuffer,
+                                       jigglePointTanHandleLineUnmodifiedStrokeBuffer: jigglePointTanHandleLineUnmodifiedStrokeBuffer,
+                                       jigglePointTanHandleLineModifiedFillBuffer: jigglePointTanHandleLineModifiedFillBuffer,
+                                       jigglePointTanHandleLineModifiedStrokeBuffer: jigglePointTanHandleLineModifiedStrokeBuffer,
+                                       jigglePointTanHandleLineActiveFillBuffer: jigglePointTanHandleLineActiveFillBuffer,
+                                       jigglePointTanHandleLineActiveStrokeBuffer: jigglePointTanHandleLineActiveStrokeBuffer)
+        }
+        
+        // 7.) The Guide Tan Lines
+        if jiggle.isShowingGuideControlPointTanHandles {
+            prepareGuidePointTanLines(jiggle: jiggle,
+                                      projectionMatrix: projectionMatrixBase,
+                                      modelViewMatrix: modelViewMatrixBase,
+                                      worldScaleStandard: worldScaleStandard,
+                                      worldScalePrecise: worldScalePrecise,
+                                      isPrecisePass: isPrecisePass,
+                                      isBloomEnabled: isBloomEnabled,
+                                      isCreatorModeGuideCenters: isCreatorModeGuideCenters,
+                                      isCreatorModeAddGuidePoints: isCreatorModeAddGuidePoints,
+                                      isCreatorModeDeleteGuidePoints: isCreatorModeDeleteGuidePoints,
+                                      guidePointSelectionModality: guidePointSelectionModality,
+                                      jiggleColorPack: jiggleColorPack,
+                                      guidePointTanHandleLineUnmodifiedFillBuffer: guidePointTanHandleLineUnmodifiedFillBuffer,
+                                      guidePointTanHandleLineUnmodifiedStrokeBuffer: guidePointTanHandleLineUnmodifiedStrokeBuffer,
+                                      guidePointTanHandleLineModifiedFillBuffer: guidePointTanHandleLineModifiedFillBuffer,
+                                      guidePointTanHandleLineModifiedStrokeBuffer: guidePointTanHandleLineModifiedStrokeBuffer,
+                                      guidePointTanHandleLineActiveFillBuffer: guidePointTanHandleLineActiveFillBuffer,
+                                      guidePointTanHandleLineActiveStrokeBuffer: guidePointTanHandleLineActiveStrokeBuffer)
+        }
+        
+        // 8.) The Jiggle Tan Points
+        if jiggle.isShowingJiggleControlPointTanHandles {
+            prepareJigglePointTanPoints(jiggle: jiggle,
+                                        projectionMatrix: projectionMatrixBase,
+                                        modelViewMatrix: modelViewMatrixBase,
+                                        pointScale: pointScale,
+                                        isPrecisePass: isPrecisePass,
+                                        isBloomEnabled: isBloomEnabled,
+                                        jiggleColorPack: jiggleColorPack,
+                                        selectedJigglePointTanType: selectedJigglePointTanType,
+                                        jigglePointTanHandlePointUnselectedStrokeBuffer: jigglePointTanHandlePointUnselectedStrokeBuffer,
+                                        jigglePointTanHandlePointUnselectedFillBuffer: jigglePointTanHandlePointUnselectedFillBuffer,
+                                        jigglePointTanHandlePointSelectedStrokeBuffer: jigglePointTanHandlePointSelectedStrokeBuffer,
+                                        jigglePointTanHandlePointSelectedFillBuffer: jigglePointTanHandlePointSelectedFillBuffer)
+        }
+        
+        // 9.) The Guide Tan Points
+        if jiggle.isShowingGuideControlPointTanHandles {
+            prepareGuidePointTanPoints(jiggle: jiggle,
+                                       projectionMatrix: projectionMatrixBase,
+                                       modelViewMatrix: modelViewMatrixBase,
+                                       pointScale: pointScale,
+                                       isPrecisePass: isPrecisePass,
+                                       isBloomEnabled: isBloomEnabled,
+                                       isCreatorModeGuideCenters: isCreatorModeGuideCenters,
+                                       isCreatorModeAddGuidePoints: isCreatorModeAddGuidePoints,
+                                       isCreatorModeDeleteGuidePoints: isCreatorModeDeleteGuidePoints,
+                                       guidePointSelectionModality: guidePointSelectionModality,
+                                       selectedGuidePointTanType: selectedGuidePointTanType,
+                                       jiggleColorPack: jiggleColorPack,
+                                       guidePointTanHandlePointUnselectedStrokeBuffer: guidePointTanHandlePointUnselectedStrokeBuffer,
+                                       guidePointTanHandlePointUnselectedFillBuffer: guidePointTanHandlePointUnselectedFillBuffer,
+                                       guidePointTanHandlePointSelectedStrokeBuffer: guidePointTanHandlePointSelectedStrokeBuffer,
+                                       guidePointTanHandlePointSelectedFillBuffer: guidePointTanHandlePointSelectedFillBuffer)
+        }
+        
+        
+        // 10.) The Jiggle Center Marker
+        if jiggle.isShowingCenterMarker {
+            prepareJiggleCenter(jiggle: jiggle,
+                               worldScalePrecise: worldScalePrecise,
+                               worldScaleStandard: worldScaleStandard,
+                               projectionMatrix: projectionMatrixBase,
+                               modelViewMatrix: modelViewMatrixBase,
+                               baseAdjustRotation: baseAdjustRotation,
+                               isPrecisePass: isPrecisePass,
+                               isBloomEnabled: isBloomEnabled,
+                               jiggleColorPack: jiggleColorPack,
+                               jiggleCenterMarkerUnselectedFillInstance: jiggleCenterMarkerUnselectedFillInstance,
+                               jiggleCenterMarkerUnselectedStrokeInstance: jiggleCenterMarkerUnselectedStrokeInstance,
+                               jiggleCenterMarkerSelectedFillInstance: jiggleCenterMarkerSelectedFillInstance,
+                               jiggleCenterMarkerSelectedStrokeInstance: jiggleCenterMarkerSelectedStrokeInstance)
+        }
+        
+        // 10.) The Weight Center Marker
+        if jiggle.isShowingWeightCenterMarker {
+            prepareWeightCenter(jiggle: jiggle,
+                               worldScalePrecise: worldScalePrecise,
+                               worldScaleStandard: worldScaleStandard,
+                               projectionMatrix: projectionMatrixBase,
+                               modelViewMatrix: modelViewMatrixBase,
+                               baseAdjustRotation: baseAdjustRotation,
+                               isPrecisePass: isPrecisePass,
+                               isBloomEnabled: isBloomEnabled,
+                               jiggleColorPack: jiggleColorPack,
+                               weightCenterMarkerDotUnselectedFillInstance: weightCenterMarkerDotUnselectedFillInstance,
+                               weightCenterMarkerDotUnselectedStrokeInstance: weightCenterMarkerDotUnselectedStrokeInstance,
+                               weightCenterMarkerDotSelectedFillInstance: weightCenterMarkerDotSelectedFillInstance,
+                               weightCenterMarkerDotSelectedStrokeInstance: weightCenterMarkerDotSelectedStrokeInstance,
+                               weightCenterMarkerSpinnerUnselectedFillInstance: weightCenterMarkerSpinnerUnselectedFillInstance,
+                               weightCenterMarkerSpinnerUnselectedStrokeInstance: weightCenterMarkerSpinnerUnselectedStrokeInstance,
+                               weightCenterMarkerSpinnerSelectedFillInstance: weightCenterMarkerSpinnerSelectedFillInstance,
+                               weightCenterMarkerSpinnerSelectedStrokeInstance: weightCenterMarkerSpinnerSelectedStrokeInstance)
         }
     }
     
@@ -1226,16 +1105,17 @@ class JiggleRenderer {
                       isPrecisePass: Bool) {
         if jiggle.isShowingMeshEditStandard {
             
-            //TODO: THis is for test...
-            //if jiggle.currentHashMeshStandard.polyHash.triangulationType == .fast {
-            //    jiggle.jiggleMesh.editBufferStandard.red = 0.9
-            //    jiggle.jiggleMesh.editBufferStandard.green = 0.9
-            //    jiggle.jiggleMesh.editBufferStandard.blue = 0.9
-            //} else {
-            //    jiggle.jiggleMesh.editBufferStandard.red = 1.0
-            //    jiggle.jiggleMesh.editBufferStandard.green = 1.0
-            //    jiggle.jiggleMesh.editBufferStandard.blue = 1.0
-            //}
+            if Self.DIRTY_TRIANGLES_SHOW_DIRTY {
+                if jiggle.currentHashMeshStandard.polyHash.triangulationType == .fast {
+                    jiggle.jiggleMesh.editBufferStandard.red = 0.9
+                    jiggle.jiggleMesh.editBufferStandard.green = 0.9
+                    jiggle.jiggleMesh.editBufferStandard.blue = 0.9
+                } else {
+                    jiggle.jiggleMesh.editBufferStandard.red = 1.0
+                    jiggle.jiggleMesh.editBufferStandard.green = 1.0
+                    jiggle.jiggleMesh.editBufferStandard.blue = 1.0
+                }
+            }
             
             if isPrecisePass {
                 jiggle.jiggleMesh.editBufferStandard_Precise.render(renderEncoder: renderEncoder,
@@ -1247,18 +1127,18 @@ class JiggleRenderer {
             }
         } else if jiggle.isShowingMeshEditWeights {
             
-            //TODO: THis is for test...
-            /*
-             if jiggle.currentHashMeshWeights.polyHash.triangulationType == .fast {
-             jiggle.jiggleMesh.editBufferWeights.red = 0.9
-             jiggle.jiggleMesh.editBufferWeights.green = 0.9
-             jiggle.jiggleMesh.editBufferWeights.blue = 0.9
-             } else {
-             jiggle.jiggleMesh.editBufferWeights.red = 1.0
-             jiggle.jiggleMesh.editBufferWeights.green = 1.0
-             jiggle.jiggleMesh.editBufferWeights.blue = 1.0
-             }
-             */
+            if Self.DIRTY_TRIANGLES_SHOW_DIRTY {
+                if jiggle.currentHashMeshWeights.polyHash.triangulationType == .fast {
+                    jiggle.jiggleMesh.editBufferWeights.red = 0.9
+                    jiggle.jiggleMesh.editBufferWeights.green = 0.9
+                    jiggle.jiggleMesh.editBufferWeights.blue = 0.9
+                } else {
+                    jiggle.jiggleMesh.editBufferWeights.red = 1.0
+                    jiggle.jiggleMesh.editBufferWeights.green = 1.0
+                    jiggle.jiggleMesh.editBufferWeights.blue = 1.0
+                }
+            }
+            
             if isPrecisePass {
                 jiggle.jiggleMesh.editBufferWeights_Precise.render(renderEncoder: renderEncoder,
                                                                    pipelineState: .shapeNodeColoredIndexed2DAlphaBlending)
@@ -1272,18 +1152,17 @@ class JiggleRenderer {
     func renderMesh3D(jiggle: Jiggle, renderEncoder: MTLRenderCommandEncoder) {
         if jiggle.isShowingMeshViewStandard {
             
-            /*
-             //TODO: THis is for test...
-             if jiggle.currentHashTrianglesViewStandard.polyHash.triangulationType == .fast {
-             jiggle.jiggleMesh.viewBuffer.red = 1.0
-             jiggle.jiggleMesh.viewBuffer.green = 0.5
-             jiggle.jiggleMesh.viewBuffer.blue = 0.5
-             } else {
-             jiggle.jiggleMesh.viewBuffer.red = 1.0
-             jiggle.jiggleMesh.viewBuffer.green = 1.0
-             jiggle.jiggleMesh.viewBuffer.blue = 1.0
-             }
-             */
+            if Self.DIRTY_TRIANGLES_SHOW_DIRTY {
+                if jiggle.currentHashTrianglesViewStandard.polyHash.triangulationType == .fast {
+                    jiggle.jiggleMesh.viewBuffer.red = 1.0
+                    jiggle.jiggleMesh.viewBuffer.green = 0.5
+                    jiggle.jiggleMesh.viewBuffer.blue = 0.5
+                } else {
+                    jiggle.jiggleMesh.viewBuffer.red = 1.0
+                    jiggle.jiggleMesh.viewBuffer.green = 1.0
+                    jiggle.jiggleMesh.viewBuffer.blue = 1.0
+                }
+            }
             
             jiggle.jiggleMesh.viewBuffer.render(renderEncoder: renderEncoder, pipelineState: .spriteNodeIndexed3DNoBlending)
         }
@@ -1313,161 +1192,8 @@ class JiggleRenderer {
         }
         return result
     }
-
-    @MainActor func getMarkerColorPack(isDarkModeEnabled: Bool) -> MarkerRenderColorPack {
-        
-        let lineFillPrimaryUnspecifiedRed: Float
-        let lineFillPrimaryUnspecifiedGreen: Float
-        let lineFillPrimaryUnspecifiedBlue: Float
-        if isDarkModeEnabled {
-            lineFillPrimaryUnspecifiedRed = JiggleTheme.guideMarkerLineDark.red
-            lineFillPrimaryUnspecifiedGreen = JiggleTheme.guideMarkerLineDark.green
-            lineFillPrimaryUnspecifiedBlue = JiggleTheme.guideMarkerLineDark.blue
-        } else {
-            lineFillPrimaryUnspecifiedRed = JiggleTheme.guideMarkerLineLight.red
-            lineFillPrimaryUnspecifiedGreen = JiggleTheme.guideMarkerLineLight.green
-            lineFillPrimaryUnspecifiedBlue = JiggleTheme.guideMarkerLineLight.blue
-        }
-        
-        let lineFillPrimarySpecifiedRed: Float
-        let lineFillPrimarySpecifiedGreen: Float
-        let lineFillPrimarySpecifiedBlue: Float
-        if isDarkModeEnabled {
-            lineFillPrimarySpecifiedRed = JiggleTheme.guideMarkerLineSpecifiedDark.red
-            lineFillPrimarySpecifiedGreen = JiggleTheme.guideMarkerLineSpecifiedDark.green
-            lineFillPrimarySpecifiedBlue = JiggleTheme.guideMarkerLineSpecifiedDark.blue
-        } else {
-            lineFillPrimarySpecifiedRed = JiggleTheme.guideMarkerLineSpecifiedLight.red
-            lineFillPrimarySpecifiedGreen = JiggleTheme.guideMarkerLineSpecifiedLight.green
-            lineFillPrimarySpecifiedBlue = JiggleTheme.guideMarkerLineSpecifiedLight.blue
-        }
-        
-        let lineFillSecondaryRed: Float
-        let lineFillSecondaryGreen: Float
-        let lineFillSecondaryBlue: Float
-        if isDarkModeEnabled {
-            lineFillSecondaryRed = JiggleTheme.guideMarkerLineMinorDark.red
-            lineFillSecondaryGreen = JiggleTheme.guideMarkerLineMinorDark.green
-            lineFillSecondaryBlue = JiggleTheme.guideMarkerLineMinorDark.blue
-        } else {
-            lineFillSecondaryRed = JiggleTheme.guideMarkerLineMinorLight.red
-            lineFillSecondaryGreen = JiggleTheme.guideMarkerLineMinorLight.green
-            lineFillSecondaryBlue = JiggleTheme.guideMarkerLineMinorLight.blue
-        }
-        
-        let dotFillPrimaryUnspecifiedEvenRed: Float
-        let dotFillPrimaryUnspecifiedEvenGreen: Float
-        let dotFillPrimaryUnspecifiedEvenBlue: Float
-        if isDarkModeEnabled {
-            dotFillPrimaryUnspecifiedEvenRed = JiggleTheme.guideMarkerPointEvenDark.red
-            dotFillPrimaryUnspecifiedEvenGreen = JiggleTheme.guideMarkerPointEvenDark.green
-            dotFillPrimaryUnspecifiedEvenBlue = JiggleTheme.guideMarkerPointEvenDark.blue
-        } else {
-            dotFillPrimaryUnspecifiedEvenRed = JiggleTheme.guideMarkerPointEvenLight.red
-            dotFillPrimaryUnspecifiedEvenGreen = JiggleTheme.guideMarkerPointEvenLight.green
-            dotFillPrimaryUnspecifiedEvenBlue = JiggleTheme.guideMarkerPointEvenLight.blue
-        }
-        
-        let dotFillPrimaryUnspecifiedOddRed: Float
-        let dotFillPrimaryUnspecifiedOddGreen: Float
-        let dotFillPrimaryUnspecifiedOddBlue: Float
-        if isDarkModeEnabled {
-            dotFillPrimaryUnspecifiedOddRed = JiggleTheme.guideMarkerPointOddDark.red
-            dotFillPrimaryUnspecifiedOddGreen = JiggleTheme.guideMarkerPointOddDark.green
-            dotFillPrimaryUnspecifiedOddBlue = JiggleTheme.guideMarkerPointOddDark.blue
-        } else {
-            dotFillPrimaryUnspecifiedOddRed = JiggleTheme.guideMarkerPointOddLight.red
-            dotFillPrimaryUnspecifiedOddGreen = JiggleTheme.guideMarkerPointOddLight.green
-            dotFillPrimaryUnspecifiedOddBlue = JiggleTheme.guideMarkerPointOddLight.blue
-        }
-        
-        let dotFillPrimarySpecifiedEvenRed: Float
-        let dotFillPrimarySpecifiedEvenGreen: Float
-        let dotFillPrimarySpecifiedEvenBlue: Float
-        if isDarkModeEnabled {
-            dotFillPrimarySpecifiedEvenRed = JiggleTheme.guideMarkerPointSpecifiedEvenDark.red
-            dotFillPrimarySpecifiedEvenGreen = JiggleTheme.guideMarkerPointSpecifiedEvenDark.green
-            dotFillPrimarySpecifiedEvenBlue = JiggleTheme.guideMarkerPointSpecifiedEvenDark.blue
-        } else {
-            dotFillPrimarySpecifiedEvenRed = JiggleTheme.guideMarkerPointSpecifiedEvenLight.red
-            dotFillPrimarySpecifiedEvenGreen = JiggleTheme.guideMarkerPointSpecifiedEvenLight.green
-            dotFillPrimarySpecifiedEvenBlue = JiggleTheme.guideMarkerPointSpecifiedEvenLight.blue
-        }
-        
-        let dotFillPrimarySpecifiedOddRed: Float
-        let dotFillPrimarySpecifiedOddGreen: Float
-        let dotFillPrimarySpecifiedOddBlue: Float
-        if isDarkModeEnabled {
-            dotFillPrimarySpecifiedOddRed = JiggleTheme.guideMarkerPointSpecifiedOddDark.red
-            dotFillPrimarySpecifiedOddGreen = JiggleTheme.guideMarkerPointSpecifiedOddDark.green
-            dotFillPrimarySpecifiedOddBlue = JiggleTheme.guideMarkerPointSpecifiedOddDark.blue
-        } else {
-            dotFillPrimarySpecifiedOddRed = JiggleTheme.guideMarkerPointSpecifiedOddLight.red
-            dotFillPrimarySpecifiedOddGreen = JiggleTheme.guideMarkerPointSpecifiedOddLight.green
-            dotFillPrimarySpecifiedOddBlue = JiggleTheme.guideMarkerPointSpecifiedOddLight.blue
-        }
-        
-        let dotFillSecondaryEvenRed: Float
-        let dotFillSecondaryEvenGreen: Float
-        let dotFillSecondaryEvenBlue: Float
-        if isDarkModeEnabled {
-            dotFillSecondaryEvenRed = JiggleTheme.guideMarkerPointMinorEvenDark.red
-            dotFillSecondaryEvenGreen = JiggleTheme.guideMarkerPointMinorEvenDark.green
-            dotFillSecondaryEvenBlue = JiggleTheme.guideMarkerPointMinorEvenDark.blue
-        } else {
-            dotFillSecondaryEvenRed = JiggleTheme.guideMarkerPointMinorEvenLight.red
-            dotFillSecondaryEvenGreen = JiggleTheme.guideMarkerPointMinorEvenLight.green
-            dotFillSecondaryEvenBlue = JiggleTheme.guideMarkerPointMinorEvenLight.blue
-        }
-        
-        let dotFillSecondaryOddRed: Float
-        let dotFillSecondaryOddGreen: Float
-        let dotFillSecondaryOddBlue: Float
-        if isDarkModeEnabled {
-            dotFillSecondaryOddRed = JiggleTheme.guideMarkerPointMinorOddDark.red
-            dotFillSecondaryOddGreen = JiggleTheme.guideMarkerPointMinorOddDark.green
-            dotFillSecondaryOddBlue = JiggleTheme.guideMarkerPointMinorOddDark.blue
-        } else {
-            dotFillSecondaryOddRed = JiggleTheme.guideMarkerPointMinorOddLight.red
-            dotFillSecondaryOddGreen = JiggleTheme.guideMarkerPointMinorOddLight.green
-            dotFillSecondaryOddBlue = JiggleTheme.guideMarkerPointMinorOddLight.blue
-        }
-        
-        return MarkerRenderColorPack(lineFillPrimaryUnspecifiedRed: lineFillPrimaryUnspecifiedRed,
-                                     lineFillPrimaryUnspecifiedGreen: lineFillPrimaryUnspecifiedGreen,
-                                     lineFillPrimaryUnspecifiedBlue: lineFillPrimaryUnspecifiedBlue,
-                                     lineFillPrimarySpecifiedRed: lineFillPrimarySpecifiedRed,
-                                     lineFillPrimarySpecifiedGreen: lineFillPrimarySpecifiedGreen,
-                                     lineFillPrimarySpecifiedBlue: lineFillPrimarySpecifiedBlue,
-                                     lineFillSecondaryRed: lineFillSecondaryRed,
-                                     lineFillSecondaryGreen: lineFillSecondaryGreen,
-                                     lineFillSecondaryBlue: lineFillSecondaryBlue,
-                                     dotFillPrimaryUnspecifiedOddRed: dotFillPrimaryUnspecifiedOddRed,
-                                     dotFillPrimaryUnspecifiedOddGreen: dotFillPrimaryUnspecifiedOddGreen,
-                                     dotFillPrimaryUnspecifiedOddBlue: dotFillPrimaryUnspecifiedOddBlue,
-                                     
-                                     dotFillPrimaryUnspecifiedEvenRed: dotFillPrimaryUnspecifiedEvenRed,
-                                     dotFillPrimaryUnspecifiedEvenGreen: dotFillPrimaryUnspecifiedEvenGreen,
-                                     dotFillPrimaryUnspecifiedEvenBlue: dotFillPrimaryUnspecifiedEvenBlue,
-                                     
-                                     
-                                     dotFillPrimarySpecifiedOddRed: dotFillPrimarySpecifiedOddRed,
-                                     dotFillPrimarySpecifiedOddGreen: dotFillPrimarySpecifiedOddGreen,
-                                     dotFillPrimarySpecifiedOddBlue: dotFillPrimarySpecifiedOddBlue,
-                                     
-                                     dotFillPrimarySpecifiedEvenRed: dotFillPrimarySpecifiedEvenRed,
-                                     dotFillPrimarySpecifiedEvenGreen: dotFillPrimarySpecifiedEvenGreen,
-                                     dotFillPrimarySpecifiedEvenBlue: dotFillPrimarySpecifiedEvenBlue,
-                                     
-                                     dotFillSecondaryOddRed: dotFillSecondaryOddRed,
-                                     dotFillSecondaryOddGreen: dotFillSecondaryOddGreen,
-                                     dotFillSecondaryOddBlue: dotFillSecondaryOddBlue,
-                                     dotFillSecondaryEvenRed: dotFillSecondaryEvenRed,
-                                     dotFillSecondaryEvenGreen: dotFillSecondaryEvenGreen,
-                                     dotFillSecondaryEvenBlue: dotFillSecondaryEvenBlue)
-    }
     
-    @MainActor func getJiggleColorPack(jiggle: Jiggle,
+    func getJiggleColorPack(jiggle: Jiggle,
                                        isJiggleSelected: Bool,
                                        isDarkModeEnabled: Bool,
                                        isCreatorModeJiggleCenters: Bool,
@@ -1568,7 +1294,6 @@ class JiggleRenderer {
             }
         }
         
-        // Just the selected fill...
         let selectedFillRed: Float
         let selectedFillGreen: Float
         let selectedFillBlue: Float
@@ -1594,8 +1319,6 @@ class JiggleRenderer {
             }
         }
         
-        
-        // Just the modified fill...
         let fillModifiedRed: Float
         let fillModifiedGreen: Float
         let fillModifiedBlue: Float
@@ -1631,11 +1354,8 @@ class JiggleRenderer {
                     fillModifiedBlue = JiggleTheme.outlineUnselectedModifiedFillLight.blue
                 }
             }
-            
         }
         
-        
-        // Just the bloom...
         let bloomRed: Float
         let bloomGreen: Float
         let bloomBlue: Float
@@ -1648,7 +1368,6 @@ class JiggleRenderer {
             bloomGreen = JiggleTheme.bloomGlowLight.green
             bloomBlue = JiggleTheme.bloomGlowLight.blue
         }
-        
         
         let fillWeightCenterRed: Float
         let fillWeightCenterGreen: Float
@@ -1684,8 +1403,6 @@ class JiggleRenderer {
                 fillWeightCenterBlue = JiggleTheme.guideUnselectedCenterMarkerLight.blue
             }
         }
-        
-        
         
         let tanLineFillUnmodifiedRed: Float
         let tanLineFillUnmodifiedGreen: Float
@@ -1885,7 +1602,6 @@ class JiggleRenderer {
             }
         }
         
-        
         return JiggleRenderColorPack(strokeRed: regularStrokeRed,
                                      strokeGreen: regularStrokeGreen,
                                      strokeBlue: regularStrokeBlue,
@@ -1935,7 +1651,7 @@ class JiggleRenderer {
                                      bloomBlue: bloomBlue)
     }
     
-    @MainActor func getGuideColorPack(jiggle: Jiggle,
+    func getGuideColorPack(jiggle: Jiggle,
                                       isJiggleSelected: Bool,
                                       isDarkModeEnabled: Bool,
                                       guide: Guide,
@@ -1953,7 +1669,6 @@ class JiggleRenderer {
                 isGuideSelected = true
             }
         }
-        
         
         let regularFillRed: Float
         let regularFillGreen: Float
@@ -1981,9 +1696,6 @@ class JiggleRenderer {
         }
         
         if isDisplayingAsFrozen {
-            
-            // The frozen case...
-            
             if isDarkModeEnabled {
                 regularStrokeRed = JiggleTheme.outlineFrozenStrokeDark.red
                 regularStrokeGreen = JiggleTheme.outlineFrozenStrokeDark.green
@@ -1999,12 +1711,7 @@ class JiggleRenderer {
                 regularFillGreen = JiggleTheme.outlineFrozenFillLight.green
                 regularFillBlue = JiggleTheme.outlineFrozenFillLight.blue
             }
-            
-            
         } else {
-            
-            // The not frozen case...
-            
             if isDarkModeEnabled {
                 regularStrokeRed = JiggleTheme.outlineUnselectedStrokeDark.red
                 regularStrokeGreen = JiggleTheme.outlineUnselectedStrokeDark.green
@@ -2026,8 +1733,6 @@ class JiggleRenderer {
                     regularFillBlue = JiggleTheme.outlineFrozenFillLight.blue
                 }
             } else {
-                
-                
                 if isDisplayingAsSelected {
                     if jiggle.guideCount == 5 {
                         if weightDepthIndex == 4 {
@@ -2374,7 +2079,6 @@ class JiggleRenderer {
             }
         }
         
-        // Just the modified fill...
         let fillModifiedRed: Float
         let fillModifiedGreen: Float
         let fillModifiedBlue: Float
@@ -2610,8 +2314,6 @@ class JiggleRenderer {
             }
         }
         
-        
-        // Just the bloom...
         let bloomRed: Float
         let bloomGreen: Float
         let bloomBlue: Float
@@ -2640,7 +2342,7 @@ class JiggleRenderer {
                                     fillModifiedRed: fillModifiedRed,
                                     fillModifiedGreen: fillModifiedGreen,
                                     fillModifiedBlue: fillModifiedBlue,
-                                
+                                    
                                     tanLineFillUnmodifiedRed: tanLineFillUnmodifiedRed,
                                     tanLineFillUnmodifiedGreen: tanLineFillUnmodifiedGreen,
                                     tanLineFillUnmodifiedBlue: tanLineFillUnmodifiedBlue,
@@ -2670,74 +2372,503 @@ class JiggleRenderer {
                                     bloomBlue: bloomBlue)
     }
     
-    func renderGuideBorderRingsBloom(renderEncoder: MTLRenderCommandEncoder) {
-        if ApplicationController.isGlowingSelectionEnabled {
-            if let jiggle = jiggle {
-                if jiggle.isShowingGuideBorderRingBloom {
-                    if !jiggle.isFrozen {
-                        if let selectedGuide = jiggle.getSelectedGuide() {
-                            if selectedGuide.isFrozen == false {
-                                let scale = getAdjustScale()
-                                selectedGuide.solidLineBloomBuffer.render(renderEncoder: renderEncoder,
-                                                                          pipelineState: .shapeNodeIndexed3DNoBlending,
-                                                                          scale: scale)
-                            }
-                        }
+    @MainActor
+    @inline(__always)
+    func prepareJiggleCenter(jiggle: Jiggle,
+                            worldScalePrecise: Float,
+                            worldScaleStandard: Float,
+                            projectionMatrix: matrix_float4x4,
+                            modelViewMatrix: matrix_float4x4,
+                            baseAdjustRotation: Float,
+                            isPrecisePass: Bool,
+                            isBloomEnabled: Bool,
+                            jiggleColorPack: JiggleRenderColorPack,
+                            jiggleCenterMarkerUnselectedFillInstance: IndexedSpriteInstance2D,
+                            jiggleCenterMarkerUnselectedStrokeInstance: IndexedSpriteInstance2D,
+                            jiggleCenterMarkerSelectedFillInstance: IndexedSpriteInstance2D,
+                            jiggleCenterMarkerSelectedStrokeInstance: IndexedSpriteInstance2D) {
+        let jiggleCenterScale: Float
+        if isPrecisePass {
+            jiggleCenterScale = worldScalePrecise * JiggleViewModel.jiggleCenterScalePrecise
+        } else {
+            jiggleCenterScale = worldScaleStandard * JiggleViewModel.jiggleCenterScaleStandard
+        }
+        var offsetCenter = jiggle.offsetCenter
+        offsetCenter = jiggle.transformPoint(point: offsetCenter)
+        var centerModelView = modelViewMatrix
+        centerModelView.translation(x: offsetCenter.x,
+                                    y: offsetCenter.y,
+                                    z: 0.0)
+        centerModelView.scale(jiggleCenterScale)
+        centerModelView.rotateZ(radians: baseAdjustRotation)
+        if isSelected {
+            jiggleCenterMarkerSelectedFillInstance.projectionMatrix = projectionMatrix
+            jiggleCenterMarkerSelectedFillInstance.modelViewMatrix = centerModelView
+            jiggleCenterMarkerSelectedFillInstance.red = jiggleColorPack.fillUnselectedRed
+            jiggleCenterMarkerSelectedFillInstance.green = jiggleColorPack.fillUnselectedBlue
+            jiggleCenterMarkerSelectedFillInstance.blue = jiggleColorPack.fillUnselectedBlue
+            jiggleCenterMarkerSelectedStrokeInstance.projectionMatrix = projectionMatrix
+            jiggleCenterMarkerSelectedStrokeInstance.modelViewMatrix = centerModelView
+            jiggleCenterMarkerSelectedStrokeInstance.red = jiggleColorPack.strokeRed
+            jiggleCenterMarkerSelectedStrokeInstance.green = jiggleColorPack.strokeGreen
+            jiggleCenterMarkerSelectedStrokeInstance.blue = jiggleColorPack.strokeBlue
+            if jiggle.isShowingCenterMarkerBloom && isBloomEnabled && !isPrecisePass {
+                jiggleCenterMarkerSelectedRegularBloomInstance.projectionMatrix = projectionMatrix
+                jiggleCenterMarkerSelectedRegularBloomInstance.modelViewMatrix = centerModelView
+                jiggleCenterMarkerSelectedRegularBloomInstance.red = jiggleColorPack.bloomRed
+                jiggleCenterMarkerSelectedRegularBloomInstance.green = jiggleColorPack.bloomGreen
+                jiggleCenterMarkerSelectedRegularBloomInstance.blue = jiggleColorPack.bloomBlue
+            }
+        } else {
+            jiggleCenterMarkerUnselectedFillInstance.projectionMatrix = projectionMatrix
+            jiggleCenterMarkerUnselectedFillInstance.modelViewMatrix = centerModelView
+            jiggleCenterMarkerUnselectedFillInstance.red = jiggleColorPack.fillUnselectedRed
+            jiggleCenterMarkerUnselectedFillInstance.green = jiggleColorPack.fillUnselectedBlue
+            jiggleCenterMarkerUnselectedFillInstance.blue = jiggleColorPack.fillUnselectedBlue
+            jiggleCenterMarkerUnselectedStrokeInstance.projectionMatrix = projectionMatrix
+            jiggleCenterMarkerUnselectedStrokeInstance.modelViewMatrix = centerModelView
+            jiggleCenterMarkerUnselectedStrokeInstance.red = jiggleColorPack.strokeRed
+            jiggleCenterMarkerUnselectedStrokeInstance.green = jiggleColorPack.strokeGreen
+            jiggleCenterMarkerUnselectedStrokeInstance.blue = jiggleColorPack.strokeBlue
+        }
+    }
+    
+    func renderJiggleCenterMarkerStroke(renderEncoder: MTLRenderCommandEncoder,
+                                        isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingCenterMarker {
+                if isSelected {
+                    if isPrecisePass {
+                        jiggleCenterMarkerSelectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        jiggleCenterMarkerSelectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                } else {
+                    if isPrecisePass {
+                        jiggleCenterMarkerUnselectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        jiggleCenterMarkerUnselectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
                     }
                 }
             }
         }
     }
     
-    func renderGuideBorderRingsStroke(renderEncoder: MTLRenderCommandEncoder,
+    func renderJiggleCenterMarkerFill(renderEncoder: MTLRenderCommandEncoder,
                                       isPrecisePass: Bool) {
         if let jiggle = jiggle {
-            if jiggle.isShowingGuideBorderRings {
-                let scale = getAdjustScale()
-                if isPrecisePass {
-                    for guideIndex in 0..<jiggle.guideCount {
-                        let guide = jiggle.guides[guideIndex]
-                        guide.solidLineBufferStroke_Precise.render(renderEncoder: renderEncoder,
-                                                                   pipelineState: .shapeNodeIndexed2DNoBlending,
-                                                                   scale: scale)
+            if jiggle.isShowingCenterMarker {
+                if isSelected {
+                    if isPrecisePass {
+                        jiggleCenterMarkerSelectedPreciseFillInstance.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        jiggleCenterMarkerSelectedRegularFillInstance.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
                     }
                 } else {
-                    for guideIndex in 0..<jiggle.guideCount {
-                        let guide = jiggle.guides[guideIndex]
-                        guide.solidLineBufferStroke.render(renderEncoder: renderEncoder,
-                                                           pipelineState: .shapeNodeIndexed2DNoBlending,
-                                                           scale: scale)
+                    if isPrecisePass {
+                        jiggleCenterMarkerUnselectedPreciseFillInstance.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        jiggleCenterMarkerUnselectedRegularFillInstance.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
                     }
+                }
+            }
+        }
+    }
+    
+    func renderJiggleCenterMarkerStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if isSelected {
+                    if jiggle.isShowingCenterMarkerBloom {
+                        jiggleCenterMarkerSelectedRegularBloomInstance.render(renderEncoder: renderEncoder,
+                                                                              pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    @inline(__always)
+    func prepareWeightCenter(jiggle: Jiggle,
+                            worldScalePrecise: Float,
+                            worldScaleStandard: Float,
+                            projectionMatrix: matrix_float4x4,
+                            modelViewMatrix: matrix_float4x4,
+                            baseAdjustRotation: Float,
+                            isPrecisePass: Bool,
+                            isBloomEnabled: Bool,
+                            jiggleColorPack: JiggleRenderColorPack,
+                            weightCenterMarkerDotUnselectedFillInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerDotUnselectedStrokeInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerDotSelectedFillInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerDotSelectedStrokeInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerSpinnerUnselectedFillInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerSpinnerUnselectedStrokeInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerSpinnerSelectedFillInstance: IndexedSpriteInstance2D,
+                            weightCenterMarkerSpinnerSelectedStrokeInstance: IndexedSpriteInstance2D) {
+        
+        let weghtCenterScale: Float
+        if isPrecisePass {
+            weghtCenterScale = worldScalePrecise * JiggleViewModel.weightCenterScalePrecise
+        } else {
+            weghtCenterScale = worldScaleStandard * JiggleViewModel.weightCenterScaleStandard
+        }
+        
+        var guideCenter = jiggle.guideCenter
+        guideCenter = jiggle.transformPoint(point: guideCenter)
+        var centerModelView = modelViewMatrix
+        centerModelView.translation(x: guideCenter.x,
+                                    y: guideCenter.y,
+                                    z: 0.0)
+        centerModelView.scale(weghtCenterScale)
+        centerModelView.rotateZ(radians: baseAdjustRotation)
+        
+        var spinnerModelView = centerModelView
+        spinnerModelView.rotateZ(radians: jiggle.guideCenterSpinnerRotation)
+        
+        if isSelected {
+            weightCenterMarkerDotSelectedFillInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerDotSelectedFillInstance.modelViewMatrix = centerModelView
+            weightCenterMarkerDotSelectedFillInstance.red = jiggleColorPack.fillWeightCenterRed
+            weightCenterMarkerDotSelectedFillInstance.green = jiggleColorPack.fillWeightCenterGreen
+            weightCenterMarkerDotSelectedFillInstance.blue = jiggleColorPack.fillWeightCenterBlue
+            
+            weightCenterMarkerDotSelectedStrokeInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerDotSelectedStrokeInstance.modelViewMatrix = centerModelView
+            weightCenterMarkerDotSelectedStrokeInstance.red = jiggleColorPack.strokeRed
+            weightCenterMarkerDotSelectedStrokeInstance.green = jiggleColorPack.strokeGreen
+            weightCenterMarkerDotSelectedStrokeInstance.blue = jiggleColorPack.strokeBlue
+            
+            weightCenterMarkerSpinnerSelectedFillInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerSpinnerSelectedFillInstance.modelViewMatrix = spinnerModelView
+            weightCenterMarkerSpinnerSelectedFillInstance.red = jiggleColorPack.fillWeightCenterRed
+            weightCenterMarkerSpinnerSelectedFillInstance.green = jiggleColorPack.fillWeightCenterGreen
+            weightCenterMarkerSpinnerSelectedFillInstance.blue = jiggleColorPack.fillWeightCenterBlue
+            
+            weightCenterMarkerSpinnerSelectedStrokeInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerSpinnerSelectedStrokeInstance.modelViewMatrix = spinnerModelView
+            weightCenterMarkerSpinnerSelectedStrokeInstance.red = jiggleColorPack.strokeRed
+            weightCenterMarkerSpinnerSelectedStrokeInstance.green = jiggleColorPack.strokeGreen
+            weightCenterMarkerSpinnerSelectedStrokeInstance.blue = jiggleColorPack.strokeBlue
+            
+            if isBloomEnabled && jiggle.isShowingWeightCenterMarkerBloom && !isPrecisePass {
+                weightCenterMarkerDotSelectedRegularBloomInstance.projectionMatrix = projectionMatrix
+                weightCenterMarkerDotSelectedRegularBloomInstance.modelViewMatrix = centerModelView
+                weightCenterMarkerDotSelectedRegularBloomInstance.red = jiggleColorPack.bloomRed
+                weightCenterMarkerDotSelectedRegularBloomInstance.green = jiggleColorPack.bloomGreen
+                weightCenterMarkerDotSelectedRegularBloomInstance.blue = jiggleColorPack.bloomBlue
+                
+                weightCenterMarkerSpinnerSelectedRegularBloomInstance.projectionMatrix = projectionMatrix
+                weightCenterMarkerSpinnerSelectedRegularBloomInstance.modelViewMatrix = spinnerModelView
+                weightCenterMarkerSpinnerSelectedRegularBloomInstance.red = jiggleColorPack.bloomRed
+                weightCenterMarkerSpinnerSelectedRegularBloomInstance.green = jiggleColorPack.bloomGreen
+                weightCenterMarkerSpinnerSelectedRegularBloomInstance.blue = jiggleColorPack.bloomBlue
+            }
+            
+        } else {
+            weightCenterMarkerDotUnselectedFillInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerDotUnselectedFillInstance.modelViewMatrix = centerModelView
+            weightCenterMarkerDotUnselectedFillInstance.red = jiggleColorPack.fillWeightCenterRed
+            weightCenterMarkerDotUnselectedFillInstance.green = jiggleColorPack.fillWeightCenterGreen
+            weightCenterMarkerDotUnselectedFillInstance.blue = jiggleColorPack.fillWeightCenterBlue
+            
+            weightCenterMarkerDotUnselectedStrokeInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerDotUnselectedStrokeInstance.modelViewMatrix = centerModelView
+            weightCenterMarkerDotUnselectedStrokeInstance.red = jiggleColorPack.strokeRed
+            weightCenterMarkerDotUnselectedStrokeInstance.green = jiggleColorPack.strokeGreen
+            weightCenterMarkerDotUnselectedStrokeInstance.blue = jiggleColorPack.strokeBlue
+            
+            weightCenterMarkerSpinnerUnselectedFillInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerSpinnerUnselectedFillInstance.modelViewMatrix = spinnerModelView
+            weightCenterMarkerSpinnerUnselectedFillInstance.red = jiggleColorPack.fillWeightCenterRed
+            weightCenterMarkerSpinnerUnselectedFillInstance.green = jiggleColorPack.fillWeightCenterGreen
+            weightCenterMarkerSpinnerUnselectedFillInstance.blue = jiggleColorPack.fillWeightCenterBlue
+            
+            weightCenterMarkerSpinnerUnselectedStrokeInstance.projectionMatrix = projectionMatrix
+            weightCenterMarkerSpinnerUnselectedStrokeInstance.modelViewMatrix = spinnerModelView
+            weightCenterMarkerSpinnerUnselectedStrokeInstance.red = jiggleColorPack.strokeRed
+            weightCenterMarkerSpinnerUnselectedStrokeInstance.green = jiggleColorPack.strokeGreen
+            weightCenterMarkerSpinnerUnselectedStrokeInstance.blue = jiggleColorPack.strokeBlue
+        }
+    }
+    
+    func renderWeightCenterMarkerStroke(renderEncoder: MTLRenderCommandEncoder,
+                                        isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingWeightCenterMarker {
+                if isSelected {
+                    if isPrecisePass {
+                        weightCenterMarkerDotSelectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerSelectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                      pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        weightCenterMarkerDotSelectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerSelectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                      pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                } else {
+                    if isPrecisePass {
+                        weightCenterMarkerDotUnselectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerUnselectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                        pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        weightCenterMarkerDotUnselectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerUnselectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
+                                                                                        pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    func renderWeightCenterMarkerFill(renderEncoder: MTLRenderCommandEncoder,
+                                      isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingWeightCenterMarker {
+                if isSelected {
+                    if isPrecisePass {
+                        weightCenterMarkerDotSelectedPreciseFillInstance.render(renderEncoder: renderEncoder,
+                                                                                pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerSelectedPreciseFillInstance.render(renderEncoder: renderEncoder,
+                                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        weightCenterMarkerDotSelectedRegularFillInstance.render(renderEncoder: renderEncoder,
+                                                                                pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerSelectedRegularFillInstance.render(renderEncoder: renderEncoder,
+                                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                } else {
+                    if isPrecisePass {
+                        weightCenterMarkerDotUnselectedPreciseFillInstance.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerUnselectedPreciseFillInstance.render(renderEncoder: renderEncoder,
+                                                                                      pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    } else {
+                        weightCenterMarkerDotUnselectedRegularFillInstance.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                        weightCenterMarkerSpinnerUnselectedRegularFillInstance.render(renderEncoder: renderEncoder,
+                                                                                      pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    func renderWeightCenterMarkerStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if isSelected {
+                    if jiggle.isShowingWeightCenterMarkerBloom {
+                        weightCenterMarkerDotSelectedRegularBloomInstance.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                        weightCenterMarkerSpinnerSelectedRegularBloomInstance.render(renderEncoder: renderEncoder,
+                                                                                     pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                        
+                    }
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    @inline(__always)
+    func prepareJigglePoints(jiggle: Jiggle,
+                             pointScale: Float,
+                             projectionMatrix: matrix_float4x4,
+                             modelViewMatrix: matrix_float4x4,
+                             baseAdjustRotation: Float,
+                             isPrecisePass: Bool,
+                             isBloomEnabled: Bool,
+                             jiggleColorPack: JiggleRenderColorPack,
+                             jigglePointUnselectedStrokeBuffer: IndexedSpriteBuffer2D,
+                             jigglePointUnselectedFillBuffer: IndexedSpriteBuffer2DColored,
+                             jigglePointSelectedStrokeBuffer: IndexedSpriteBuffer2D,
+                             jigglePointSelectedFillBuffer: IndexedSpriteBuffer2DColored) {
+        
+        jigglePointUnselectedStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointUnselectedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointUnselectedStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointUnselectedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointUnselectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        jigglePointUnselectedFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointUnselectedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        jigglePointSelectedStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointSelectedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointSelectedStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointSelectedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointSelectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        jigglePointSelectedFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointSelectedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        if isBloomEnabled && jiggle.isShowingJigglePointsBloom && !isPrecisePass {
+            jigglePointUnselectedStrokeBufferBloom.projectionMatrix = projectionMatrix
+            jigglePointUnselectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
+            jigglePointUnselectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
+            jigglePointUnselectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
+            jigglePointUnselectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
+            
+            jigglePointSelectedStrokeBufferBloom.projectionMatrix = projectionMatrix
+            jigglePointSelectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
+            jigglePointSelectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
+            jigglePointSelectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
+            jigglePointSelectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
+            jigglePointSelectedStrokeBufferBloom.alpha = 1.0
+        }
+        
+        for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
+            let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
+            
+            let renderCenterPoint = Math.Point(x: jiggleControlPoint.renderX,
+                                               y: jiggleControlPoint.renderY)
+            
+            if jiggleControlPoint.renderSelected {
+                jigglePointSelectedStrokeBuffer.add(translation: renderCenterPoint,
+                                                    scale: pointScale,
+                                                    rotation: baseAdjustRotation)
+                jigglePointSelectedFillBuffer.add(translation: renderCenterPoint,
+                                                  scale: pointScale,
+                                                  rotation: baseAdjustRotation,
+                                                  red: jiggleColorPack.fillSelectedRed,
+                                                  green: jiggleColorPack.fillSelectedGreen,
+                                                  blue: jiggleColorPack.fillSelectedBlue,
+                                                  alpha: 1.0)
+                
+                if isBloomEnabled && jiggle.isShowingJigglePointsBloom && !isPrecisePass {
+                    jigglePointSelectedStrokeBufferBloom.add(translation: renderCenterPoint,
+                                                             scale: pointScale,
+                                                             rotation: 0.0)
+                }
+            } else {
+                jigglePointUnselectedStrokeBuffer.add(translation: renderCenterPoint,
+                                                      scale: pointScale,
+                                                      rotation: 0.0)
+                
+                if jiggleControlPoint.isManualTanHandleEnabled {
+                    jigglePointUnselectedFillBuffer.add(translation: renderCenterPoint,
+                                                        scale: pointScale,
+                                                        rotation: 0.0,
+                                                        red: jiggleColorPack.fillModifiedRed,
+                                                        green: jiggleColorPack.fillModifiedGreen,
+                                                        blue: jiggleColorPack.fillModifiedBlue,
+                                                        alpha: 1.0)
+                } else {
+                    jigglePointUnselectedFillBuffer.add(translation: renderCenterPoint,
+                                                        scale: pointScale,
+                                                        rotation: 0.0,
+                                                        red: jiggleColorPack.fillUnselectedRed,
+                                                        green: jiggleColorPack.fillUnselectedGreen,
+                                                        blue: jiggleColorPack.fillUnselectedBlue,
+                                                        alpha: 1.0)
                 }
                 
-            }
-        }
-    }
-    
-    func renderGuideBorderRingFill(renderEncoder: MTLRenderCommandEncoder,
-                                   isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingGuideBorderRings {
-                let scale = getAdjustScale()
-                if isPrecisePass {
-                    for guideIndex in 0..<jiggle.guideCount {
-                        let guide = jiggle.guides[guideIndex]
-                        guide.solidLineBuffer_Precise.render(renderEncoder: renderEncoder,
-                                                             pipelineState: .shapeNodeIndexed2DNoBlending,
-                                                             scale: scale)
-                    }
-                } else {
-                    for guideIndex in 0..<jiggle.guideCount {
-                        let guide = jiggle.guides[guideIndex]
-                        guide.solidLineBuffer.render(renderEncoder: renderEncoder,
-                                                     pipelineState: .shapeNodeIndexed2DNoBlending,
-                                                     scale: scale)
-                    }
+                if isBloomEnabled && jiggle.isShowingJigglePointsBloom && !isPrecisePass {
+                    jigglePointUnselectedStrokeBufferBloom.add(translation: renderCenterPoint,
+                                                               scale: pointScale,
+                                                               rotation: 0.0)
                 }
             }
         }
     }
     
+    func renderJigglePointUnselectedStroke(renderEncoder: MTLRenderCommandEncoder,
+                                           isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJigglePoints {
+                if isPrecisePass {
+                    jigglePointUnselectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointUnselectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
+                                                                     pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderJigglePointUnselectedFill(renderEncoder: MTLRenderCommandEncoder,
+                                         isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJigglePoints {
+                if isPrecisePass {
+                    jigglePointUnselectedFillBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                  pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointUnselectedFillBufferStandard.render(renderEncoder: renderEncoder,
+                                                                   pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderJigglePointSelectedStroke(renderEncoder: MTLRenderCommandEncoder,
+                                         isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJigglePoints {
+                if isPrecisePass {
+                    jigglePointSelectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointSelectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
+                                                                   pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderJigglePointSelectedFill(renderEncoder: MTLRenderCommandEncoder,
+                                       isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJigglePoints {
+                if isPrecisePass {
+                    jigglePointSelectedFillBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointSelectedFillBufferStandard.render(renderEncoder: renderEncoder,
+                                                                 pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+    
+    func renderJigglePointUnselectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingJigglePointsBloom {
+                    jigglePointUnselectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
+                                                                  pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                }
+            }
+        }
+    }
+    
+    func renderJigglePointSelectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingJigglePointsBloom {
+                    if !jiggle.isFrozen {
+                        jigglePointSelectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
+                                                                    pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                    }
+                }
+            }
+        }
+    }
     
     @MainActor
     @inline(__always)
@@ -2777,7 +2908,6 @@ class JiggleRenderer {
         guidePointSelectedFillBuffer.modelViewMatrix = modelViewMatrix
         
         if isBloomEnabled && jiggle.isShowingGuidePointsBloom && !isPrecisePass {
-            
             guidePointUnselectedStrokeBufferBloom.projectionMatrix = projectionMatrix
             guidePointUnselectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
             guidePointUnselectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
@@ -2793,7 +2923,7 @@ class JiggleRenderer {
         
         for guideIndex in 0..<jiggle.guideCount {
             let guide = jiggle.guides[guideIndex]
-            
+            //TODO: We should only compute this once.
             let guideColorPack = getGuideColorPack(jiggle: jiggle,
                                                    isJiggleSelected: isSelected,
                                                    isDarkModeEnabled: isDarkModeEnabled,
@@ -2806,11 +2936,8 @@ class JiggleRenderer {
             
             for guideControlPointIndex in 0..<guide.guideControlPointCount {
                 let guideControlPoint = guide.guideControlPoints[guideControlPointIndex]
-                
                 let renderCenterPoint = Math.Point(x: guideControlPoint.renderX,
                                                    y: guideControlPoint.renderY)
-                
-                // If frozen, no bloom, no selection.
                 if guide.renderFrozen {
                     guidePointUnselectedStrokeBuffer.add(translation: renderCenterPoint,
                                                          scale: pointScale,
@@ -2858,7 +2985,7 @@ class JiggleRenderer {
                         }
                     }
                 }
-            } // End of guide points loop A
+            }
         }
     }
     
@@ -2940,6 +3067,427 @@ class JiggleRenderer {
                     if !jiggle.isFrozen {
                         guidePointSelectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
                                                                    pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    @inline(__always)
+    func prepareJigglePointTanLines(jiggle: Jiggle,
+                                    projectionMatrix: matrix_float4x4,
+                                    modelViewMatrix: matrix_float4x4,
+                                    worldScaleStandard: Float,
+                                    worldScalePrecise: Float,
+                                    isPrecisePass: Bool,
+                                    isBloomEnabled: Bool,
+                                    jiggleColorPack: JiggleRenderColorPack,
+                                    jigglePointTanHandleLineUnmodifiedFillBuffer: IndexedShapeBuffer2D,
+                                    jigglePointTanHandleLineUnmodifiedStrokeBuffer: IndexedShapeBuffer2D,
+                                    jigglePointTanHandleLineModifiedFillBuffer: IndexedShapeBuffer2D,
+                                    jigglePointTanHandleLineModifiedStrokeBuffer: IndexedShapeBuffer2D,
+                                    jigglePointTanHandleLineActiveFillBuffer: IndexedShapeBuffer2D,
+                                    jigglePointTanHandleLineActiveStrokeBuffer: IndexedShapeBuffer2D) {
+        
+        jigglePointTanHandleLineUnmodifiedFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandleLineUnmodifiedFillBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandleLineUnmodifiedFillBuffer.red = jiggleColorPack.tanLineFillUnmodifiedRed
+        jigglePointTanHandleLineUnmodifiedFillBuffer.green = jiggleColorPack.tanLineFillUnmodifiedGreen
+        jigglePointTanHandleLineUnmodifiedFillBuffer.blue = jiggleColorPack.tanLineFillUnmodifiedBlue
+        
+        jigglePointTanHandleLineUnmodifiedStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandleLineUnmodifiedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandleLineUnmodifiedStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointTanHandleLineUnmodifiedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointTanHandleLineUnmodifiedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        jigglePointTanHandleLineModifiedFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandleLineModifiedFillBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandleLineModifiedFillBuffer.red = jiggleColorPack.tanLineFillModifiedRed
+        jigglePointTanHandleLineModifiedFillBuffer.green = jiggleColorPack.tanLineFillModifiedGreen
+        jigglePointTanHandleLineModifiedFillBuffer.blue = jiggleColorPack.tanLineFillModifiedBlue
+        
+        jigglePointTanHandleLineModifiedStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandleLineModifiedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandleLineModifiedStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointTanHandleLineModifiedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointTanHandleLineModifiedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        jigglePointTanHandleLineActiveFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandleLineActiveFillBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandleLineActiveFillBuffer.red = jiggleColorPack.tanLineFillActiveRed
+        jigglePointTanHandleLineActiveFillBuffer.green = jiggleColorPack.tanLineFillActiveGreen
+        jigglePointTanHandleLineActiveFillBuffer.blue = jiggleColorPack.tanLineFillActiveBlue
+        
+        jigglePointTanHandleLineActiveStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandleLineActiveStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandleLineActiveStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointTanHandleLineActiveStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointTanHandleLineActiveStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        if jiggle.isShowingJiggleControlPointTanHandlesBloom && isBloomEnabled && !isPrecisePass {
+            jigglePointTanHandleLineRegularBloomBuffer.projectionMatrix = projectionMatrix
+            jigglePointTanHandleLineRegularBloomBuffer.modelViewMatrix = modelViewMatrix
+            jigglePointTanHandleLineRegularBloomBuffer.red = jiggleColorPack.bloomRed
+            jigglePointTanHandleLineRegularBloomBuffer.green = jiggleColorPack.bloomGreen
+            jigglePointTanHandleLineRegularBloomBuffer.blue = jiggleColorPack.bloomBlue
+        }
+        
+        let thicknessStroke: Float
+        let thicknessFill: Float
+        
+        if isPrecisePass {
+            thicknessStroke = jiggle.solidLineBufferStroke.thickness * worldScalePrecise * JiggleViewModel.lineScalePrecise
+            thicknessFill = jiggle.solidLineBuffer.thickness * worldScalePrecise * JiggleViewModel.lineScalePrecise
+        } else {
+            thicknessStroke = jiggle.solidLineBufferStroke.thickness * worldScaleStandard * JiggleViewModel.lineScaleStandard
+            thicknessFill = jiggle.solidLineBuffer.thickness * worldScaleStandard * JiggleViewModel.lineScaleStandard
+        }
+        
+        for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
+            let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
+            
+            let tanHandleInX = jiggleControlPoint.renderTanInX
+            let tanHandleInY = jiggleControlPoint.renderTanInY
+            let tanHandleOutX = jiggleControlPoint.renderTanOutX
+            let tanHandleOutY = jiggleControlPoint.renderTanOutY
+            let tanNormalX = jiggleControlPoint.renderTanNormalX
+            let tanNormalY = jiggleControlPoint.renderTanNormalY
+            
+            let strokeBox = getLineBox(x1: tanHandleInX, y1: tanHandleInY,
+                                       x2: tanHandleOutX, y2: tanHandleOutY,
+                                       normalX: tanNormalX, normalY: tanNormalY,
+                                       thickness: thicknessStroke)
+            let fillBox = getLineBox(x1: tanHandleInX, y1: tanHandleInY,
+                                     x2: tanHandleOutX, y2: tanHandleOutY,
+                                     normalX: tanNormalX, normalY: tanNormalY,
+                                     thickness: thicknessFill)
+            
+            if jiggleControlPoint.renderSelected {
+                jigglePointTanHandleLineActiveStrokeBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
+                                                               cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
+                                                               cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
+                                                               cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
+                jigglePointTanHandleLineActiveFillBuffer.add(cornerX1: fillBox.x1, cornerY1: fillBox.y1,
+                                                             cornerX2: fillBox.x2, cornerY2: fillBox.y2,
+                                                             cornerX3: fillBox.x3, cornerY3: fillBox.y3,
+                                                             cornerX4: fillBox.x4, cornerY4: fillBox.y4)
+            } else if jiggleControlPoint.isManualTanHandleEnabled {
+                jigglePointTanHandleLineModifiedStrokeBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
+                                                                 cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
+                                                                 cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
+                                                                 cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
+                jigglePointTanHandleLineModifiedFillBuffer.add(cornerX1: fillBox.x1, cornerY1: fillBox.y1,
+                                                               cornerX2: fillBox.x2, cornerY2: fillBox.y2,
+                                                               cornerX3: fillBox.x3, cornerY3: fillBox.y3,
+                                                               cornerX4: fillBox.x4, cornerY4: fillBox.y4)
+            } else {
+                jigglePointTanHandleLineUnmodifiedStrokeBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
+                                                                   cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
+                                                                   cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
+                                                                   cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
+                jigglePointTanHandleLineUnmodifiedFillBuffer.add(cornerX1: fillBox.x1, cornerY1: fillBox.y1,
+                                                                 cornerX2: fillBox.x2, cornerY2: fillBox.y2,
+                                                                 cornerX3: fillBox.x3, cornerY3: fillBox.y3,
+                                                                 cornerX4: fillBox.x4, cornerY4: fillBox.y4)
+            }
+            
+            if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                jigglePointTanHandleLineRegularBloomBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
+                                                            cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
+                                                            cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
+                                                            cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
+            }
+        }
+    }
+    
+    func renderJigglePointTanHandleLinesFill(renderEncoder: MTLRenderCommandEncoder,
+                                             isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleControlPointTanHandles {
+                if isPrecisePass {
+                    jigglePointTanHandleLineUnmodifiedPreciseFillBuffer.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineModifiedPreciseFillBuffer.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineActivePreciseFillBuffer.render(renderEncoder: renderEncoder,
+                                                                           pipelineState: .shapeNodeIndexed2DNoBlending)
+                } else {
+                    jigglePointTanHandleLineUnmodifiedRegularFillBuffer.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineModifiedRegularFillBuffer.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineActiveRegularFillBuffer.render(renderEncoder: renderEncoder,
+                                                                           pipelineState: .shapeNodeIndexed2DNoBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandleLinesStroke(renderEncoder: MTLRenderCommandEncoder,
+                                               isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleControlPointTanHandles {
+                if isPrecisePass {
+                    jigglePointTanHandleLineUnmodifiedPreciseStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineModifiedPreciseStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineActivePreciseStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
+                } else {
+                    jigglePointTanHandleLineUnmodifiedRegularStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineModifiedRegularStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
+                    jigglePointTanHandleLineActiveRegularStrokeBuffer.render(renderEncoder: renderEncoder,
+                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandleLinesBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
+                    jigglePointTanHandleLineRegularBloomBuffer.render(renderEncoder: renderEncoder,
+                                                               pipelineState: .shapeNodeIndexed3DNoBlending)
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    @inline(__always)
+    func prepareJigglePointTanPoints(jiggle: Jiggle,
+                                     projectionMatrix: matrix_float4x4,
+                                     modelViewMatrix: matrix_float4x4,
+                                     pointScale: Float,
+                                     isPrecisePass: Bool,
+                                     isBloomEnabled: Bool,
+                                     jiggleColorPack: JiggleRenderColorPack,
+                                     selectedJigglePointTanType: TanType,
+                                     jigglePointTanHandlePointUnselectedStrokeBuffer: IndexedSpriteBuffer2D,
+                                     jigglePointTanHandlePointUnselectedFillBuffer: IndexedSpriteBuffer2DColored,
+                                     jigglePointTanHandlePointSelectedStrokeBuffer: IndexedSpriteBuffer2D,
+                                     jigglePointTanHandlePointSelectedFillBuffer: IndexedSpriteBuffer2DColored) {
+        
+        jigglePointTanHandlePointUnselectedStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandlePointUnselectedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandlePointUnselectedStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointTanHandlePointUnselectedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointTanHandlePointUnselectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        jigglePointTanHandlePointUnselectedFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandlePointUnselectedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        jigglePointTanHandlePointSelectedStrokeBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandlePointSelectedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        jigglePointTanHandlePointSelectedStrokeBuffer.red = jiggleColorPack.strokeRed
+        jigglePointTanHandlePointSelectedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        jigglePointTanHandlePointSelectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        jigglePointTanHandlePointSelectedFillBuffer.projectionMatrix = projectionMatrix
+        jigglePointTanHandlePointSelectedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+            
+            jigglePointTanHandlePointUnselectedStrokeBufferBloom.projectionMatrix = projectionMatrix
+            jigglePointTanHandlePointUnselectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
+            jigglePointTanHandlePointUnselectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
+            jigglePointTanHandlePointUnselectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
+            jigglePointTanHandlePointUnselectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
+            
+            jigglePointTanHandlePointSelectedStrokeBufferBloom.projectionMatrix = projectionMatrix
+            jigglePointTanHandlePointSelectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
+            jigglePointTanHandlePointSelectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
+            jigglePointTanHandlePointSelectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
+            jigglePointTanHandlePointSelectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
+        }
+        
+        for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
+            let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
+            let renderCenterPointIn = Math.Point(x: jiggleControlPoint.renderTanInX,
+                                                 y: jiggleControlPoint.renderTanInY)
+            let renderCenterPointOut = Math.Point(x: jiggleControlPoint.renderTanOutX,
+                                                  y: jiggleControlPoint.renderTanOutY)
+            
+            if (jiggleControlPoint.renderSelected == true) && (selectedJigglePointTanType == .in) {
+                
+                jigglePointTanHandlePointSelectedStrokeBuffer.add(translation: renderCenterPointIn,
+                                                                  scale: pointScale,
+                                                                  rotation: 0.0)
+                jigglePointTanHandlePointSelectedFillBuffer.add(translation: renderCenterPointIn,
+                                                                scale: pointScale,
+                                                                rotation: 0.0,
+                                                                red: jiggleColorPack.tanPointFillActiveRed,
+                                                                green: jiggleColorPack.tanPointFillActiveGreen,
+                                                                blue: jiggleColorPack.tanPointFillActiveBlue,
+                                                                alpha: 1.0)
+                
+                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                    jigglePointTanHandlePointSelectedStrokeBufferBloom.add(translation: renderCenterPointIn,
+                                                                           scale: pointScale,
+                                                                           rotation: 0.0)
+                }
+            } else {
+                jigglePointTanHandlePointUnselectedStrokeBuffer.add(translation: renderCenterPointIn,
+                                                                    scale: pointScale,
+                                                                    rotation: 0.0)
+                if (jiggleControlPoint.isManualTanHandleEnabled == true) || (jiggleControlPoint.renderSelected == true) {
+                    jigglePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointIn,
+                                                                      scale: pointScale,
+                                                                      rotation: 0.0,
+                                                                      red: jiggleColorPack.tanPointFillModifiedRed,
+                                                                      green: jiggleColorPack.tanPointFillModifiedGreen,
+                                                                      blue: jiggleColorPack.tanPointFillModifiedBlue,
+                                                                      alpha: 1.0)
+                } else {
+                    jigglePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointIn,
+                                                                      scale: pointScale,
+                                                                      rotation: 0.0,
+                                                                      red: jiggleColorPack.tanPointFillUnmodifiedRed,
+                                                                      green: jiggleColorPack.tanPointFillUnmodifiedGreen,
+                                                                      blue: jiggleColorPack.tanPointFillUnmodifiedBlue,
+                                                                      alpha: 1.0)
+                }
+                
+                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                    jigglePointTanHandlePointUnselectedStrokeBufferBloom.add(translation: renderCenterPointIn,
+                                                                             scale: pointScale,
+                                                                             rotation: 0.0)
+                }
+            }
+            
+            if (jiggleControlPoint.renderSelected == true) && (selectedJigglePointTanType == .out) {
+                jigglePointTanHandlePointSelectedStrokeBuffer.add(translation: renderCenterPointOut,
+                                                                  scale: pointScale,
+                                                                  rotation: 0.0)
+                jigglePointTanHandlePointSelectedFillBuffer.add(translation: renderCenterPointOut,
+                                                                scale: pointScale,
+                                                                rotation: 0.0,
+                                                                red: jiggleColorPack.tanPointFillActiveRed,
+                                                                green: jiggleColorPack.tanPointFillActiveGreen,
+                                                                blue: jiggleColorPack.tanPointFillActiveBlue,
+                                                                alpha: 1.0)
+                
+                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                    jigglePointTanHandlePointSelectedStrokeBufferBloom.add(translation: renderCenterPointOut,
+                                                                           scale: pointScale,
+                                                                           rotation: 0.0)
+                }
+            } else {
+                
+                jigglePointTanHandlePointUnselectedStrokeBuffer.add(translation: renderCenterPointOut,
+                                                                    scale: pointScale,
+                                                                    rotation: 0.0)
+                if (jiggleControlPoint.isManualTanHandleEnabled == true) || (jiggleControlPoint.renderSelected == true) {
+                    jigglePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointOut,
+                                                                      scale: pointScale,
+                                                                      rotation: 0.0,
+                                                                      red: jiggleColorPack.tanPointFillModifiedRed,
+                                                                      green: jiggleColorPack.tanPointFillModifiedGreen,
+                                                                      blue: jiggleColorPack.tanPointFillModifiedBlue,
+                                                                      alpha: 1.0)
+                } else {
+                    jigglePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointOut,
+                                                                      scale: pointScale,
+                                                                      rotation: 0.0,
+                                                                      red: jiggleColorPack.tanPointFillUnmodifiedRed,
+                                                                      green: jiggleColorPack.tanPointFillUnmodifiedGreen,
+                                                                      blue: jiggleColorPack.tanPointFillUnmodifiedBlue,
+                                                                      alpha: 1.0)
+                }
+                
+                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                    jigglePointTanHandlePointUnselectedStrokeBufferBloom.add(translation: renderCenterPointOut,
+                                                                             scale: pointScale,
+                                                                             rotation: 0.0)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandlePointUnselectedStroke(renderEncoder: MTLRenderCommandEncoder,
+                                                         isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleControlPointTanHandles {
+                if isPrecisePass {
+                    jigglePointTanHandlePointUnselectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointTanHandlePointUnselectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
+                                                                                   pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandlePointUnselectedFill(renderEncoder: MTLRenderCommandEncoder,
+                                                       isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleControlPointTanHandles {
+                if isPrecisePass {
+                    jigglePointTanHandlePointUnselectedFillBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                                pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointTanHandlePointUnselectedFillBufferStandard.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandlePointSelectedStroke(renderEncoder: MTLRenderCommandEncoder,
+                                                       isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleControlPointTanHandles {
+                if isPrecisePass {
+                    jigglePointTanHandlePointSelectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                                pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointTanHandlePointSelectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
+                                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandlePointSelectedFill(renderEncoder: MTLRenderCommandEncoder,
+                                                     isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleControlPointTanHandles {
+                if isPrecisePass {
+                    jigglePointTanHandlePointSelectedFillBufferPrecise.render(renderEncoder: renderEncoder,
+                                                                              pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                } else {
+                    jigglePointTanHandlePointSelectedFillBufferStandard.render(renderEncoder: renderEncoder,
+                                                                               pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandlePointUnselectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
+                    jigglePointTanHandlePointUnselectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
+                                                                                pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                }
+            }
+        }
+    }
+
+    func renderJigglePointTanHandlePointSelectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
+                    if !jiggle.isFrozen {
+                        jigglePointTanHandlePointSelectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
+                                                                                  pipelineState: .spriteNodeIndexed3DAlphaBlending)
                     }
                 }
             }
@@ -3157,22 +3705,171 @@ class JiggleRenderer {
     @MainActor
     @inline(__always)
     func prepareGuidePointTanPoints(jiggle: Jiggle,
-                                     projectionMatrix: matrix_float4x4,
-                                     modelViewMatrix: matrix_float4x4,
-                                     pointScale: Float,
-                                     isPrecisePass: Bool,
-                                     isBloomEnabled: Bool,
-                                     jiggleColorPack: JiggleRenderColorPack,
-                                     selectedGuidePointTanType: TanType,
-                                     guidePointTanHandlePointUnselectedStrokeBuffer: IndexedSpriteBuffer2D,
-                                     guidePointTanHandlePointUnselectedFillBuffer: IndexedSpriteBuffer2DColored,
-                                     guidePointTanHandlePointSelectedStrokeBuffer: IndexedSpriteBuffer2D,
+                                    projectionMatrix: matrix_float4x4,
+                                    modelViewMatrix: matrix_float4x4,
+                                    pointScale: Float,
+                                    isPrecisePass: Bool,
+                                    isBloomEnabled: Bool,
+                                    isCreatorModeGuideCenters: Bool,
+                                    isCreatorModeAddGuidePoints: Bool,
+                                    isCreatorModeDeleteGuidePoints: Bool,
+                                    guidePointSelectionModality: PointSelectionModality,
+                                    selectedGuidePointTanType: TanType,
+                                    jiggleColorPack: JiggleRenderColorPack,
+                                    guidePointTanHandlePointUnselectedStrokeBuffer: IndexedSpriteBuffer2D,
+                                    guidePointTanHandlePointUnselectedFillBuffer: IndexedSpriteBuffer2DColored,
+                                    guidePointTanHandlePointSelectedStrokeBuffer: IndexedSpriteBuffer2D,
                                     guidePointTanHandlePointSelectedFillBuffer: IndexedSpriteBuffer2DColored) {
         
+        guidePointTanHandlePointUnselectedStrokeBuffer.projectionMatrix = projectionMatrix
+        guidePointTanHandlePointUnselectedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        guidePointTanHandlePointUnselectedStrokeBuffer.red = jiggleColorPack.strokeRed
+        guidePointTanHandlePointUnselectedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        guidePointTanHandlePointUnselectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
         
+        guidePointTanHandlePointUnselectedFillBuffer.projectionMatrix = projectionMatrix
+        guidePointTanHandlePointUnselectedFillBuffer.modelViewMatrix = modelViewMatrix
         
+        guidePointTanHandlePointSelectedStrokeBuffer.projectionMatrix = projectionMatrix
+        guidePointTanHandlePointSelectedStrokeBuffer.modelViewMatrix = modelViewMatrix
+        guidePointTanHandlePointSelectedStrokeBuffer.red = jiggleColorPack.strokeRed
+        guidePointTanHandlePointSelectedStrokeBuffer.green = jiggleColorPack.strokeGreen
+        guidePointTanHandlePointSelectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
+        
+        guidePointTanHandlePointSelectedFillBuffer.projectionMatrix = projectionMatrix
+        guidePointTanHandlePointSelectedFillBuffer.modelViewMatrix = modelViewMatrix
+        
+        if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+            guidePointTanHandlePointUnselectedStrokeBufferBloom.projectionMatrix = projectionMatrix
+            guidePointTanHandlePointUnselectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
+            guidePointTanHandlePointUnselectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
+            guidePointTanHandlePointUnselectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
+            guidePointTanHandlePointUnselectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
+            
+            guidePointTanHandlePointSelectedStrokeBufferBloom.projectionMatrix = projectionMatrix
+            guidePointTanHandlePointSelectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
+            guidePointTanHandlePointSelectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
+            guidePointTanHandlePointSelectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
+            guidePointTanHandlePointSelectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
+        }
+        
+        for guideIndex in 0..<jiggle.guideCount {
+            let guide = jiggle.guides[guideIndex]
+            let guideColorPack = getGuideColorPack(jiggle: jiggle,
+                                                   isJiggleSelected: isSelected,
+                                                   isDarkModeEnabled: isDarkModeEnabled,
+                                                   guide: guide,
+                                                   guideIndex: guideIndex,
+                                                   isCreatorModeGuideCenters: isCreatorModeGuideCenters,
+                                                   isCreatorModeAddGuidePoints: isCreatorModeAddGuidePoints,
+                                                   isCreatorModeDeleteGuidePoints: isCreatorModeDeleteGuidePoints,
+                                                   guidePointSelectionModality: guidePointSelectionModality)
+            
+            for guideControlPointIndex in 0..<guide.guideControlPointCount {
+                let guideControlPoint = guide.guideControlPoints[guideControlPointIndex]
+                let renderCenterPointIn = Math.Point(x: guideControlPoint.renderTanInX,
+                                                     y: guideControlPoint.renderTanInY)
+                let renderCenterPointOut = Math.Point(x: guideControlPoint.renderTanOutX,
+                                                      y: guideControlPoint.renderTanOutY)
+                
+                if (guideControlPoint.renderSelected == true) && (selectedGuidePointTanType == .in) {
+                    
+                    guidePointTanHandlePointSelectedStrokeBuffer.add(translation: renderCenterPointIn,
+                                                                     scale: pointScale,
+                                                                     rotation: 0.0)
+                    guidePointTanHandlePointSelectedFillBuffer.add(translation: renderCenterPointIn,
+                                                                   scale: pointScale,
+                                                                   rotation: 0.0,
+                                                                   red: guideColorPack.tanPointFillActiveRed,
+                                                                   green: guideColorPack.tanPointFillActiveGreen,
+                                                                   blue: guideColorPack.tanPointFillActiveBlue,
+                                                                   alpha: 1.0)
+                    
+                    if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                        guidePointTanHandlePointSelectedStrokeBufferBloom.add(translation: renderCenterPointIn,
+                                                                              scale: pointScale,
+                                                                              rotation: 0.0)
+                    }
+                    
+                } else {
+                    
+                    guidePointTanHandlePointUnselectedStrokeBuffer.add(translation: renderCenterPointIn,
+                                                                       scale: pointScale,
+                                                                       rotation: 0.0)
+                    if (guideControlPoint.isManualTanHandleEnabled == true) || (guideControlPoint.renderSelected == true) {
+                        guidePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointIn,
+                                                                         scale: pointScale,
+                                                                         rotation: 0.0,
+                                                                         red: guideColorPack.tanPointFillModifiedRed,
+                                                                         green: guideColorPack.tanPointFillModifiedGreen,
+                                                                         blue: guideColorPack.tanPointFillModifiedBlue,
+                                                                         alpha: 1.0)
+                    } else {
+                        guidePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointIn,
+                                                                         scale: pointScale,
+                                                                         rotation: 0.0,
+                                                                         red: guideColorPack.tanPointFillUnmodifiedRed,
+                                                                         green: guideColorPack.tanPointFillUnmodifiedGreen,
+                                                                         blue: guideColorPack.tanPointFillUnmodifiedBlue,
+                                                                         alpha: 1.0)
+                    }
+                    
+                    if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                        guidePointTanHandlePointUnselectedStrokeBufferBloom.add(translation: renderCenterPointIn,
+                                                                                scale: pointScale,
+                                                                                rotation: 0.0)
+                    }
+                }
+                
+                if (guideControlPoint.renderSelected == true) && (selectedGuidePointTanType == .out) {
+                    guidePointTanHandlePointSelectedStrokeBuffer.add(translation: renderCenterPointOut,
+                                                                     scale: pointScale,
+                                                                     rotation: 0.0)
+                    guidePointTanHandlePointSelectedFillBuffer.add(translation: renderCenterPointOut,
+                                                                   scale: pointScale,
+                                                                   rotation: 0.0,
+                                                                   red: guideColorPack.tanPointFillActiveRed,
+                                                                   green: guideColorPack.tanPointFillActiveGreen,
+                                                                   blue: guideColorPack.tanPointFillActiveBlue,
+                                                                   alpha: 1.0)
+                    
+                    if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                        guidePointTanHandlePointSelectedStrokeBufferBloom.add(translation: renderCenterPointOut,
+                                                                              scale: pointScale,
+                                                                              rotation: 0.0)
+                    }
+                } else {
+                    guidePointTanHandlePointUnselectedStrokeBuffer.add(translation: renderCenterPointOut,
+                                                                       scale: pointScale,
+                                                                       rotation: 0.0)
+                    
+                    if (guideControlPoint.isManualTanHandleEnabled == true) || (guideControlPoint.renderSelected == true) {
+                        guidePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointOut,
+                                                                         scale: pointScale,
+                                                                         rotation: 0.0,
+                                                                         red: guideColorPack.tanPointFillModifiedRed,
+                                                                         green: guideColorPack.tanPointFillModifiedGreen,
+                                                                         blue: guideColorPack.tanPointFillModifiedBlue,
+                                                                         alpha: 1.0)
+                    } else {
+                        guidePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointOut,
+                                                                         scale: pointScale,
+                                                                         rotation: 0.0,
+                                                                         red: guideColorPack.tanPointFillUnmodifiedRed,
+                                                                         green: guideColorPack.tanPointFillUnmodifiedGreen,
+                                                                         blue: guideColorPack.tanPointFillUnmodifiedBlue,
+                                                                         alpha: 1.0)
+                    }
+                    
+                    if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
+                        guidePointTanHandlePointUnselectedStrokeBufferBloom.add(translation: renderCenterPointOut,
+                                                                                scale: pointScale,
+                                                                                rotation: 0.0)
+                    }
+                }
+            }
+        }
     }
-    
     
     func renderGuidePointTanHandlePointUnselectedStroke(renderEncoder: MTLRenderCommandEncoder,
                                                         isPrecisePass: Bool) {
@@ -3309,941 +4006,71 @@ class JiggleRenderer {
         }
     }
     
-    @MainActor
-    @inline(__always)
-    func prepareJiggleCenter(jiggle: Jiggle,
-                            worldScalePrecise: Float,
-                            worldScaleStandard: Float,
-                            projectionMatrix: matrix_float4x4,
-                            modelViewMatrix: matrix_float4x4,
-                            baseAdjustRotation: Float,
-                            isPrecisePass: Bool,
-                            isBloomEnabled: Bool,
-                            jiggleColorPack: JiggleRenderColorPack,
-                            jiggleCenterMarkerUnselectedFillInstance: IndexedSpriteInstance2D,
-                            jiggleCenterMarkerUnselectedStrokeInstance: IndexedSpriteInstance2D,
-                            jiggleCenterMarkerSelectedFillInstance: IndexedSpriteInstance2D,
-                            jiggleCenterMarkerSelectedStrokeInstance: IndexedSpriteInstance2D) {
-        let jiggleCenterScale: Float
-        if isPrecisePass {
-            jiggleCenterScale = worldScalePrecise * JiggleViewModel.jiggleCenterScalePrecise
-        } else {
-            jiggleCenterScale = worldScaleStandard * JiggleViewModel.jiggleCenterScaleStandard
-        }
-        var offsetCenter = jiggle.offsetCenter
-        offsetCenter = jiggle.transformPoint(point: offsetCenter)
-        var centerModelView = modelViewMatrix
-        centerModelView.translation(x: offsetCenter.x,
-                                    y: offsetCenter.y,
-                                    z: 0.0)
-        centerModelView.scale(jiggleCenterScale)
-        centerModelView.rotateZ(radians: baseAdjustRotation)
-        if isSelected {
-            jiggleCenterMarkerSelectedFillInstance.projectionMatrix = projectionMatrix
-            jiggleCenterMarkerSelectedFillInstance.modelViewMatrix = centerModelView
-            jiggleCenterMarkerSelectedFillInstance.red = jiggleColorPack.fillUnselectedRed
-            jiggleCenterMarkerSelectedFillInstance.green = jiggleColorPack.fillUnselectedBlue
-            jiggleCenterMarkerSelectedFillInstance.blue = jiggleColorPack.fillUnselectedBlue
-            jiggleCenterMarkerSelectedStrokeInstance.projectionMatrix = projectionMatrix
-            jiggleCenterMarkerSelectedStrokeInstance.modelViewMatrix = centerModelView
-            jiggleCenterMarkerSelectedStrokeInstance.red = jiggleColorPack.strokeRed
-            jiggleCenterMarkerSelectedStrokeInstance.green = jiggleColorPack.strokeGreen
-            jiggleCenterMarkerSelectedStrokeInstance.blue = jiggleColorPack.strokeBlue
-            if jiggle.isShowingCenterMarkerBloom && isBloomEnabled && !isPrecisePass {
-                jiggleCenterMarkerSelectedRegularBloomInstance.projectionMatrix = projectionMatrix
-                jiggleCenterMarkerSelectedRegularBloomInstance.modelViewMatrix = centerModelView
-                jiggleCenterMarkerSelectedRegularBloomInstance.red = jiggleColorPack.bloomRed
-                jiggleCenterMarkerSelectedRegularBloomInstance.green = jiggleColorPack.bloomGreen
-                jiggleCenterMarkerSelectedRegularBloomInstance.blue = jiggleColorPack.bloomBlue
-            }
-        } else {
-            jiggleCenterMarkerUnselectedFillInstance.projectionMatrix = projectionMatrix
-            jiggleCenterMarkerUnselectedFillInstance.modelViewMatrix = centerModelView
-            jiggleCenterMarkerUnselectedFillInstance.red = jiggleColorPack.fillUnselectedRed
-            jiggleCenterMarkerUnselectedFillInstance.green = jiggleColorPack.fillUnselectedBlue
-            jiggleCenterMarkerUnselectedFillInstance.blue = jiggleColorPack.fillUnselectedBlue
-            jiggleCenterMarkerUnselectedStrokeInstance.projectionMatrix = projectionMatrix
-            jiggleCenterMarkerUnselectedStrokeInstance.modelViewMatrix = centerModelView
-            jiggleCenterMarkerUnselectedStrokeInstance.red = jiggleColorPack.strokeRed
-            jiggleCenterMarkerUnselectedStrokeInstance.green = jiggleColorPack.strokeGreen
-            jiggleCenterMarkerUnselectedStrokeInstance.blue = jiggleColorPack.strokeBlue
-        }
-    }
-    
-    func renderJiggleCenterMarkerStroke(renderEncoder: MTLRenderCommandEncoder,
-                                        isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingCenterMarker {
-                if isSelected {
-                    if isPrecisePass {
-                        jiggleCenterMarkerSelectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
-                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    } else {
-                        jiggleCenterMarkerSelectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
-                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    }
-                } else {
-                    if isPrecisePass {
-                        jiggleCenterMarkerUnselectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
-                                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    } else {
-                        jiggleCenterMarkerUnselectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
-                                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+    func renderGuideBorderRingsBloom(renderEncoder: MTLRenderCommandEncoder) {
+        if ApplicationController.isGlowingSelectionEnabled {
+            if let jiggle = jiggle {
+                if jiggle.isShowingGuideBorderRingBloom {
+                    if !jiggle.isFrozen {
+                        if let selectedGuide = jiggle.getSelectedGuide() {
+                            if selectedGuide.isFrozen == false {
+                                let scale = getAdjustScale()
+                                selectedGuide.solidLineBloomBuffer.render(renderEncoder: renderEncoder,
+                                                                          pipelineState: .shapeNodeIndexed3DNoBlending,
+                                                                          scale: scale)
+                            }
+                        }
                     }
                 }
             }
         }
     }
     
-    func renderJiggleCenterMarkerFill(renderEncoder: MTLRenderCommandEncoder,
+    func renderGuideBorderRingsStroke(renderEncoder: MTLRenderCommandEncoder,
                                       isPrecisePass: Bool) {
         if let jiggle = jiggle {
-            if jiggle.isShowingCenterMarker {
-                if isSelected {
-                    if isPrecisePass {
-                        jiggleCenterMarkerSelectedPreciseFillInstance.render(renderEncoder: renderEncoder,
-                                                                             pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    } else {
-                        jiggleCenterMarkerSelectedRegularFillInstance.render(renderEncoder: renderEncoder,
-                                                                             pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+            if jiggle.isShowingGuideBorderRings {
+                let scale = getAdjustScale()
+                if isPrecisePass {
+                    for guideIndex in 0..<jiggle.guideCount {
+                        let guide = jiggle.guides[guideIndex]
+                        guide.solidLineBufferStroke_Precise.render(renderEncoder: renderEncoder,
+                                                                   pipelineState: .shapeNodeIndexed2DNoBlending,
+                                                                   scale: scale)
                     }
                 } else {
-                    if isPrecisePass {
-                        jiggleCenterMarkerUnselectedPreciseFillInstance.render(renderEncoder: renderEncoder,
-                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    } else {
-                        jiggleCenterMarkerUnselectedRegularFillInstance.render(renderEncoder: renderEncoder,
-                                                                               pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
+                    for guideIndex in 0..<jiggle.guideCount {
+                        let guide = jiggle.guides[guideIndex]
+                        guide.solidLineBufferStroke.render(renderEncoder: renderEncoder,
+                                                           pipelineState: .shapeNodeIndexed2DNoBlending,
+                                                           scale: scale)
                     }
                 }
+                
             }
         }
     }
     
-    func renderJiggleCenterMarkerStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
-        if ApplicationController.isGlowingSelectionEnabled {
-            if let jiggle = jiggle {
-                if isSelected {
-                    if jiggle.isShowingCenterMarkerBloom {
-                        jiggleCenterMarkerSelectedRegularBloomInstance.render(renderEncoder: renderEncoder,
-                                                                              pipelineState: .spriteNodeIndexed3DAlphaBlending)
+    func renderGuideBorderRingFill(renderEncoder: MTLRenderCommandEncoder,
+                                   isPrecisePass: Bool) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingGuideBorderRings {
+                let scale = getAdjustScale()
+                if isPrecisePass {
+                    for guideIndex in 0..<jiggle.guideCount {
+                        let guide = jiggle.guides[guideIndex]
+                        guide.solidLineBuffer_Precise.render(renderEncoder: renderEncoder,
+                                                             pipelineState: .shapeNodeIndexed2DNoBlending,
+                                                             scale: scale)
                     }
-                }
-            }
-        }
-    }
-    
-    @MainActor
-    @inline(__always)
-    func prepareJigglePoints(jiggle: Jiggle,
-                             pointScale: Float,
-                             projectionMatrix: matrix_float4x4,
-                             modelViewMatrix: matrix_float4x4,
-                             baseAdjustRotation: Float,
-                             isPrecisePass: Bool,
-                             isBloomEnabled: Bool,
-                             jiggleColorPack: JiggleRenderColorPack,
-                             jigglePointUnselectedStrokeBuffer: IndexedSpriteBuffer2D,
-                             jigglePointUnselectedFillBuffer: IndexedSpriteBuffer2DColored,
-                             jigglePointSelectedStrokeBuffer: IndexedSpriteBuffer2D,
-                             jigglePointSelectedFillBuffer: IndexedSpriteBuffer2DColored) {
-        
-        jigglePointUnselectedStrokeBuffer.projectionMatrix = projectionMatrix
-        jigglePointUnselectedStrokeBuffer.modelViewMatrix = modelViewMatrix
-        jigglePointUnselectedStrokeBuffer.red = jiggleColorPack.strokeRed
-        jigglePointUnselectedStrokeBuffer.green = jiggleColorPack.strokeGreen
-        jigglePointUnselectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
-        
-        jigglePointUnselectedFillBuffer.projectionMatrix = projectionMatrix
-        jigglePointUnselectedFillBuffer.modelViewMatrix = modelViewMatrix
-        
-        jigglePointSelectedStrokeBuffer.projectionMatrix = projectionMatrix
-        jigglePointSelectedStrokeBuffer.modelViewMatrix = modelViewMatrix
-        jigglePointSelectedStrokeBuffer.red = jiggleColorPack.strokeRed
-        jigglePointSelectedStrokeBuffer.green = jiggleColorPack.strokeGreen
-        jigglePointSelectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
-        
-        jigglePointSelectedFillBuffer.projectionMatrix = projectionMatrix
-        jigglePointSelectedFillBuffer.modelViewMatrix = modelViewMatrix
-        
-        if isBloomEnabled && jiggle.isShowingJigglePointsBloom && !isPrecisePass {
-            
-            jigglePointUnselectedStrokeBufferBloom.projectionMatrix = projectionMatrix
-            jigglePointUnselectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
-            jigglePointUnselectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
-            jigglePointUnselectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
-            jigglePointUnselectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
-            
-            jigglePointSelectedStrokeBufferBloom.projectionMatrix = projectionMatrix
-            jigglePointSelectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
-            jigglePointSelectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
-            jigglePointSelectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
-            jigglePointSelectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
-            jigglePointSelectedStrokeBufferBloom.alpha = 1.0
-        }
-        
-        for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
-            let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
-            
-            let renderCenterPoint = Math.Point(x: jiggleControlPoint.renderX,
-                                               y: jiggleControlPoint.renderY)
-            
-            if jiggleControlPoint.renderSelected {
-                jigglePointSelectedStrokeBuffer.add(translation: renderCenterPoint,
-                                                    scale: pointScale,
-                                                    rotation: baseAdjustRotation)
-                jigglePointSelectedFillBuffer.add(translation: renderCenterPoint,
-                                                  scale: pointScale,
-                                                  rotation: baseAdjustRotation,
-                                                  red: jiggleColorPack.fillSelectedRed,
-                                                  green: jiggleColorPack.fillSelectedGreen,
-                                                  blue: jiggleColorPack.fillSelectedBlue,
-                                                  alpha: 1.0)
-                
-                if isBloomEnabled && jiggle.isShowingJigglePointsBloom && !isPrecisePass {
-                    jigglePointSelectedStrokeBufferBloom.add(translation: renderCenterPoint,
-                                                             scale: pointScale,
-                                                             rotation: 0.0)
-                }
-            } else {
-                
-                jigglePointUnselectedStrokeBuffer.add(translation: renderCenterPoint,
-                                                      scale: pointScale,
-                                                      rotation: 0.0)
-                
-                if jiggleControlPoint.isManualTanHandleEnabled {
-                    jigglePointUnselectedFillBuffer.add(translation: renderCenterPoint,
-                                                        scale: pointScale,
-                                                        rotation: 0.0,
-                                                        red: jiggleColorPack.fillModifiedRed,
-                                                        green: jiggleColorPack.fillModifiedGreen,
-                                                        blue: jiggleColorPack.fillModifiedBlue,
-                                                        alpha: 1.0)
                 } else {
-                    jigglePointUnselectedFillBuffer.add(translation: renderCenterPoint,
-                                                        scale: pointScale,
-                                                        rotation: 0.0,
-                                                        red: jiggleColorPack.fillUnselectedRed,
-                                                        green: jiggleColorPack.fillUnselectedGreen,
-                                                        blue: jiggleColorPack.fillUnselectedBlue,
-                                                        alpha: 1.0)
-                }
-                
-                if isBloomEnabled && jiggle.isShowingJigglePointsBloom && !isPrecisePass {
-                    jigglePointUnselectedStrokeBufferBloom.add(translation: renderCenterPoint,
-                                                               scale: pointScale,
-                                                               rotation: 0.0)
-                }
-            }
-        }
-    }
-    
-    func renderJigglePointUnselectedStroke(renderEncoder: MTLRenderCommandEncoder,
-                                           isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingJigglePoints {
-                if isPrecisePass {
-                    jigglePointUnselectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
-                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                } else {
-                    jigglePointUnselectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
-                                                                     pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                }
-            }
-        }
-    }
-    
-    func renderJigglePointUnselectedFill(renderEncoder: MTLRenderCommandEncoder,
-                                         isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingJigglePoints {
-                if isPrecisePass {
-                    jigglePointUnselectedFillBufferPrecise.render(renderEncoder: renderEncoder,
-                                                                  pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
-                } else {
-                    jigglePointUnselectedFillBufferStandard.render(renderEncoder: renderEncoder,
-                                                                   pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
-                }
-            }
-        }
-    }
-    
-    func renderJigglePointSelectedStroke(renderEncoder: MTLRenderCommandEncoder,
-                                         isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingJigglePoints {
-                if isPrecisePass {
-                    jigglePointSelectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
-                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                } else {
-                    jigglePointSelectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
-                                                                   pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                }
-            }
-        }
-    }
-    
-    func renderJigglePointSelectedFill(renderEncoder: MTLRenderCommandEncoder,
-                                       isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingJigglePoints {
-                if isPrecisePass {
-                    jigglePointSelectedFillBufferPrecise.render(renderEncoder: renderEncoder,
-                                                                pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
-                } else {
-                    jigglePointSelectedFillBufferStandard.render(renderEncoder: renderEncoder,
-                                                                 pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
-                }
-            }
-        }
-    }
-    
-    func renderJigglePointUnselectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
-        if ApplicationController.isGlowingSelectionEnabled {
-            if let jiggle = jiggle {
-                if jiggle.isShowingJigglePointsBloom {
-                    jigglePointUnselectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
-                                                                  pipelineState: .spriteNodeIndexed3DAlphaBlending)
-                }
-            }
-        }
-    }
-    
-    func renderJigglePointSelectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
-        if ApplicationController.isGlowingSelectionEnabled {
-            if let jiggle = jiggle {
-                if jiggle.isShowingJigglePointsBloom {
-                    if !jiggle.isFrozen {
-                        jigglePointSelectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
-                                                                    pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                    for guideIndex in 0..<jiggle.guideCount {
+                        let guide = jiggle.guides[guideIndex]
+                        guide.solidLineBuffer.render(renderEncoder: renderEncoder,
+                                                     pipelineState: .shapeNodeIndexed2DNoBlending,
+                                                     scale: scale)
                     }
                 }
             }
         }
     }
-    
-    @MainActor
-    @inline(__always)
-    func prepareJigglePointTanLines(jiggle: Jiggle,
-                                    projectionMatrix: matrix_float4x4,
-                                    modelViewMatrix: matrix_float4x4,
-                                    worldScaleStandard: Float,
-                                    worldScalePrecise: Float,
-                                    isPrecisePass: Bool,
-                                    isBloomEnabled: Bool,
-                                    jiggleColorPack: JiggleRenderColorPack,
-                                    jigglePointTanHandleLineUnmodifiedFillBuffer: IndexedShapeBuffer2D,
-                                    jigglePointTanHandleLineUnmodifiedStrokeBuffer: IndexedShapeBuffer2D,
-                                    jigglePointTanHandleLineModifiedFillBuffer: IndexedShapeBuffer2D,
-                                    jigglePointTanHandleLineModifiedStrokeBuffer: IndexedShapeBuffer2D,
-                                    jigglePointTanHandleLineActiveFillBuffer: IndexedShapeBuffer2D,
-                                    jigglePointTanHandleLineActiveStrokeBuffer: IndexedShapeBuffer2D) {
-        
-        jigglePointTanHandleLineUnmodifiedFillBuffer.projectionMatrix = projectionMatrix
-        jigglePointTanHandleLineUnmodifiedFillBuffer.modelViewMatrix = modelViewMatrix
-        jigglePointTanHandleLineUnmodifiedFillBuffer.red = jiggleColorPack.tanLineFillUnmodifiedRed
-        jigglePointTanHandleLineUnmodifiedFillBuffer.green = jiggleColorPack.tanLineFillUnmodifiedGreen
-        jigglePointTanHandleLineUnmodifiedFillBuffer.blue = jiggleColorPack.tanLineFillUnmodifiedBlue
-        
-        jigglePointTanHandleLineUnmodifiedStrokeBuffer.projectionMatrix = projectionMatrix
-        jigglePointTanHandleLineUnmodifiedStrokeBuffer.modelViewMatrix = modelViewMatrix
-        jigglePointTanHandleLineUnmodifiedStrokeBuffer.red = jiggleColorPack.strokeRed
-        jigglePointTanHandleLineUnmodifiedStrokeBuffer.green = jiggleColorPack.strokeGreen
-        jigglePointTanHandleLineUnmodifiedStrokeBuffer.blue = jiggleColorPack.strokeBlue
-        
-        jigglePointTanHandleLineModifiedFillBuffer.projectionMatrix = projectionMatrix
-        jigglePointTanHandleLineModifiedFillBuffer.modelViewMatrix = modelViewMatrix
-        jigglePointTanHandleLineModifiedFillBuffer.red = jiggleColorPack.tanLineFillModifiedRed
-        jigglePointTanHandleLineModifiedFillBuffer.green = jiggleColorPack.tanLineFillModifiedGreen
-        jigglePointTanHandleLineModifiedFillBuffer.blue = jiggleColorPack.tanLineFillModifiedBlue
-        
-        jigglePointTanHandleLineModifiedStrokeBuffer.projectionMatrix = projectionMatrix
-        jigglePointTanHandleLineModifiedStrokeBuffer.modelViewMatrix = modelViewMatrix
-        jigglePointTanHandleLineModifiedStrokeBuffer.red = jiggleColorPack.strokeRed
-        jigglePointTanHandleLineModifiedStrokeBuffer.green = jiggleColorPack.strokeGreen
-        jigglePointTanHandleLineModifiedStrokeBuffer.blue = jiggleColorPack.strokeBlue
-        
-        jigglePointTanHandleLineActiveFillBuffer.projectionMatrix = projectionMatrix
-        jigglePointTanHandleLineActiveFillBuffer.modelViewMatrix = modelViewMatrix
-        jigglePointTanHandleLineActiveFillBuffer.red = jiggleColorPack.tanLineFillActiveRed
-        jigglePointTanHandleLineActiveFillBuffer.green = jiggleColorPack.tanLineFillActiveGreen
-        jigglePointTanHandleLineActiveFillBuffer.blue = jiggleColorPack.tanLineFillActiveBlue
-        
-        jigglePointTanHandleLineActiveStrokeBuffer.projectionMatrix = projectionMatrix
-        jigglePointTanHandleLineActiveStrokeBuffer.modelViewMatrix = modelViewMatrix
-        jigglePointTanHandleLineActiveStrokeBuffer.red = jiggleColorPack.strokeRed
-        jigglePointTanHandleLineActiveStrokeBuffer.green = jiggleColorPack.strokeGreen
-        jigglePointTanHandleLineActiveStrokeBuffer.blue = jiggleColorPack.strokeBlue
-        
-        if jiggle.isShowingJiggleControlPointTanHandlesBloom && isBloomEnabled && !isPrecisePass {
-            jigglePointTanHandleLineRegularBloomBuffer.projectionMatrix = projectionMatrix
-            jigglePointTanHandleLineRegularBloomBuffer.modelViewMatrix = modelViewMatrix
-            jigglePointTanHandleLineRegularBloomBuffer.red = jiggleColorPack.bloomRed
-            jigglePointTanHandleLineRegularBloomBuffer.green = jiggleColorPack.bloomGreen
-            jigglePointTanHandleLineRegularBloomBuffer.blue = jiggleColorPack.bloomBlue
-        }
-        
-        let thicknessStroke: Float
-        let thicknessFill: Float
-        
-        if isPrecisePass {
-            thicknessStroke = jiggle.solidLineBufferStroke.thickness * worldScalePrecise * JiggleViewModel.lineScalePrecise
-            thicknessFill = jiggle.solidLineBuffer.thickness * worldScalePrecise * JiggleViewModel.lineScalePrecise
-        } else {
-            thicknessStroke = jiggle.solidLineBufferStroke.thickness * worldScaleStandard * JiggleViewModel.lineScaleStandard
-            thicknessFill = jiggle.solidLineBuffer.thickness * worldScaleStandard * JiggleViewModel.lineScaleStandard
-        }
-        
-        
-        for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
-            let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
-            
-            
-            let tanHandleInX = jiggleControlPoint.renderTanInX
-            let tanHandleInY = jiggleControlPoint.renderTanInY
-            let tanHandleOutX = jiggleControlPoint.renderTanOutX
-            let tanHandleOutY = jiggleControlPoint.renderTanOutY
-            let tanNormalX = jiggleControlPoint.renderTanNormalX
-            let tanNormalY = jiggleControlPoint.renderTanNormalY
-            
-            let strokeBox = getLineBox(x1: tanHandleInX, y1: tanHandleInY,
-                                       x2: tanHandleOutX, y2: tanHandleOutY,
-                                       normalX: tanNormalX, normalY: tanNormalY,
-                                       thickness: thicknessStroke)
-            let fillBox = getLineBox(x1: tanHandleInX, y1: tanHandleInY,
-                                     x2: tanHandleOutX, y2: tanHandleOutY,
-                                     normalX: tanNormalX, normalY: tanNormalY,
-                                     thickness: thicknessFill)
-            
-            
-            
-            if jiggleControlPoint.renderSelected {
-                jigglePointTanHandleLineActiveStrokeBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
-                                                               cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
-                                                               cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
-                                                               cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
-                jigglePointTanHandleLineActiveFillBuffer.add(cornerX1: fillBox.x1, cornerY1: fillBox.y1,
-                                                             cornerX2: fillBox.x2, cornerY2: fillBox.y2,
-                                                             cornerX3: fillBox.x3, cornerY3: fillBox.y3,
-                                                             cornerX4: fillBox.x4, cornerY4: fillBox.y4)
-            } else if jiggleControlPoint.isManualTanHandleEnabled {
-                jigglePointTanHandleLineModifiedStrokeBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
-                                                                 cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
-                                                                 cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
-                                                                 cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
-                jigglePointTanHandleLineModifiedFillBuffer.add(cornerX1: fillBox.x1, cornerY1: fillBox.y1,
-                                                               cornerX2: fillBox.x2, cornerY2: fillBox.y2,
-                                                               cornerX3: fillBox.x3, cornerY3: fillBox.y3,
-                                                               cornerX4: fillBox.x4, cornerY4: fillBox.y4)
-            } else {
-                jigglePointTanHandleLineUnmodifiedStrokeBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
-                                                                   cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
-                                                                   cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
-                                                                   cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
-                jigglePointTanHandleLineUnmodifiedFillBuffer.add(cornerX1: fillBox.x1, cornerY1: fillBox.y1,
-                                                                 cornerX2: fillBox.x2, cornerY2: fillBox.y2,
-                                                                 cornerX3: fillBox.x3, cornerY3: fillBox.y3,
-                                                                 cornerX4: fillBox.x4, cornerY4: fillBox.y4)
-            }
-            
-            if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
-                
-                jigglePointTanHandleLineRegularBloomBuffer.add(cornerX1: strokeBox.x1, cornerY1: strokeBox.y1,
-                                                            cornerX2: strokeBox.x2, cornerY2: strokeBox.y2,
-                                                            cornerX3: strokeBox.x3, cornerY3: strokeBox.y3,
-                                                            cornerX4: strokeBox.x4, cornerY4: strokeBox.y4)
-            }
-        }
-    }
-
-
-    func renderJigglePointTanHandleLinesFill(renderEncoder: MTLRenderCommandEncoder,
-                                             isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
-                if isPrecisePass {
-                    jigglePointTanHandleLineUnmodifiedPreciseFillBuffer.render(renderEncoder: renderEncoder,
-                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
-                    jigglePointTanHandleLineModifiedPreciseFillBuffer.render(renderEncoder: renderEncoder,
-                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
-                    jigglePointTanHandleLineActivePreciseFillBuffer.render(renderEncoder: renderEncoder,
-                                                                           pipelineState: .shapeNodeIndexed2DNoBlending)
-                } else {
-                    jigglePointTanHandleLineUnmodifiedRegularFillBuffer.render(renderEncoder: renderEncoder,
-                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
-                    jigglePointTanHandleLineModifiedRegularFillBuffer.render(renderEncoder: renderEncoder,
-                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
-                    jigglePointTanHandleLineActiveRegularFillBuffer.render(renderEncoder: renderEncoder,
-                                                                           pipelineState: .shapeNodeIndexed2DNoBlending)
-                }
-            }
-        }
-    }
-
-    func renderJigglePointTanHandleLinesStroke(renderEncoder: MTLRenderCommandEncoder,
-                                               isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
-                if isPrecisePass {
-                    jigglePointTanHandleLineUnmodifiedPreciseStrokeBuffer.render(renderEncoder: renderEncoder,
-                                                                                 pipelineState: .shapeNodeIndexed2DNoBlending)
-                    jigglePointTanHandleLineModifiedPreciseStrokeBuffer.render(renderEncoder: renderEncoder,
-                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
-                    jigglePointTanHandleLineActivePreciseStrokeBuffer.render(renderEncoder: renderEncoder,
-                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
-                } else {
-                    jigglePointTanHandleLineUnmodifiedRegularStrokeBuffer.render(renderEncoder: renderEncoder,
-                                                                                 pipelineState: .shapeNodeIndexed2DNoBlending)
-                    jigglePointTanHandleLineModifiedRegularStrokeBuffer.render(renderEncoder: renderEncoder,
-                                                                               pipelineState: .shapeNodeIndexed2DNoBlending)
-                    jigglePointTanHandleLineActiveRegularStrokeBuffer.render(renderEncoder: renderEncoder,
-                                                                             pipelineState: .shapeNodeIndexed2DNoBlending)
-                }
-            }
-        }
-    }
-
-    func renderJigglePointTanHandleLinesBloom(renderEncoder: MTLRenderCommandEncoder) {
-        if ApplicationController.isGlowingSelectionEnabled {
-            if let jiggle = jiggle {
-                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
-                    jigglePointTanHandleLineRegularBloomBuffer.render(renderEncoder: renderEncoder,
-                                                               pipelineState: .shapeNodeIndexed3DNoBlending)
-                }
-            }
-        }
-    }
-    
-    @MainActor
-    @inline(__always)
-    func prepareJigglePointTanPoints(jiggle: Jiggle,
-                                     projectionMatrix: matrix_float4x4,
-                                     modelViewMatrix: matrix_float4x4,
-                                     pointScale: Float,
-                                     isPrecisePass: Bool,
-                                     isBloomEnabled: Bool,
-                                     jiggleColorPack: JiggleRenderColorPack,
-                                     selectedJigglePointTanType: TanType,
-                                     jigglePointTanHandlePointUnselectedStrokeBuffer: IndexedSpriteBuffer2D,
-                                     jigglePointTanHandlePointUnselectedFillBuffer: IndexedSpriteBuffer2DColored,
-                                     jigglePointTanHandlePointSelectedStrokeBuffer: IndexedSpriteBuffer2D,
-                                     jigglePointTanHandlePointSelectedFillBuffer: IndexedSpriteBuffer2DColored) {
-        
-        jigglePointTanHandlePointUnselectedStrokeBuffer.projectionMatrix = projectionMatrix
-        jigglePointTanHandlePointUnselectedStrokeBuffer.modelViewMatrix = modelViewMatrix
-        jigglePointTanHandlePointUnselectedStrokeBuffer.red = jiggleColorPack.strokeRed
-        jigglePointTanHandlePointUnselectedStrokeBuffer.green = jiggleColorPack.strokeGreen
-        jigglePointTanHandlePointUnselectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
-        
-        jigglePointTanHandlePointUnselectedFillBuffer.projectionMatrix = projectionMatrix
-        jigglePointTanHandlePointUnselectedFillBuffer.modelViewMatrix = modelViewMatrix
-        
-        jigglePointTanHandlePointSelectedStrokeBuffer.projectionMatrix = projectionMatrix
-        jigglePointTanHandlePointSelectedStrokeBuffer.modelViewMatrix = modelViewMatrix
-        jigglePointTanHandlePointSelectedStrokeBuffer.red = jiggleColorPack.strokeRed
-        jigglePointTanHandlePointSelectedStrokeBuffer.green = jiggleColorPack.strokeGreen
-        jigglePointTanHandlePointSelectedStrokeBuffer.blue = jiggleColorPack.strokeBlue
-        
-        jigglePointTanHandlePointSelectedFillBuffer.projectionMatrix = projectionMatrix
-        jigglePointTanHandlePointSelectedFillBuffer.modelViewMatrix = modelViewMatrix
-        
-        if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
-            
-            jigglePointTanHandlePointUnselectedStrokeBufferBloom.projectionMatrix = projectionMatrix
-            jigglePointTanHandlePointUnselectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
-            jigglePointTanHandlePointUnselectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
-            jigglePointTanHandlePointUnselectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
-            jigglePointTanHandlePointUnselectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
-            
-            jigglePointTanHandlePointSelectedStrokeBufferBloom.projectionMatrix = projectionMatrix
-            jigglePointTanHandlePointSelectedStrokeBufferBloom.modelViewMatrix = modelViewMatrix
-            jigglePointTanHandlePointSelectedStrokeBufferBloom.red = jiggleColorPack.bloomRed
-            jigglePointTanHandlePointSelectedStrokeBufferBloom.green = jiggleColorPack.bloomGreen
-            jigglePointTanHandlePointSelectedStrokeBufferBloom.blue = jiggleColorPack.bloomBlue
-        }
-        
-        for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
-            
-            let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
-            
-            
-            let renderCenterPointIn = Math.Point(x: jiggleControlPoint.renderTanInX,
-                                                 y: jiggleControlPoint.renderTanInY)
-            let renderCenterPointOut = Math.Point(x: jiggleControlPoint.renderTanOutX,
-                                                  y: jiggleControlPoint.renderTanOutY)
-            
-            if (jiggleControlPoint.renderSelected == true) && (selectedJigglePointTanType == .in) {
-                
-                jigglePointTanHandlePointSelectedStrokeBuffer.add(translation: renderCenterPointIn,
-                                                                  scale: pointScale,
-                                                                  rotation: 0.0)
-                jigglePointTanHandlePointSelectedFillBuffer.add(translation: renderCenterPointIn,
-                                                                scale: pointScale,
-                                                                rotation: 0.0,
-                                                                red: jiggleColorPack.tanPointFillActiveRed,
-                                                                green: jiggleColorPack.tanPointFillActiveGreen,
-                                                                blue: jiggleColorPack.tanPointFillActiveBlue,
-                                                                alpha: 1.0)
-                
-                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
-                    jigglePointTanHandlePointSelectedStrokeBufferBloom.add(translation: renderCenterPointIn,
-                                                                           scale: pointScale,
-                                                                           rotation: 0.0)
-                }
-                
-            } else {
-                
-                jigglePointTanHandlePointUnselectedStrokeBuffer.add(translation: renderCenterPointIn,
-                                                                    scale: pointScale,
-                                                                    rotation: 0.0)
-                if (jiggleControlPoint.isManualTanHandleEnabled == true) || (jiggleControlPoint.renderSelected == true) {
-                    jigglePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointIn,
-                                                                      scale: pointScale,
-                                                                      rotation: 0.0,
-                                                                      red: jiggleColorPack.tanPointFillModifiedRed,
-                                                                      green: jiggleColorPack.tanPointFillModifiedGreen,
-                                                                      blue: jiggleColorPack.tanPointFillModifiedBlue,
-                                                                      alpha: 1.0)
-                } else {
-                    jigglePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointIn,
-                                                                      scale: pointScale,
-                                                                      rotation: 0.0,
-                                                                      red: jiggleColorPack.tanPointFillUnmodifiedRed,
-                                                                      green: jiggleColorPack.tanPointFillUnmodifiedGreen,
-                                                                      blue: jiggleColorPack.tanPointFillUnmodifiedBlue,
-                                                                      alpha: 1.0)
-                }
-                
-                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
-                    jigglePointTanHandlePointUnselectedStrokeBufferBloom.add(translation: renderCenterPointIn,
-                                                                             scale: pointScale,
-                                                                             rotation: 0.0)
-                }
-            }
-            
-            if (jiggleControlPoint.renderSelected == true) && (selectedJigglePointTanType == .out) {
-                
-                jigglePointTanHandlePointSelectedStrokeBuffer.add(translation: renderCenterPointOut,
-                                                                  scale: pointScale,
-                                                                  rotation: 0.0)
-                jigglePointTanHandlePointSelectedFillBuffer.add(translation: renderCenterPointOut,
-                                                                scale: pointScale,
-                                                                rotation: 0.0,
-                                                                red: jiggleColorPack.tanPointFillActiveRed,
-                                                                green: jiggleColorPack.tanPointFillActiveGreen,
-                                                                blue: jiggleColorPack.tanPointFillActiveBlue,
-                                                                alpha: 1.0)
-                
-                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
-                    jigglePointTanHandlePointSelectedStrokeBufferBloom.add(translation: renderCenterPointOut,
-                                                                           scale: pointScale,
-                                                                           rotation: 0.0)
-                }
-                
-            } else {
-                
-                jigglePointTanHandlePointUnselectedStrokeBuffer.add(translation: renderCenterPointOut,
-                                                                    scale: pointScale,
-                                                                    rotation: 0.0)
-                if (jiggleControlPoint.isManualTanHandleEnabled == true) || (jiggleControlPoint.renderSelected == true) {
-                    jigglePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointOut,
-                                                                      scale: pointScale,
-                                                                      rotation: 0.0,
-                                                                      red: jiggleColorPack.tanPointFillModifiedRed,
-                                                                      green: jiggleColorPack.tanPointFillModifiedGreen,
-                                                                      blue: jiggleColorPack.tanPointFillModifiedBlue,
-                                                                      alpha: 1.0)
-                } else {
-                    jigglePointTanHandlePointUnselectedFillBuffer.add(translation: renderCenterPointOut,
-                                                                      scale: pointScale,
-                                                                      rotation: 0.0,
-                                                                      red: jiggleColorPack.tanPointFillUnmodifiedRed,
-                                                                      green: jiggleColorPack.tanPointFillUnmodifiedGreen,
-                                                                      blue: jiggleColorPack.tanPointFillUnmodifiedBlue,
-                                                                      alpha: 1.0)
-                }
-                
-                if isBloomEnabled && jiggle.isShowingJiggleControlPointTanHandlesBloom && !isPrecisePass {
-                    jigglePointTanHandlePointUnselectedStrokeBufferBloom.add(translation: renderCenterPointOut,
-                                                                             scale: pointScale,
-                                                                             rotation: 0.0)
-                }
-            }
-        }
-    }
-
-    func renderJigglePointTanHandlePointUnselectedStroke(renderEncoder: MTLRenderCommandEncoder,
-                                                         isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
-                if isPrecisePass {
-                    jigglePointTanHandlePointUnselectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
-                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                } else {
-                    jigglePointTanHandlePointUnselectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
-                                                                                   pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                }
-            }
-        }
-    }
-
-    func renderJigglePointTanHandlePointUnselectedFill(renderEncoder: MTLRenderCommandEncoder,
-                                                       isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
-                if isPrecisePass {
-                    jigglePointTanHandlePointUnselectedFillBufferPrecise.render(renderEncoder: renderEncoder,
-                                                                                pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
-                } else {
-                    jigglePointTanHandlePointUnselectedFillBufferStandard.render(renderEncoder: renderEncoder,
-                                                                                 pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
-                }
-            }
-        }
-    }
-
-    func renderJigglePointTanHandlePointSelectedStroke(renderEncoder: MTLRenderCommandEncoder,
-                                                       isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
-                if isPrecisePass {
-                    jigglePointTanHandlePointSelectedStrokeBufferPrecise.render(renderEncoder: renderEncoder,
-                                                                                pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                } else {
-                    jigglePointTanHandlePointSelectedStrokeBufferStandard.render(renderEncoder: renderEncoder,
-                                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                }
-            }
-        }
-    }
-
-    func renderJigglePointTanHandlePointSelectedFill(renderEncoder: MTLRenderCommandEncoder,
-                                                     isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
-                if isPrecisePass {
-                    jigglePointTanHandlePointSelectedFillBufferPrecise.render(renderEncoder: renderEncoder,
-                                                                              pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
-                } else {
-                    jigglePointTanHandlePointSelectedFillBufferStandard.render(renderEncoder: renderEncoder,
-                                                                               pipelineState: .spriteNodeColoredWhiteIndexed2DPremultipliedBlending)
-                }
-            }
-        }
-    }
-
-    func renderJigglePointTanHandlePointUnselectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
-        if ApplicationController.isGlowingSelectionEnabled {
-            if let jiggle = jiggle {
-                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
-                    jigglePointTanHandlePointUnselectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
-                                                                                pipelineState: .spriteNodeIndexed3DAlphaBlending)
-                }
-            }
-        }
-    }
-
-    func renderJigglePointTanHandlePointSelectedStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
-        if ApplicationController.isGlowingSelectionEnabled {
-            if let jiggle = jiggle {
-                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
-                    if !jiggle.isFrozen {
-                        jigglePointTanHandlePointSelectedStrokeBufferBloom.render(renderEncoder: renderEncoder,
-                                                                                  pipelineState: .spriteNodeIndexed3DAlphaBlending)
-                    }
-                }
-            }
-        }
-    }
-    
-    @MainActor
-    @inline(__always)
-    func prepareWeightCenter(jiggle: Jiggle,
-                            worldScalePrecise: Float,
-                            worldScaleStandard: Float,
-                            projectionMatrix: matrix_float4x4,
-                            modelViewMatrix: matrix_float4x4,
-                            baseAdjustRotation: Float,
-                            isPrecisePass: Bool,
-                            isBloomEnabled: Bool,
-                            jiggleColorPack: JiggleRenderColorPack,
-                            weightCenterMarkerDotUnselectedFillInstance: IndexedSpriteInstance2D,
-                            weightCenterMarkerDotUnselectedStrokeInstance: IndexedSpriteInstance2D,
-                            weightCenterMarkerDotSelectedFillInstance: IndexedSpriteInstance2D,
-                            weightCenterMarkerDotSelectedStrokeInstance: IndexedSpriteInstance2D,
-                            weightCenterMarkerSpinnerUnselectedFillInstance: IndexedSpriteInstance2D,
-                            weightCenterMarkerSpinnerUnselectedStrokeInstance: IndexedSpriteInstance2D,
-                            weightCenterMarkerSpinnerSelectedFillInstance: IndexedSpriteInstance2D,
-                            weightCenterMarkerSpinnerSelectedStrokeInstance: IndexedSpriteInstance2D) {
-        
-        let weghtCenterScale: Float
-        if isPrecisePass {
-            weghtCenterScale = worldScalePrecise * JiggleViewModel.weightCenterScalePrecise
-        } else {
-            weghtCenterScale = worldScaleStandard * JiggleViewModel.weightCenterScaleStandard
-        }
-        
-        var guideCenter = jiggle.guideCenter
-        guideCenter = jiggle.transformPoint(point: guideCenter)
-        var centerModelView = modelViewMatrix
-        centerModelView.translation(x: guideCenter.x,
-                                    y: guideCenter.y,
-                                    z: 0.0)
-        centerModelView.scale(weghtCenterScale)
-        centerModelView.rotateZ(radians: baseAdjustRotation)
-        
-        var spinnerModelView = centerModelView
-        spinnerModelView.rotateZ(radians: jiggle.guideCenterSpinnerRotation)
-        
-        if isSelected {
-            
-            weightCenterMarkerDotSelectedFillInstance.projectionMatrix = projectionMatrix
-            weightCenterMarkerDotSelectedFillInstance.modelViewMatrix = centerModelView
-            weightCenterMarkerDotSelectedFillInstance.red = jiggleColorPack.fillWeightCenterRed
-            weightCenterMarkerDotSelectedFillInstance.green = jiggleColorPack.fillWeightCenterGreen
-            weightCenterMarkerDotSelectedFillInstance.blue = jiggleColorPack.fillWeightCenterBlue
-            
-            weightCenterMarkerDotSelectedStrokeInstance.projectionMatrix = projectionMatrix
-            weightCenterMarkerDotSelectedStrokeInstance.modelViewMatrix = centerModelView
-            weightCenterMarkerDotSelectedStrokeInstance.red = jiggleColorPack.strokeRed
-            weightCenterMarkerDotSelectedStrokeInstance.green = jiggleColorPack.strokeGreen
-            weightCenterMarkerDotSelectedStrokeInstance.blue = jiggleColorPack.strokeBlue
-            
-            weightCenterMarkerSpinnerSelectedFillInstance.projectionMatrix = projectionMatrix
-            weightCenterMarkerSpinnerSelectedFillInstance.modelViewMatrix = spinnerModelView
-            weightCenterMarkerSpinnerSelectedFillInstance.red = jiggleColorPack.fillWeightCenterRed
-            weightCenterMarkerSpinnerSelectedFillInstance.green = jiggleColorPack.fillWeightCenterGreen
-            weightCenterMarkerSpinnerSelectedFillInstance.blue = jiggleColorPack.fillWeightCenterBlue
-            
-            weightCenterMarkerSpinnerSelectedStrokeInstance.projectionMatrix = projectionMatrix
-            weightCenterMarkerSpinnerSelectedStrokeInstance.modelViewMatrix = spinnerModelView
-            weightCenterMarkerSpinnerSelectedStrokeInstance.red = jiggleColorPack.strokeRed
-            weightCenterMarkerSpinnerSelectedStrokeInstance.green = jiggleColorPack.strokeGreen
-            weightCenterMarkerSpinnerSelectedStrokeInstance.blue = jiggleColorPack.strokeBlue
-            
-            if isBloomEnabled && jiggle.isShowingWeightCenterMarkerBloom && !isPrecisePass {
-                
-                weightCenterMarkerDotSelectedRegularBloomInstance.projectionMatrix = projectionMatrix
-                weightCenterMarkerDotSelectedRegularBloomInstance.modelViewMatrix = centerModelView
-                weightCenterMarkerDotSelectedRegularBloomInstance.red = jiggleColorPack.bloomRed
-                weightCenterMarkerDotSelectedRegularBloomInstance.green = jiggleColorPack.bloomGreen
-                weightCenterMarkerDotSelectedRegularBloomInstance.blue = jiggleColorPack.bloomBlue
-                
-                weightCenterMarkerSpinnerSelectedRegularBloomInstance.projectionMatrix = projectionMatrix
-                weightCenterMarkerSpinnerSelectedRegularBloomInstance.modelViewMatrix = spinnerModelView
-                weightCenterMarkerSpinnerSelectedRegularBloomInstance.red = jiggleColorPack.bloomRed
-                weightCenterMarkerSpinnerSelectedRegularBloomInstance.green = jiggleColorPack.bloomGreen
-                weightCenterMarkerSpinnerSelectedRegularBloomInstance.blue = jiggleColorPack.bloomBlue
-            }
-            
-        } else {
-            weightCenterMarkerDotUnselectedFillInstance.projectionMatrix = projectionMatrix
-            weightCenterMarkerDotUnselectedFillInstance.modelViewMatrix = centerModelView
-            weightCenterMarkerDotUnselectedFillInstance.red = jiggleColorPack.fillWeightCenterRed
-            weightCenterMarkerDotUnselectedFillInstance.green = jiggleColorPack.fillWeightCenterGreen
-            weightCenterMarkerDotUnselectedFillInstance.blue = jiggleColorPack.fillWeightCenterBlue
-            
-            weightCenterMarkerDotUnselectedStrokeInstance.projectionMatrix = projectionMatrix
-            weightCenterMarkerDotUnselectedStrokeInstance.modelViewMatrix = centerModelView
-            weightCenterMarkerDotUnselectedStrokeInstance.red = jiggleColorPack.strokeRed
-            weightCenterMarkerDotUnselectedStrokeInstance.green = jiggleColorPack.strokeGreen
-            weightCenterMarkerDotUnselectedStrokeInstance.blue = jiggleColorPack.strokeBlue
-            
-            weightCenterMarkerSpinnerUnselectedFillInstance.projectionMatrix = projectionMatrix
-            weightCenterMarkerSpinnerUnselectedFillInstance.modelViewMatrix = spinnerModelView
-            weightCenterMarkerSpinnerUnselectedFillInstance.red = jiggleColorPack.fillWeightCenterRed
-            weightCenterMarkerSpinnerUnselectedFillInstance.green = jiggleColorPack.fillWeightCenterGreen
-            weightCenterMarkerSpinnerUnselectedFillInstance.blue = jiggleColorPack.fillWeightCenterBlue
-            
-            weightCenterMarkerSpinnerUnselectedStrokeInstance.projectionMatrix = projectionMatrix
-            weightCenterMarkerSpinnerUnselectedStrokeInstance.modelViewMatrix = spinnerModelView
-            weightCenterMarkerSpinnerUnselectedStrokeInstance.red = jiggleColorPack.strokeRed
-            weightCenterMarkerSpinnerUnselectedStrokeInstance.green = jiggleColorPack.strokeGreen
-            weightCenterMarkerSpinnerUnselectedStrokeInstance.blue = jiggleColorPack.strokeBlue
-        }
-    }
-    
-    func renderWeightCenterMarkerStroke(renderEncoder: MTLRenderCommandEncoder,
-                                        isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingWeightCenterMarker {
-                if isSelected {
-                    if isPrecisePass {
-                        weightCenterMarkerDotSelectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
-                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                        weightCenterMarkerSpinnerSelectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
-                                                                                      pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    } else {
-                        weightCenterMarkerDotSelectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
-                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                        weightCenterMarkerSpinnerSelectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
-                                                                                      pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    }
-                } else {
-                    if isPrecisePass {
-                        weightCenterMarkerDotUnselectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
-                                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                        weightCenterMarkerSpinnerUnselectedPreciseStrokeInstance.render(renderEncoder: renderEncoder,
-                                                                                        pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    } else {
-                        weightCenterMarkerDotUnselectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
-                                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                        weightCenterMarkerSpinnerUnselectedRegularStrokeInstance.render(renderEncoder: renderEncoder,
-                                                                                        pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    }
-                }
-            }
-        }
-    }
-    
-    
-    func renderWeightCenterMarkerFill(renderEncoder: MTLRenderCommandEncoder,
-                                      isPrecisePass: Bool) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingWeightCenterMarker {
-                if isSelected {
-                    if isPrecisePass {
-                        weightCenterMarkerDotSelectedPreciseFillInstance.render(renderEncoder: renderEncoder,
-                                                                                pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                        weightCenterMarkerSpinnerSelectedPreciseFillInstance.render(renderEncoder: renderEncoder,
-                                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    } else {
-                        weightCenterMarkerDotSelectedRegularFillInstance.render(renderEncoder: renderEncoder,
-                                                                                pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                        weightCenterMarkerSpinnerSelectedRegularFillInstance.render(renderEncoder: renderEncoder,
-                                                                                    pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    }
-                } else {
-                    if isPrecisePass {
-                        weightCenterMarkerDotUnselectedPreciseFillInstance.render(renderEncoder: renderEncoder,
-                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                        weightCenterMarkerSpinnerUnselectedPreciseFillInstance.render(renderEncoder: renderEncoder,
-                                                                                      pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    } else {
-                        weightCenterMarkerDotUnselectedRegularFillInstance.render(renderEncoder: renderEncoder,
-                                                                                  pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                        weightCenterMarkerSpinnerUnselectedRegularFillInstance.render(renderEncoder: renderEncoder,
-                                                                                      pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
-                    }
-                }
-            }
-        }
-    }
-    
-    func renderWeightCenterMarkerStrokeBloom(renderEncoder: MTLRenderCommandEncoder) {
-        if ApplicationController.isGlowingSelectionEnabled {
-            if let jiggle = jiggle {
-                if isSelected {
-                    if jiggle.isShowingWeightCenterMarkerBloom {
-                        weightCenterMarkerDotSelectedRegularBloomInstance.render(renderEncoder: renderEncoder,
-                                                                                 pipelineState: .spriteNodeIndexed3DAlphaBlending)
-                        weightCenterMarkerSpinnerSelectedRegularBloomInstance.render(renderEncoder: renderEncoder,
-                                                                                     pipelineState: .spriteNodeIndexed3DAlphaBlending)
-                        
-                    }
-                }
-            }
-        }
-    }
-    
 }

@@ -11,26 +11,11 @@ import Metal
 extension JiggleRenderer {
     
     func renderBorderRingBloomRegular(renderEncoder: MTLRenderCommandEncoder) {
-        if ApplicationController.isGlowingSelectionEnabled {
+        if isBloomMode {
             if let jiggle = jiggle {
                 if jiggle.isShowingJiggleBorderRingsBloom {
-                    if !jiggle.isFrozen {
-                        jiggle.solidLineBufferRegularBloom.render(renderEncoder: renderEncoder,
-                                                                  pipelineState: .shapeNodeIndexed3DNoBlending)
-                    }
-                }
-            }
-        }
-    }
-    
-    func renderBorderRingBloomPrecise(renderEncoder: MTLRenderCommandEncoder) {
-        if ApplicationController.isGlowingSelectionEnabled {
-            if let jiggle = jiggle {
-                if jiggle.isShowingJiggleBorderRingsBloom {
-                    if !jiggle.isFrozen {
-                        jiggle.solidLineBufferPreciseBloom.render(renderEncoder: renderEncoder,
-                                                                  pipelineState: .shapeNodeIndexed3DNoBlending)
-                    }
+                    jiggle.solidLineBufferRegularBloom.render(renderEncoder: renderEncoder,
+                                                              pipelineState: .shapeNodeIndexed3DNoBlending)
                 }
             }
         }
@@ -45,20 +30,33 @@ extension JiggleRenderer {
         }
     }
     
-    func renderBorderRingStrokePrecise(renderEncoder: MTLRenderCommandEncoder) {
-        if let jiggle = jiggle {
-            if jiggle.isShowingJiggleBorderRings {
-                jiggle.solidLineBufferPreciseStroke.render(renderEncoder: renderEncoder,
-                                                           pipelineState: .shapeNodeIndexed2DNoBlending)
-            }
-        }
-    }
-    
     func renderBorderRingFillRegular(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
             if jiggle.isShowingJiggleBorderRings {
                 jiggle.solidLineBufferRegularFill.render(renderEncoder: renderEncoder,
                                                          pipelineState: .shapeNodeIndexed2DNoBlending)
+            }
+        }
+    }
+    
+    func renderBorderRingBloomPrecise(renderEncoder: MTLRenderCommandEncoder) {
+        if isBloomMode {
+            if let jiggle = jiggle {
+                if jiggle.isShowingJiggleBorderRingsBloom {
+                    if !jiggle.isFrozen {
+                        jiggle.solidLineBufferPreciseBloom.render(renderEncoder: renderEncoder,
+                                                                  pipelineState: .shapeNodeIndexed3DNoBlending)
+                    }
+                }
+            }
+        }
+    }
+    
+    func renderBorderRingStrokePrecise(renderEncoder: MTLRenderCommandEncoder) {
+        if let jiggle = jiggle {
+            if jiggle.isShowingJiggleBorderRings {
+                jiggle.solidLineBufferPreciseStroke.render(renderEncoder: renderEncoder,
+                                                           pipelineState: .shapeNodeIndexed2DNoBlending)
             }
         }
     }

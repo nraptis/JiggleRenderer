@@ -1,33 +1,25 @@
 //
-//  JiggleRenderer.swift
+//  GuideRenderer.swift
 //  Yo Mamma Be Ugly
 //
-//  Created by Nick Raptis on 11/13/23.
-//
-//  Not Verified (Mostly Verified) on 11/9/2024 by Nick Raptis
-//  Major refactor on 11/24 and 11/25, 2024
-//  Major refactor on 12/22 -  12/29, 2024
+//  Created by Nick Raptis on 12/29/24.
 //
 
 import Foundation
 import Metal
 import simd
 
-class JiggleRenderer {
+class GuideRenderer {
     
     static let DIRTY_TRIANGLES_SHOW_DIRTY = true
     
     weak var jiggleEngine: JiggleEngine?
     weak var graphics: Graphics?
     weak var jiggle: Jiggle?
+    weak var guide: Guide?
+    var weightDepthIndex = -1
     
     var color_bloom = RGBA()
-    
-    var color_jiggle_center_stroke = RGBA()
-    var color_jiggle_center_fill = RGBA()
-    
-    var color_weight_center_stroke = RGBA()
-    var color_weight_center_fill = RGBA()
     
     var color_points_unmodified_unselected_stroke = RGBA()
     var color_points_unmodified_unselected_fill = RGBA()
@@ -46,13 +38,18 @@ class JiggleRenderer {
     var color_tan_points_selected_stroke = RGBA()
     var color_tan_points_selected_fill = RGBA()
     
-    var jiggleCenterCreatorModeFormat = JiggleCenterCreatorModeFormat.invalid
     var pointsCreatorModeFormat = PointsCreatorModeFormat.invalid
     var tansCreatorModeFormat = TansCreatorModeFormat.invalid
-    var weightCenterCreatorModeFormat = WeightCenterCreatorModeFormat.invalid
     
     var isJiggleSelected = false
     var isJiggleFrozen = false
+    var isSelected = false
+    
+    var isGuideSelected = false
+    var isGuideFrozen = false
+    var isFrozen = false
+    
+    
     
     var isDarkMode = false
     var isStereoscopicMode = false
@@ -67,7 +64,6 @@ class JiggleRenderer {
     
     var inverseRotation = Float(1.0)
     
-    var editMode = EditMode.jiggles
     var weightMode = WeightMode.guides
     
     var selectedTanType = TanTypeOrNone.none
@@ -76,57 +72,6 @@ class JiggleRenderer {
     var lineWidthFillBase = Float(8.0)
     var lineWidthStrokeBase = Float(12.0)
     
-    
-    // Jiggle Center Marker Unselected:
-    let jiggleCenterMarkerUnselectedRegularStrokeInstance = IndexedSpriteInstance2D()
-    let jiggleCenterMarkerUnselectedRegularFillInstance = IndexedSpriteInstance2D()
-    
-    let jiggleCenterMarkerUnselectedPreciseStrokeInstance = IndexedSpriteInstance2D()
-    let jiggleCenterMarkerUnselectedPreciseFillInstance = IndexedSpriteInstance2D()
-    
-    // Jiggle Center Marker Selected:
-    let jiggleCenterMarkerSelectedRegularBloomInstance = IndexedSpriteInstance3D()
-    let jiggleCenterMarkerSelectedRegularStrokeInstance = IndexedSpriteInstance2D()
-    let jiggleCenterMarkerSelectedRegularFillInstance = IndexedSpriteInstance2D()
-    
-    let jiggleCenterMarkerSelectedPreciseBloomInstance = IndexedSpriteInstance3D()
-    let jiggleCenterMarkerSelectedPreciseStrokeInstance = IndexedSpriteInstance2D()
-    let jiggleCenterMarkerSelectedPreciseFillInstance = IndexedSpriteInstance2D()
-    
-    
-    
-    // Weight Center Marker Dot Unselected:
-    let weightCenterMarkerDotUnselectedRegularStrokeInstance = IndexedSpriteInstance2D()
-    let weightCenterMarkerDotUnselectedRegularFillInstance = IndexedSpriteInstance2D()
-    
-    let weightCenterMarkerDotUnselectedPreciseStrokeInstance = IndexedSpriteInstance2D()
-    let weightCenterMarkerDotUnselectedPreciseFillInstance = IndexedSpriteInstance2D()
-    
-    // Weight Center Marker Dot Selected:
-    let weightCenterMarkerDotSelectedRegularBloomInstance = IndexedSpriteInstance3D()
-    let weightCenterMarkerDotSelectedRegularStrokeInstance = IndexedSpriteInstance2D()
-    let weightCenterMarkerDotSelectedRegularFillInstance = IndexedSpriteInstance2D()
-    
-    let weightCenterMarkerDotSelectedPreciseBloomInstance = IndexedSpriteInstance3D()
-    let weightCenterMarkerDotSelectedPreciseStrokeInstance = IndexedSpriteInstance2D()
-    let weightCenterMarkerDotSelectedPreciseFillInstance = IndexedSpriteInstance2D()
-    
-    
-    // Weight Center Marker Spinner Unselected:
-    let weightCenterMarkerSpinnerUnselectedRegularStrokeInstance = IndexedSpriteInstance2D()
-    let weightCenterMarkerSpinnerUnselectedRegularFillInstance = IndexedSpriteInstance2D()
-    
-    let weightCenterMarkerSpinnerUnselectedPreciseStrokeInstance = IndexedSpriteInstance2D()
-    let weightCenterMarkerSpinnerUnselectedPreciseFillInstance = IndexedSpriteInstance2D()
-    
-    // Weight Center Marker Spinner Selected:
-    let weightCenterMarkerSpinnerSelectedRegularBloomInstance = IndexedSpriteInstance3D()
-    let weightCenterMarkerSpinnerSelectedRegularStrokeInstance = IndexedSpriteInstance2D()
-    let weightCenterMarkerSpinnerSelectedRegularFillInstance = IndexedSpriteInstance2D()
-    
-    let weightCenterMarkerSpinnerSelectedPreciseBloomInstance = IndexedSpriteInstance3D()
-    let weightCenterMarkerSpinnerSelectedPreciseStrokeInstance = IndexedSpriteInstance2D()
-    let weightCenterMarkerSpinnerSelectedPreciseFillInstance = IndexedSpriteInstance2D()
     
     
     // Points Unselected:
@@ -207,58 +152,6 @@ class JiggleRenderer {
             print("FATAL: Expected Graphics")
             return
         }
-        
-        // Jiggle Center Marker Unselected:
-        jiggleCenterMarkerUnselectedRegularStrokeInstance.load(graphics: graphics, sprite: jiggleEngine.jiggleCenterMarkerUnselectedStroke)
-        jiggleCenterMarkerUnselectedRegularFillInstance.load(graphics: graphics, sprite: jiggleEngine.jiggleCenterMarkerUnselectedFill)
-        
-        jiggleCenterMarkerUnselectedPreciseStrokeInstance.load(graphics: graphics, sprite: jiggleEngine.jiggleCenterMarkerUnselectedStroke)
-        jiggleCenterMarkerUnselectedPreciseFillInstance.load(graphics: graphics, sprite: jiggleEngine.jiggleCenterMarkerUnselectedFill)
-        
-        // Jiggle Center Marker Selected:
-        jiggleCenterMarkerSelectedRegularBloomInstance.load(graphics: graphics, sprite: jiggleEngine.jiggleCenterMarkerSelectedStroke)
-        jiggleCenterMarkerSelectedRegularStrokeInstance.load(graphics: graphics, sprite: jiggleEngine.jiggleCenterMarkerSelectedStroke)
-        jiggleCenterMarkerSelectedRegularFillInstance.load(graphics: graphics, sprite: jiggleEngine.jiggleCenterMarkerSelectedFill)
-        
-        jiggleCenterMarkerSelectedPreciseBloomInstance.load(graphics: graphics, sprite: jiggleEngine.jiggleCenterMarkerSelectedStroke)
-        jiggleCenterMarkerSelectedPreciseStrokeInstance.load(graphics: graphics, sprite: jiggleEngine.jiggleCenterMarkerSelectedStroke)
-        jiggleCenterMarkerSelectedPreciseFillInstance.load(graphics: graphics, sprite: jiggleEngine.jiggleCenterMarkerSelectedFill)
-        
-        
-        
-        // Weight Center Marker Dot Unselected:
-        weightCenterMarkerDotUnselectedRegularStrokeInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerDotUnselectedStroke)
-        weightCenterMarkerDotUnselectedRegularFillInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerDotUnselectedFill)
-        
-        weightCenterMarkerDotUnselectedPreciseStrokeInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerDotUnselectedStroke)
-        weightCenterMarkerDotUnselectedPreciseFillInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerDotUnselectedFill)
-        
-        // Weight Center Marker Dot Selected:
-        weightCenterMarkerDotSelectedRegularBloomInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerDotSelectedStroke)
-        weightCenterMarkerDotSelectedRegularStrokeInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerDotSelectedStroke)
-        weightCenterMarkerDotSelectedRegularFillInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerDotSelectedFill)
-        
-        weightCenterMarkerDotSelectedPreciseBloomInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerDotSelectedStroke)
-        weightCenterMarkerDotSelectedPreciseStrokeInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerDotSelectedStroke)
-        weightCenterMarkerDotSelectedPreciseFillInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerDotSelectedFill)
-        
-        
-        // Weight Center Marker Spinner Unselected:
-        weightCenterMarkerSpinnerUnselectedRegularStrokeInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerSpinnerUnselectedStroke)
-        weightCenterMarkerSpinnerUnselectedRegularFillInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerSpinnerUnselectedFill)
-        
-        weightCenterMarkerSpinnerUnselectedPreciseStrokeInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerSpinnerUnselectedStroke)
-        weightCenterMarkerSpinnerUnselectedPreciseFillInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerSpinnerUnselectedFill)
-        
-        // Weight Center Marker Spinner Selected:
-        weightCenterMarkerSpinnerSelectedRegularBloomInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerSpinnerSelectedStroke)
-        weightCenterMarkerSpinnerSelectedRegularStrokeInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerSpinnerSelectedStroke)
-        weightCenterMarkerSpinnerSelectedRegularFillInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerSpinnerSelectedFill)
-        
-        weightCenterMarkerSpinnerSelectedPreciseBloomInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerSpinnerSelectedStroke)
-        weightCenterMarkerSpinnerSelectedPreciseStrokeInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerSpinnerSelectedStroke)
-        weightCenterMarkerSpinnerSelectedPreciseFillInstance.load(graphics: graphics, sprite: jiggleEngine.weightCenterMarkerSpinnerSelectedFill)
-        
         
         // Points Unselected:
         pointsUnselectedRegularBloomBuffer.load_t(graphics: graphics)
@@ -386,10 +279,72 @@ class JiggleRenderer {
         tanHandlePointsSelectedPreciseFillBuffer.reset()
     }
     
+    /*
+    func pre_prepare(jiggle: Jiggle,
+                     guide: Guide,
+                     guideIndex: Int,
+                     isSelected: Bool,
+                     isGuideSelected: Bool,
+                     isStereoscopicEnabled: Bool,
+                     projectionMatrix: matrix_float4x4,
+                     modelViewMatrix: matrix_float4x4,
+                     isCreatorModeJiggleCenters: Bool,
+                     isCreatorModeAddJigglePoints: Bool,
+                     isCreatorModeGuideCenters: Bool,
+                     isCreatorModeAddGuidePoints: Bool,
+                     isCreatorModeDeleteGuidePoints: Bool,
+                     weightMode: WeightMode,
+                     selectedJigglePointTanType: TanType,
+                     selectedGuidePointTanType: TanType) {
+        
+        self.jiggle = jiggle
+        self.guide = guide
+        self.isSelected = isSelected
+        self.isDarkMode = jiggle.isShowingDarkMode
+        
+        // Anything we can compute once, we will do outside of the 2 renderings...
+        if jiggle.isShowingGuidePoints {
+            
+
+            guide.renderSelected = isGuideSelected
+            
+            let isGuideFrozen = (jiggle.isFrozen == true) ||
+            (guide.isFrozen == true) ||
+            (isCreatorModeGuideCenters == true) ||
+            ((isCreatorModeAddGuidePoints == true) && (guide.renderSelected == false))
+            
+            guide.renderFrozen = isGuideFrozen
+            
+            for guideControlPointIndex in 0..<guide.guideControlPointCount {
+                let guideControlPoint = guide.guideControlPoints[guideControlPointIndex]
+                
+                var renderPoint = guideControlPoint.point
+                renderPoint = guide.transformPoint(point: renderPoint)
+                renderPoint = jiggle.transformPoint(point: renderPoint)
+                
+                var isPointSelected = false
+                if isGuideSelected {
+                    if guide.selectedGuideControlPointIndex == guideControlPointIndex {
+                        if weightMode == .points {
+                            isPointSelected = true
+                        }
+                    }
+                }
+                
+                guideControlPoint.renderX = renderPoint.x
+                guideControlPoint.renderY = renderPoint.y
+                guideControlPoint.renderSelected = isPointSelected
+            }
+            
+        }
+    */
+        
     func pre_prepare(jiggle: Jiggle,
                      isJiggleSelected: Bool,
+                     guide: Guide,
+                     weightDepthIndex: Int,
+                     isGuideSelected: Bool,
                      creatorMode: CreatorMode,
-                     editMode: EditMode,
                      weightMode: WeightMode,
                      selectedTanType: TanTypeOrNone,
                      pointSelectionMode: PointSelectionModality,
@@ -402,33 +357,38 @@ class JiggleRenderer {
         
         self.jiggle = jiggle
         self.isJiggleSelected = isJiggleSelected
+        self.guide = guide
+        self.weightDepthIndex = weightDepthIndex
+        self.isGuideSelected = isGuideSelected
         self.isJiggleFrozen = jiggle.isFrozen
+        self.isGuideFrozen = guide.isFrozen
         self.isDarkMode = jiggle.isShowingDarkMode
         self.isStereoscopicMode = jiggle.isShowingMeshViewStereoscopic
-        self.editMode = editMode
         self.weightMode = weightMode
         self.selectedTanType = selectedTanType
         self.pointSelectionMode = pointSelectionMode
         self.isBloomMode = isBloomMode
+        isSelected = (isJiggleSelected && isGuideSelected)
+        isFrozen = (isJiggleFrozen || isGuideFrozen)
         
-        jiggleCenterCreatorModeFormat = getJiggleCenterCreatorModeFormat(creatorMode: creatorMode)
-        weightCenterCreatorModeFormat = getWeightCenterCreatorModeFormat(creatorMode: creatorMode)
         pointsCreatorModeFormat = getPointsCreatorModeFormat(creatorMode: creatorMode)
         tansCreatorModeFormat = getTansCreatorModeFormat(creatorMode: creatorMode)
         
-        color_bloom = RTJ.bloom(isDarkMode: isDarkMode)
-        pre_prepareJiggleCenter()
-        pre_prepareWeightCenter()
+        
+        
         pre_preparePoints()
         pre_prepareTanLines()
         pre_prepareTanPoints()
         
+        color_bloom = RTJ.bloom(isDarkMode: isDarkMode)
+        
+        
         // Anything we can compute once, we will do outside of the 2 renderings...
-        if jiggle.isShowingJigglePoints {
+        if jiggle.isShowingGuidePoints {
             let isAbleToShowSelectedPoint: Bool
             let isAbleToShowSelectedTan: Bool
             
-            if isJiggleFrozen {
+            if isFrozen {
                 isAbleToShowSelectedPoint = false
                 isAbleToShowSelectedTan = false
             } else {
@@ -466,15 +426,17 @@ class JiggleRenderer {
                 }
             }
             
-            for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
-                let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
+            for guideControlPointIndex in 0..<guide.guideControlPointCount {
+                let guideControlPoint = guide.guideControlPoints[guideControlPointIndex]
                 
-                var renderPoint = jiggleControlPoint.point
+                var renderPoint = guideControlPoint.point
+                renderPoint = guide.transformPoint(point: renderPoint)
                 renderPoint = jiggle.transformPoint(point: renderPoint)
+                
                 let isPointSelected: Bool
                 if isAbleToShowSelectedPoint == true {
-                    if isJiggleSelected == true {
-                        if jiggle.selectedJiggleControlPointIndex == jiggleControlPointIndex {
+                    if isSelected {
+                        if guide.selectedGuideControlPointIndex == guideControlPointIndex {
                             isPointSelected = true
                         } else {
                             isPointSelected = false
@@ -486,15 +448,15 @@ class JiggleRenderer {
                     isPointSelected = false
                 }
                 
-                jiggleControlPoint.renderX = renderPoint.x
-                jiggleControlPoint.renderY = renderPoint.y
-                jiggleControlPoint.renderPointSelected = isPointSelected
+                guideControlPoint.renderX = renderPoint.x
+                guideControlPoint.renderY = renderPoint.y
+                guideControlPoint.renderPointSelected = isPointSelected
                 
                 var isTanInSelected = false
                 var isTanOutSelected = false
                 if isAbleToShowSelectedTan {
-                    if isJiggleSelected == true {
-                        if jiggle.selectedJiggleControlPointIndex == jiggleControlPointIndex {
+                    if isSelected {
+                        if guide.selectedGuideControlPointIndex == guideControlPointIndex {
                             switch selectedTanType {
                             case .none:
                                 break
@@ -507,41 +469,46 @@ class JiggleRenderer {
                     }
                 }
                 
-                jiggleControlPoint.renderTanInSelected = isTanInSelected
-                jiggleControlPoint.renderTanOutSelected = isTanOutSelected
+                guideControlPoint.renderTanInSelected = isTanInSelected
+                guideControlPoint.renderTanOutSelected = isTanOutSelected
                 
             }
         }
         
         // Anything we can compute once, we will do outside of the 2 renderings...
-        if jiggle.isShowingJiggleControlPointTanHandles {
-            for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
-                let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
+        if jiggle.isShowingGuideControlPointTanHandles {
+            for guideControlPointIndex in 0..<guide.guideControlPointCount {
+                let guideControlPoint = guide.guideControlPoints[guideControlPointIndex]
                 
-                var tanHandles = jiggleControlPoint.getTanHandles()
+                var tanHandles = guideControlPoint.getTanHandles()
+                tanHandles = guide.transformTanHandles(tanHandles)
                 tanHandles = jiggle.transformTanHandles(tanHandles)
                 
-                jiggleControlPoint.renderTanInX = tanHandles.inX
-                jiggleControlPoint.renderTanInY = tanHandles.inY
                 
-                jiggleControlPoint.renderTanOutX = tanHandles.outX
-                jiggleControlPoint.renderTanOutY = tanHandles.outY
+                guideControlPoint.renderTanInX = tanHandles.inX
+                guideControlPoint.renderTanInY = tanHandles.inY
                 
-                var tanNormalsIn = jiggleControlPoint.getTanHandleNormalsIn()
+                guideControlPoint.renderTanOutX = tanHandles.outX
+                guideControlPoint.renderTanOutY = tanHandles.outY
+                
+                var tanNormalsIn = guideControlPoint.getTanHandleNormalsIn()
+                tanNormalsIn = guide.transformPointRotationOnly(vector: tanNormalsIn)
                 tanNormalsIn = jiggle.transformPointRotationOnly(vector: tanNormalsIn)
-                jiggleControlPoint.renderTanNormalInX = tanNormalsIn.x
-                jiggleControlPoint.renderTanNormalInY = tanNormalsIn.y
+                guideControlPoint.renderTanNormalInX = tanNormalsIn.x
+                guideControlPoint.renderTanNormalInY = tanNormalsIn.y
                 
-                var tanNormalsOut = jiggleControlPoint.getTanHandleNormalsOut()
+                var tanNormalsOut = guideControlPoint.getTanHandleNormalsOut()
+                tanNormalsOut = guide.transformPointRotationOnly(vector: tanNormalsOut)
                 tanNormalsOut = jiggle.transformPointRotationOnly(vector: tanNormalsOut)
-                jiggleControlPoint.renderTanNormalOutX = tanNormalsOut.x
-                jiggleControlPoint.renderTanNormalOutY = tanNormalsOut.y
+                guideControlPoint.renderTanNormalOutX = tanNormalsOut.x
+                guideControlPoint.renderTanNormalOutY = tanNormalsOut.y
             }
         }
     }
     
     // We load up all the buffers for the render, this does not render anything...
     func prepare(jiggle: Jiggle,
+                 guide: Guide,
                  projectionMatrix: matrix_float4x4,
                  isPrecisePass: Bool,
                  isRenderingPrecise: Bool) {
@@ -564,24 +531,6 @@ class JiggleRenderer {
             worldScale = jiggleScene.getWorldScaleStandard(isPrecise: isRenderingPrecise)
             inverseRotation = (-jiggleScene.preciseMagnifiedRotation)
         }
-        
-        let jiggleCenterMarkerUnselectedStrokeInstance: IndexedSpriteInstance2D
-        let jiggleCenterMarkerUnselectedFillInstance: IndexedSpriteInstance2D
-        let jiggleCenterMarkerSelectedBloomInstance: IndexedSpriteInstance3D
-        let jiggleCenterMarkerSelectedStrokeInstance: IndexedSpriteInstance2D
-        let jiggleCenterMarkerSelectedFillInstance: IndexedSpriteInstance2D
-        
-        let weightCenterMarkerDotUnselectedStrokeInstance: IndexedSpriteInstance2D
-        let weightCenterMarkerDotUnselectedFillInstance: IndexedSpriteInstance2D
-        let weightCenterMarkerDotSelectedBloomInstance: IndexedSpriteInstance3D
-        let weightCenterMarkerDotSelectedStrokeInstance: IndexedSpriteInstance2D
-        let weightCenterMarkerDotSelectedFillInstance: IndexedSpriteInstance2D
-        
-        let weightCenterMarkerSpinnerUnselectedStrokeInstance: IndexedSpriteInstance2D
-        let weightCenterMarkerSpinnerUnselectedFillInstance: IndexedSpriteInstance2D
-        let weightCenterMarkerSpinnerSelectedBloomInstance: IndexedSpriteInstance3D
-        let weightCenterMarkerSpinnerSelectedStrokeInstance: IndexedSpriteInstance2D
-        let weightCenterMarkerSpinnerSelectedFillInstance: IndexedSpriteInstance2D
         
         let pointsUnselectedBloomBuffer: IndexedSpriteBuffer3D
         let pointsUnselectedUnmodifiedStrokeBuffer: IndexedSpriteBuffer2D
@@ -607,27 +556,6 @@ class JiggleRenderer {
         let tanHandlePointsSelectedFillBuffer: IndexedSpriteBuffer2D
         
         if isPrecisePass {
-            
-            jiggleCenterMarkerUnselectedStrokeInstance = jiggleCenterMarkerUnselectedPreciseStrokeInstance
-            jiggleCenterMarkerUnselectedFillInstance = jiggleCenterMarkerUnselectedPreciseFillInstance
-            
-            jiggleCenterMarkerSelectedBloomInstance = jiggleCenterMarkerSelectedPreciseBloomInstance
-            jiggleCenterMarkerSelectedStrokeInstance = jiggleCenterMarkerSelectedPreciseStrokeInstance
-            jiggleCenterMarkerSelectedFillInstance = jiggleCenterMarkerSelectedPreciseFillInstance
-            
-            weightCenterMarkerDotUnselectedStrokeInstance = weightCenterMarkerDotUnselectedPreciseStrokeInstance
-            weightCenterMarkerDotUnselectedFillInstance = weightCenterMarkerDotUnselectedPreciseFillInstance
-            
-            weightCenterMarkerDotSelectedBloomInstance = weightCenterMarkerDotSelectedPreciseBloomInstance
-            weightCenterMarkerDotSelectedStrokeInstance = weightCenterMarkerDotSelectedPreciseStrokeInstance
-            weightCenterMarkerDotSelectedFillInstance = weightCenterMarkerDotSelectedPreciseFillInstance
-            
-            weightCenterMarkerSpinnerUnselectedStrokeInstance = weightCenterMarkerSpinnerUnselectedPreciseStrokeInstance
-            weightCenterMarkerSpinnerUnselectedFillInstance = weightCenterMarkerSpinnerUnselectedPreciseFillInstance
-            
-            weightCenterMarkerSpinnerSelectedBloomInstance = weightCenterMarkerSpinnerSelectedPreciseBloomInstance
-            weightCenterMarkerSpinnerSelectedStrokeInstance = weightCenterMarkerSpinnerSelectedPreciseStrokeInstance
-            weightCenterMarkerSpinnerSelectedFillInstance = weightCenterMarkerSpinnerSelectedPreciseFillInstance
             
             pointsUnselectedBloomBuffer = pointsUnselectedPreciseBloomBuffer
             pointsUnselectedUnmodifiedStrokeBuffer = pointsUnselectedUnmodifiedPreciseStrokeBuffer
@@ -655,27 +583,6 @@ class JiggleRenderer {
             
         } else {
             
-            jiggleCenterMarkerUnselectedStrokeInstance = jiggleCenterMarkerUnselectedRegularStrokeInstance
-            jiggleCenterMarkerUnselectedFillInstance = jiggleCenterMarkerUnselectedRegularFillInstance
-            
-            jiggleCenterMarkerSelectedBloomInstance = jiggleCenterMarkerSelectedRegularBloomInstance
-            jiggleCenterMarkerSelectedStrokeInstance = jiggleCenterMarkerSelectedRegularStrokeInstance
-            jiggleCenterMarkerSelectedFillInstance = jiggleCenterMarkerSelectedRegularFillInstance
-            
-            weightCenterMarkerDotUnselectedStrokeInstance = weightCenterMarkerDotUnselectedRegularStrokeInstance
-            weightCenterMarkerDotUnselectedFillInstance = weightCenterMarkerDotUnselectedRegularFillInstance
-            
-            weightCenterMarkerDotSelectedBloomInstance = weightCenterMarkerDotSelectedRegularBloomInstance
-            weightCenterMarkerDotSelectedStrokeInstance = weightCenterMarkerDotSelectedRegularStrokeInstance
-            weightCenterMarkerDotSelectedFillInstance = weightCenterMarkerDotSelectedRegularFillInstance
-            
-            weightCenterMarkerSpinnerUnselectedStrokeInstance = weightCenterMarkerSpinnerUnselectedRegularStrokeInstance
-            weightCenterMarkerSpinnerUnselectedFillInstance = weightCenterMarkerSpinnerUnselectedRegularFillInstance
-            
-            weightCenterMarkerSpinnerSelectedBloomInstance = weightCenterMarkerSpinnerSelectedRegularBloomInstance
-            weightCenterMarkerSpinnerSelectedStrokeInstance = weightCenterMarkerSpinnerSelectedRegularStrokeInstance
-            weightCenterMarkerSpinnerSelectedFillInstance = weightCenterMarkerSpinnerSelectedRegularFillInstance
-            
             pointsUnselectedBloomBuffer = pointsUnselectedRegularBloomBuffer
             pointsUnselectedUnmodifiedStrokeBuffer = pointsUnselectedUnmodifiedRegularStrokeBuffer
             pointsUnselectedUnmodifiedFillBuffer = pointsUnselectedUnmodifiedRegularFillBuffer
@@ -700,31 +607,20 @@ class JiggleRenderer {
             tanHandlePointsSelectedFillBuffer = tanHandlePointsSelectedRegularFillBuffer
         }
         
-        // 1.) Main Jiggle Fill... (Note: This order has no effect, it's just a mental organization)
-        if isPrecisePass {
-            jiggle.jiggleMesh.editBufferStandardPrecise.projectionMatrix = projectionMatrix
-            jiggle.jiggleMesh.editBufferWeightsPrecise.projectionMatrix = projectionMatrix
-        } else {
-            jiggle.jiggleMesh.editBufferStandardRegular.projectionMatrix = projectionMatrix
-            jiggle.jiggleMesh.editBufferWeightsRegular.projectionMatrix = projectionMatrix
-            jiggle.jiggleMesh.viewBuffer.projectionMatrix = projectionMatrix
-            jiggle.jiggleMesh.viewBufferStereoscopic.projectionMatrix = projectionMatrix
-        }
-        
-        // 2.) The Jiggle Outline
-        if jiggle.isShowingJiggleBorderRings {
+        // 2.) The Guide Outline
+        if jiggle.isShowingGuideBorderRings {
             if isPrecisePass {
-                if isBloomMode && jiggle.isShowingJiggleBorderRingsBloom {
-                    jiggle.solidLineBufferPreciseBloom.shapeBuffer.projectionMatrix = projectionMatrix
+                if isBloomMode && jiggle.isShowingGuideBorderRingsBloom {
+                    guide.solidLineBufferPreciseBloom.shapeBuffer.projectionMatrix = projectionMatrix
                 }
-                jiggle.solidLineBufferPreciseStroke.shapeBuffer.projectionMatrix = projectionMatrix
-                jiggle.solidLineBufferPreciseFill.shapeBuffer.projectionMatrix = projectionMatrix
+                guide.solidLineBufferPreciseStroke.shapeBuffer.projectionMatrix = projectionMatrix
+                guide.solidLineBufferPreciseFill.shapeBuffer.projectionMatrix = projectionMatrix
             } else {
-                if isBloomMode && jiggle.isShowingJiggleBorderRingsBloom {
-                    jiggle.solidLineBufferRegularBloom.shapeBuffer.projectionMatrix = projectionMatrix
+                if isBloomMode && jiggle.isShowingGuideBorderRingsBloom {
+                    guide.solidLineBufferRegularBloom.shapeBuffer.projectionMatrix = projectionMatrix
                 }
-                jiggle.solidLineBufferRegularStroke.shapeBuffer.projectionMatrix = projectionMatrix
-                jiggle.solidLineBufferRegularFill.shapeBuffer.projectionMatrix = projectionMatrix
+                guide.solidLineBufferRegularStroke.shapeBuffer.projectionMatrix = projectionMatrix
+                guide.solidLineBufferRegularFill.shapeBuffer.projectionMatrix = projectionMatrix
             }
         }
         
@@ -756,26 +652,6 @@ class JiggleRenderer {
                                     tanHandlePointsSelectedFillBuffer: tanHandlePointsSelectedFillBuffer,
                                     isPrecisePass: isPrecisePass)
         
-        // 6.) The Jiggle Center Marker
-        prepareJiggleCenter(jiggleCenterMarkerUnselectedStrokeInstance: jiggleCenterMarkerUnselectedStrokeInstance,
-                            jiggleCenterMarkerUnselectedFillInstance: jiggleCenterMarkerUnselectedFillInstance,
-                            jiggleCenterMarkerSelectedBloomInstance: jiggleCenterMarkerSelectedBloomInstance,
-                            jiggleCenterMarkerSelectedStrokeInstance: jiggleCenterMarkerSelectedStrokeInstance,
-                            jiggleCenterMarkerSelectedFillInstance: jiggleCenterMarkerSelectedFillInstance,
-                            isPrecisePass: isPrecisePass)
-        
-        // 7.) The Weight Center Marker
-        prepareWeightCenter(weightCenterMarkerDotUnselectedStrokeInstance: weightCenterMarkerDotUnselectedStrokeInstance,
-                            weightCenterMarkerDotUnselectedFillInstance: weightCenterMarkerDotUnselectedFillInstance,
-                            weightCenterMarkerDotSelectedBloomInstance: weightCenterMarkerDotSelectedBloomInstance,
-                            weightCenterMarkerDotSelectedFillInstance: weightCenterMarkerDotSelectedFillInstance,
-                            weightCenterMarkerDotSelectedStrokeInstance: weightCenterMarkerDotSelectedStrokeInstance,
-                            weightCenterMarkerSpinnerUnselectedStrokeInstance: weightCenterMarkerSpinnerUnselectedStrokeInstance,
-                            weightCenterMarkerSpinnerUnselectedFillInstance: weightCenterMarkerSpinnerUnselectedFillInstance,
-                            weightCenterMarkerSpinnerSelectedBloomInstance: weightCenterMarkerSpinnerSelectedBloomInstance,
-                            weightCenterMarkerSpinnerSelectedFillInstance: weightCenterMarkerSpinnerSelectedFillInstance,
-                            weightCenterMarkerSpinnerSelectedStrokeInstance: weightCenterMarkerSpinnerSelectedStrokeInstance,
-                            isPrecisePass: isPrecisePass)
     }
     
     func refreshPoints() {

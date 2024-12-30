@@ -1,16 +1,15 @@
 //
-//  JiggleRenderer+JigglePointTans.swift
+//  GuideRenderer+JigglePointTans.swift
 //  Yo Mamma Be Ugly
 //
-//  Created by Nick Raptis on 11/24/24.
+//  Created by Nick Raptis on 12/29/24.
 //
 
 import Foundation
 import Metal
 import simd
 
-extension JiggleRenderer {
-    
+extension GuideRenderer {
     
     func getTansCreatorModeFormat(creatorMode: CreatorMode) -> TansCreatorModeFormat {
         let creatorModeFormat: TansCreatorModeFormat
@@ -44,9 +43,9 @@ extension JiggleRenderer {
     func pre_prepareTanLines() {
         
         guard let jiggle = jiggle else { return }
-        guard jiggle.isShowingJiggleControlPointTanHandles else { return }
+        guard jiggle.isShowingGuideControlPointTanHandles else { return }
         
-        if isJiggleFrozen {
+        if isFrozen {
             color_tan_lines_unselected_stroke = RTJ.strokeDis(isDarkMode: isDarkMode)
             color_tan_lines_unselected_fill = RTJ.fillDis(isDarkMode: isDarkMode)
             return
@@ -60,12 +59,14 @@ extension JiggleRenderer {
         case .regular:
             if isJiggleSelected {
                 color_tan_lines_unselected_stroke = RTJ.strokeRegSel(isDarkMode: isDarkMode)
-                color_tan_lines_unselected_fill = RTJ.fillRegSelMod(isDarkMode: isDarkMode)
+                color_tan_lines_unselected_fill = RTG.fillRegSelMod(index: weightDepthIndex,
+                                                                    isDarkMode: isDarkMode)
                 color_tan_lines_selected_stroke = RTJ.strokeRegSel(isDarkMode: isDarkMode)
                 color_tan_lines_selected_fill = RTJ.fillGrb(isDarkMode: isDarkMode)
             } else {
                 color_tan_lines_unselected_stroke = RTJ.strokeRegUns(isDarkMode: isDarkMode)
-                color_tan_lines_unselected_fill = RTJ.fillRegUnsMod(isDarkMode: isDarkMode)
+                color_tan_lines_unselected_fill = RTG.fillRegUnsMod(index: weightDepthIndex,
+                                                                    isDarkMode: isDarkMode)
             }
         case .alternative:
             if isJiggleSelected {
@@ -87,7 +88,8 @@ extension JiggleRenderer {
                                     isPrecisePass: Bool) {
         
         guard let jiggle = jiggle else { return }
-        guard jiggle.isShowingJiggleControlPointTanHandles else { return }
+        guard let guide = guide else { return }
+        guard jiggle.isShowingGuideControlPointTanHandles else { return }
         
         switch tansCreatorModeFormat {
         case .invalid:
@@ -96,7 +98,7 @@ extension JiggleRenderer {
             break
         }
         
-        let isBloom = (isBloomMode && jiggle.isShowingJiggleControlPointTanHandlesBloom)
+        let isBloom = (isBloomMode && jiggle.isShowingGuideControlPointTanHandlesBloom)
         
         let lineWidthFill = lineWidthFillBase * worldScale
         let lineWidthStroke = lineWidthStrokeBase * worldScale
@@ -118,20 +120,21 @@ extension JiggleRenderer {
         tanHandleLinesSelectedFillBuffer.projectionMatrix = projectionMatrix
         tanHandleLinesSelectedFillBuffer.rgba = color_tan_lines_selected_fill
         
-        for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
-            let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
+        for guideControlPointIndex in 0..<guide.guideControlPointCount {
+            let guideControlPoint = guide.guideControlPoints[guideControlPointIndex]
             
-            let tanHandleInX = jiggleControlPoint.renderTanInX
-            let tanHandleInY = jiggleControlPoint.renderTanInY
-            let tanHandleOutX = jiggleControlPoint.renderTanOutX
-            let tanHandleOutY = jiggleControlPoint.renderTanOutY
-            let tanNormalInX = jiggleControlPoint.renderTanNormalInX
-            let tanNormalInY = jiggleControlPoint.renderTanNormalInY
-            let tanNormalOutX = jiggleControlPoint.renderTanNormalOutX
-            let tanNormalOutY = jiggleControlPoint.renderTanNormalOutY
+            let tanHandleInX = guideControlPoint.renderTanInX
+            let tanHandleInY = guideControlPoint.renderTanInY
+            let tanHandleOutX = guideControlPoint.renderTanOutX
+            let tanHandleOutY = guideControlPoint.renderTanOutY
+            let tanNormalInX = guideControlPoint.renderTanNormalInX
+            let tanNormalInY = guideControlPoint.renderTanNormalInY
+            let tanNormalOutX = guideControlPoint.renderTanNormalOutX
+            let tanNormalOutY = guideControlPoint.renderTanNormalOutY
+            let renderX = guideControlPoint.renderX
+            let renderY = guideControlPoint.renderY
             
-            let renderX = jiggleControlPoint.renderX
-            let renderY = jiggleControlPoint.renderY
+            
             
             let strokeBoxIn = LineBox.getLineBox(x1: tanHandleInX, y1: tanHandleInY,
                                                  x2: renderX, y2: renderY,
@@ -161,7 +164,7 @@ extension JiggleRenderer {
                                               cornerX4: strokeBoxOut.x4, cornerY4: strokeBoxOut.y4)
             }
             
-            if jiggleControlPoint.renderTanInSelected {
+            if guideControlPoint.renderTanInSelected {
                 tanHandleLinesSelectedStrokeBuffer.add(cornerX1: strokeBoxIn.x1, cornerY1: strokeBoxIn.y1,
                                                        cornerX2: strokeBoxIn.x2, cornerY2: strokeBoxIn.y2,
                                                        cornerX3: strokeBoxIn.x3, cornerY3: strokeBoxIn.y3,
@@ -181,7 +184,7 @@ extension JiggleRenderer {
                                                        cornerX4: fillBoxIn.x4, cornerY4: fillBoxIn.y4)
             }
             
-            if jiggleControlPoint.renderTanOutSelected {
+            if guideControlPoint.renderTanOutSelected {
                 tanHandleLinesSelectedStrokeBuffer.add(cornerX1: strokeBoxOut.x1, cornerY1: strokeBoxOut.y1,
                                                        cornerX2: strokeBoxOut.x2, cornerY2: strokeBoxOut.y2,
                                                        cornerX3: strokeBoxOut.x3, cornerY3: strokeBoxOut.y3,
@@ -201,14 +204,17 @@ extension JiggleRenderer {
                                                        cornerX4: fillBoxOut.x4, cornerY4: fillBoxOut.y4)
             }
         }
+        
     }
     
     func renderTanHandleLinesBloomRegular(renderEncoder: MTLRenderCommandEncoder) {
         if isBloomMode {
-            if let jiggle = jiggle {
-                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
-                    tanHandleLinesRegularBloomBuffer.render(renderEncoder: renderEncoder,
-                                                            pipelineState: .shapeNodeIndexed3DNoBlending)
+            if !isFrozen && isSelected {
+                if let jiggle = jiggle {
+                    if jiggle.isShowingGuideControlPointTanHandlesBloom {
+                        tanHandleLinesRegularBloomBuffer.render(renderEncoder: renderEncoder,
+                                                                pipelineState: .shapeNodeIndexed3DNoBlending)
+                    }
                 }
             }
         }
@@ -216,7 +222,7 @@ extension JiggleRenderer {
     
     func renderTanHandleLinesUnselectedStrokeRegular(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandleLinesUnselectedRegularStrokeBuffer.render(renderEncoder: renderEncoder,
                                                                    pipelineState: .shapeNodeIndexed2DNoBlending)
             }
@@ -225,7 +231,7 @@ extension JiggleRenderer {
     
     func renderTanHandleLinesUnselectedFillRegular(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandleLinesUnselectedRegularFillBuffer.render(renderEncoder: renderEncoder,
                                                                  pipelineState: .shapeNodeIndexed2DNoBlending)
             }
@@ -234,10 +240,12 @@ extension JiggleRenderer {
     
     func renderTanHandleLinesBloomPrecise(renderEncoder: MTLRenderCommandEncoder) {
         if isBloomMode {
-            if let jiggle = jiggle {
-                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
-                    tanHandleLinesPreciseBloomBuffer.render(renderEncoder: renderEncoder,
-                                                            pipelineState: .shapeNodeIndexed3DNoBlending)
+            if !isFrozen && isSelected {
+                if let jiggle = jiggle {
+                    if jiggle.isShowingGuideControlPointTanHandlesBloom {
+                        tanHandleLinesPreciseBloomBuffer.render(renderEncoder: renderEncoder,
+                                                                pipelineState: .shapeNodeIndexed3DNoBlending)
+                    }
                 }
             }
         }
@@ -245,7 +253,7 @@ extension JiggleRenderer {
     
     func renderTanHandleLinesUnselectedStrokePrecise(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandleLinesUnselectedPreciseStrokeBuffer.render(renderEncoder: renderEncoder,
                                                                    pipelineState: .shapeNodeIndexed2DNoBlending)
             }
@@ -254,7 +262,7 @@ extension JiggleRenderer {
     
     func renderTanHandleLinesUnselectedFillPrecise(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandleLinesUnselectedPreciseFillBuffer.render(renderEncoder: renderEncoder,
                                                                  pipelineState: .shapeNodeIndexed2DNoBlending)
             }
@@ -263,7 +271,7 @@ extension JiggleRenderer {
     
     func renderTanHandleLinesSelectedStrokeRegular(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandleLinesSelectedRegularStrokeBuffer.render(renderEncoder: renderEncoder,
                                                                  pipelineState: .shapeNodeIndexed2DNoBlending)
             }
@@ -272,7 +280,7 @@ extension JiggleRenderer {
     
     func renderTanHandleLinesSelectedFillRegular(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandleLinesSelectedRegularFillBuffer.render(renderEncoder: renderEncoder,
                                                                pipelineState: .shapeNodeIndexed2DNoBlending)
             }
@@ -281,7 +289,7 @@ extension JiggleRenderer {
     
     func renderTanHandleLinesSelectedStrokePrecise(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandleLinesSelectedPreciseStrokeBuffer.render(renderEncoder: renderEncoder,
                                                                  pipelineState: .shapeNodeIndexed2DNoBlending)
             }
@@ -290,11 +298,12 @@ extension JiggleRenderer {
     
     func renderTanHandleLinesSelectedFillPrecise(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandleLinesSelectedPreciseFillBuffer.render(renderEncoder: renderEncoder,
                                                                pipelineState: .shapeNodeIndexed2DNoBlending)
             }
         }
     }
+     
     
 }

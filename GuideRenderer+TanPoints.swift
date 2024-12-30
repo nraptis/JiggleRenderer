@@ -1,22 +1,22 @@
 //
-//  JiggleRenderer+JigglePointTanPoints.swift
+//  GuideRenderer+JigglePointTanPoints.swift
 //  Yo Mamma Be Ugly
 //
-//  Created by Nick Raptis on 11/25/24.
+//  Created by Nick Raptis on 12/29/24.
 //
 
 import Foundation
 import Metal
 import simd
 
-extension JiggleRenderer {
+extension GuideRenderer {
     
     func pre_prepareTanPoints() {
         
         guard let jiggle = jiggle else { return }
-        guard jiggle.isShowingJiggleControlPointTanHandles else { return }
+        guard jiggle.isShowingGuideControlPointTanHandles else { return }
         
-        if isJiggleFrozen {
+        if isFrozen {
             color_tan_points_unselected_stroke = RTJ.strokeDis(isDarkMode: isDarkMode)
             color_tan_points_unselected_fill = RTJ.fillDis(isDarkMode: isDarkMode)
             return
@@ -30,12 +30,14 @@ extension JiggleRenderer {
         case .regular:
             if isJiggleSelected {
                 color_tan_points_unselected_stroke = RTJ.strokeRegSel(isDarkMode: isDarkMode)
-                color_tan_points_unselected_fill = RTJ.tanPointFillSel(isDarkMode: isDarkMode)
+                color_tan_points_unselected_fill = RTG.tanPointFillSel(index: weightDepthIndex,
+                                                                       isDarkMode: isDarkMode)
                 color_tan_points_selected_stroke = RTJ.strokeRegSel(isDarkMode: isDarkMode)
                 color_tan_points_selected_fill = RTJ.fillGrb(isDarkMode: isDarkMode)
             } else {
                 color_tan_points_unselected_stroke = RTJ.strokeRegUns(isDarkMode: isDarkMode)
-                color_tan_points_unselected_fill = RTJ.tanPointFillUns(isDarkMode: isDarkMode)
+                color_tan_points_unselected_fill = RTG.tanPointFillUns(index: weightDepthIndex,
+                                                                       isDarkMode: isDarkMode)
             }
         case .alternative:
             if isJiggleSelected {
@@ -61,7 +63,8 @@ extension JiggleRenderer {
         
         guard let graphics = graphics else { return }
         guard let jiggle = jiggle else { return }
-        guard jiggle.isShowingJiggleControlPointTanHandles else { return }
+        guard let guide = guide else { return }
+        guard jiggle.isShowingGuideControlPointTanHandles else { return }
         
         switch tansCreatorModeFormat {
         case .invalid:
@@ -70,7 +73,7 @@ extension JiggleRenderer {
             break
         }
         
-        let isBloom = (isBloomMode && jiggle.isShowingJiggleControlPointTanHandlesBloom)
+        let isBloom = (isBloomMode && jiggle.isShowingGuideControlPointTanHandlesBloom)
         
         if isBloom {
             tanHandlePointsUnselectedBloomBuffer.projectionMatrix = orthoMatrix
@@ -94,21 +97,22 @@ extension JiggleRenderer {
         tanHandlePointsSelectedFillBuffer.projectionMatrix = orthoMatrix
         tanHandlePointsSelectedFillBuffer.rgba = color_tan_points_selected_fill
         
-        for jiggleControlPointIndex in 0..<jiggle.jiggleControlPointCount {
-            let jiggleControlPoint = jiggle.jiggleControlPoints[jiggleControlPointIndex]
-            var renderCenterPointIn = Math.Point(x: jiggleControlPoint.renderTanInX,
-                                                 y: jiggleControlPoint.renderTanInY)
+        for guideControlPointIndex in 0..<guide.guideControlPointCount {
+            let guideControlPoint = guide.guideControlPoints[guideControlPointIndex]
+            
+            var renderCenterPointIn = Math.Point(x: guideControlPoint.renderTanInX,
+                                                 y: guideControlPoint.renderTanInY)
             renderCenterPointIn = projectionMatrix.process2d(point: renderCenterPointIn,
                                                              screenWidth: graphics.width,
                                                              screenHeight: graphics.height)
             
-            var renderCenterPointOut = Math.Point(x: jiggleControlPoint.renderTanOutX,
-                                                  y: jiggleControlPoint.renderTanOutY)
+            var renderCenterPointOut = Math.Point(x: guideControlPoint.renderTanOutX,
+                                                  y: guideControlPoint.renderTanOutY)
             renderCenterPointOut = projectionMatrix.process2d(point: renderCenterPointOut,
                                                               screenWidth: graphics.width,
                                                               screenHeight: graphics.height)
             
-            if jiggleControlPoint.renderTanInSelected {
+            if guideControlPoint.renderTanInSelected {
                 if isBloom {
                     tanHandlePointsSelectedBloomBuffer.add(translation: renderCenterPointIn)
                 }
@@ -122,7 +126,7 @@ extension JiggleRenderer {
                 tanHandlePointsUnselectedFillBuffer.add(translation: renderCenterPointIn)
             }
             
-            if jiggleControlPoint.renderTanOutSelected {
+            if guideControlPoint.renderTanOutSelected {
                 if isBloom {
                     tanHandlePointsSelectedBloomBuffer.add(translation: renderCenterPointOut)
                 }
@@ -141,10 +145,12 @@ extension JiggleRenderer {
     
     func renderTanHandlePointsUnselectedBloomRegular(renderEncoder: MTLRenderCommandEncoder) {
         if isBloomMode {
-            if let jiggle = jiggle {
-                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
-                    tanHandlePointsUnselectedRegularBloomBuffer.render(renderEncoder: renderEncoder,
-                                                                       pipelineState: .spriteNodeIndexed3DAlphaBlending)
+            if !isFrozen && isSelected {
+                if let jiggle = jiggle {
+                    if jiggle.isShowingGuideControlPointTanHandlesBloom {
+                        tanHandlePointsUnselectedRegularBloomBuffer.render(renderEncoder: renderEncoder,
+                                                                           pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                    }
                 }
             }
         }
@@ -152,7 +158,7 @@ extension JiggleRenderer {
     
     func renderTanHandlePointsUnselectedStrokeRegular(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandlePointsUnselectedRegularStrokeBuffer.render(renderEncoder: renderEncoder,
                                                                     pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
             }
@@ -161,7 +167,7 @@ extension JiggleRenderer {
     
     func renderTanHandlePointsUnselectedFillRegular(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandlePointsUnselectedRegularFillBuffer.render(renderEncoder: renderEncoder,
                                                                   pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
             }
@@ -170,10 +176,12 @@ extension JiggleRenderer {
     
     func renderTanHandlePointsUnselectedBloomPrecise(renderEncoder: MTLRenderCommandEncoder) {
         if isBloomMode {
-            if let jiggle = jiggle {
-                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
-                    tanHandlePointsUnselectedPreciseBloomBuffer.render(renderEncoder: renderEncoder,
-                                                                       pipelineState: .spriteNodeIndexed3DAlphaBlending)
+            if !isFrozen && isSelected {
+                if let jiggle = jiggle {
+                    if jiggle.isShowingGuideControlPointTanHandlesBloom {
+                        tanHandlePointsUnselectedPreciseBloomBuffer.render(renderEncoder: renderEncoder,
+                                                                           pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                    }
                 }
             }
         }
@@ -181,7 +189,7 @@ extension JiggleRenderer {
     
     func renderTanHandlePointsUnselectedStrokePrecise(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandlePointsUnselectedPreciseStrokeBuffer.render(renderEncoder: renderEncoder,
                                                                     pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
             }
@@ -190,7 +198,7 @@ extension JiggleRenderer {
     
     func renderTanHandlePointsUnselectedFillPrecise(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandlePointsUnselectedPreciseFillBuffer.render(renderEncoder: renderEncoder,
                                                                   pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
             }
@@ -199,11 +207,13 @@ extension JiggleRenderer {
     
     func renderTanHandlePointsSelectedBloomRegular(renderEncoder: MTLRenderCommandEncoder) {
         if isBloomMode {
-            if let jiggle = jiggle {
-                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
-                    tanHandlePointsSelectedRegularBloomBuffer.render(renderEncoder: renderEncoder,
-                                                                     pipelineState: .spriteNodeIndexed3DAlphaBlending)
-                    
+            if !isFrozen && isSelected {
+                if let jiggle = jiggle {
+                    if jiggle.isShowingGuideControlPointTanHandlesBloom {
+                        tanHandlePointsSelectedRegularBloomBuffer.render(renderEncoder: renderEncoder,
+                                                                         pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                        
+                    }
                 }
             }
         }
@@ -211,7 +221,7 @@ extension JiggleRenderer {
     
     func renderTanHandlePointsSelectedStrokeRegular(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandlePointsSelectedRegularStrokeBuffer.render(renderEncoder: renderEncoder,
                                                                   pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
             }
@@ -220,7 +230,7 @@ extension JiggleRenderer {
     
     func renderTanHandlePointsSelectedFillRegular(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandlePointsSelectedRegularFillBuffer.render(renderEncoder: renderEncoder,
                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
             }
@@ -229,11 +239,13 @@ extension JiggleRenderer {
     
     func renderTanHandlePointsSelectedBloomPrecise(renderEncoder: MTLRenderCommandEncoder) {
         if isBloomMode {
-            if let jiggle = jiggle {
-                if jiggle.isShowingJiggleControlPointTanHandlesBloom {
-                    tanHandlePointsSelectedPreciseBloomBuffer.render(renderEncoder: renderEncoder,
-                                                                     pipelineState: .spriteNodeIndexed3DAlphaBlending)
-                    
+            if !isFrozen && isSelected {
+                if let jiggle = jiggle {
+                    if jiggle.isShowingGuideControlPointTanHandlesBloom {
+                        tanHandlePointsSelectedPreciseBloomBuffer.render(renderEncoder: renderEncoder,
+                                                                         pipelineState: .spriteNodeIndexed3DAlphaBlending)
+                        
+                    }
                 }
             }
         }
@@ -241,7 +253,7 @@ extension JiggleRenderer {
     
     func renderTanHandlePointsSelectedStrokePrecise(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandlePointsSelectedPreciseStrokeBuffer.render(renderEncoder: renderEncoder,
                                                                   pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
             }
@@ -250,7 +262,7 @@ extension JiggleRenderer {
     
     func renderTanHandlePointsSelectedFillPrecise(renderEncoder: MTLRenderCommandEncoder) {
         if let jiggle = jiggle {
-            if jiggle.isShowingJiggleControlPointTanHandles {
+            if jiggle.isShowingGuideControlPointTanHandles {
                 tanHandlePointsSelectedPreciseFillBuffer.render(renderEncoder: renderEncoder,
                                                                 pipelineState: .spriteNodeWhiteIndexed2DPremultipliedBlending)
             }

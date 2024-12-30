@@ -142,7 +142,7 @@ extension JiggleRenderer {
     }
     
     func renderJiggleCenterMarkerBloomRegular(renderEncoder: MTLRenderCommandEncoder) {
-        if ApplicationController.isGlowingSelectionEnabled {
+        if isBloomMode {
             if let jiggle = jiggle {
                 if isJiggleSelected {
                     if jiggle.isShowingCenterMarkerBloom {
@@ -184,7 +184,7 @@ extension JiggleRenderer {
     
     
     func renderJiggleCenterMarkerBloomPrecise(renderEncoder: MTLRenderCommandEncoder) {
-        if ApplicationController.isGlowingSelectionEnabled {
+        if isBloomMode {
             if let jiggle = jiggle {
                 if isJiggleSelected {
                     if jiggle.isShowingCenterMarkerBloom {

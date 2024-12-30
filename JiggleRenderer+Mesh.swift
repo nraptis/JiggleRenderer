@@ -11,53 +11,56 @@ import simd
 
 extension JiggleRenderer {
     
-    func renderMesh2D(jiggle: Jiggle,
-                      renderEncoder: MTLRenderCommandEncoder,
-                      isPrecisePass: Bool) {
+    func renderMesh2DRegular(renderEncoder: MTLRenderCommandEncoder) {
+        
+        guard let jiggle = jiggle else { return }
         
         if jiggle.isShowingMeshEditStandard {
-            
             if Self.DIRTY_TRIANGLES_SHOW_DIRTY {
                 if jiggle.currentHashMeshStandard.polyHash.triangulationType == .fast {
-                    jiggle.jiggleMesh.editBufferStandard.red = 0.9
-                    jiggle.jiggleMesh.editBufferStandard.green = 0.9
-                    jiggle.jiggleMesh.editBufferStandard.blue = 0.9
+                    jiggle.jiggleMesh.editBufferStandardRegular.red = 0.9
+                    jiggle.jiggleMesh.editBufferStandardRegular.green = 0.9
+                    jiggle.jiggleMesh.editBufferStandardRegular.blue = 0.9
                 } else {
-                    jiggle.jiggleMesh.editBufferStandard.red = 1.0
-                    jiggle.jiggleMesh.editBufferStandard.green = 1.0
-                    jiggle.jiggleMesh.editBufferStandard.blue = 1.0
+                    jiggle.jiggleMesh.editBufferStandardRegular.red = 1.0
+                    jiggle.jiggleMesh.editBufferStandardRegular.green = 1.0
+                    jiggle.jiggleMesh.editBufferStandardRegular.blue = 1.0
                 }
             }
             
-            if isPrecisePass {
-                jiggle.jiggleMesh.editBufferStandard_Precise.render(renderEncoder: renderEncoder,
-                                                                    pipelineState: .shapeNodeColoredIndexed2DAlphaBlending)
-                
-            } else {
-                jiggle.jiggleMesh.editBufferStandard.render(renderEncoder: renderEncoder,
-                                                            pipelineState: .shapeNodeColoredIndexed2DAlphaBlending)
-            }
+            jiggle.jiggleMesh.editBufferStandardRegular.render(renderEncoder: renderEncoder,
+                                                               pipelineState: .shapeNodeColoredIndexed2DAlphaBlending)
+            
         } else if jiggle.isShowingMeshEditWeights {
             
             if Self.DIRTY_TRIANGLES_SHOW_DIRTY {
                 if jiggle.currentHashMeshWeights.polyHash.triangulationType == .fast {
-                    jiggle.jiggleMesh.editBufferWeights.red = 0.9
-                    jiggle.jiggleMesh.editBufferWeights.green = 0.9
-                    jiggle.jiggleMesh.editBufferWeights.blue = 0.9
+                    jiggle.jiggleMesh.editBufferWeightsRegular.red = 0.9
+                    jiggle.jiggleMesh.editBufferWeightsRegular.green = 0.9
+                    jiggle.jiggleMesh.editBufferWeightsRegular.blue = 0.9
                 } else {
-                    jiggle.jiggleMesh.editBufferWeights.red = 1.0
-                    jiggle.jiggleMesh.editBufferWeights.green = 1.0
-                    jiggle.jiggleMesh.editBufferWeights.blue = 1.0
+                    jiggle.jiggleMesh.editBufferWeightsRegular.red = 1.0
+                    jiggle.jiggleMesh.editBufferWeightsRegular.green = 1.0
+                    jiggle.jiggleMesh.editBufferWeightsRegular.blue = 1.0
                 }
             }
             
-            if isPrecisePass {
-                jiggle.jiggleMesh.editBufferWeights_Precise.render(renderEncoder: renderEncoder,
-                                                                   pipelineState: .shapeNodeColoredIndexed2DAlphaBlending)
-            } else {
-                jiggle.jiggleMesh.editBufferWeights.render(renderEncoder: renderEncoder,
-                                                           pipelineState: .shapeNodeColoredIndexed2DAlphaBlending)
-            }
+            jiggle.jiggleMesh.editBufferWeightsRegular.render(renderEncoder: renderEncoder,
+                                                              pipelineState: .shapeNodeColoredIndexed2DAlphaBlending)
+        }
+    }
+    
+    func renderMesh2DPrecise(renderEncoder: MTLRenderCommandEncoder) {
+        
+        guard let jiggle = jiggle else { return }
+        
+        
+        if jiggle.isShowingMeshEditStandard {
+            jiggle.jiggleMesh.editBufferStandardPrecise.render(renderEncoder: renderEncoder,
+                                                               pipelineState: .shapeNodeColoredIndexed2DAlphaBlending)
+        } else if jiggle.isShowingMeshEditWeights {
+            jiggle.jiggleMesh.editBufferWeightsPrecise.render(renderEncoder: renderEncoder,
+                                                              pipelineState: .shapeNodeColoredIndexed2DAlphaBlending)
         }
     }
     
